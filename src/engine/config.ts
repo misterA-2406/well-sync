@@ -28,6 +28,20 @@ export interface EngineConfig {
   ladderStretchRatio: number;
   /** Consecutive target/ladder successes required to step up one ladder rung (default 3) */
   ladderStepUpSuccesses: number;
+
+  // --- Phase 1: Anti-Erosion Controls ---
+  /** Long-term anchor lookback in calendar days (default 56) */
+  anchorWindowDays: number;
+  /** Trimming percentage on each tail for trimmed median anchor (default 0.10 = 10%) */
+  anchorTrimPercent: number;
+  /** Maximum fractional decay allowed per 7 calendar days (default 0.05 = 5% max drop per week) */
+  maxDecayPerWeek: number;
+  /** Absolute safety floor for step baseline (default 3000 steps) */
+  stepBaselineSafetyFloor: number;
+  /** Absolute safety floor for sleep baseline in minutes (default 360 = 6 hours) */
+  sleepBaselineSafetyFloor: number;
+  /** Whether missing wearable data counts as below-par and can trigger lapses (default false; prevents sensor disconnects from triggering false lapses) */
+  missingDataCanCauseLapse: boolean;
 }
 
 export const DEFAULT_ENGINE_CONFIG: EngineConfig = {
@@ -42,4 +56,11 @@ export const DEFAULT_ENGINE_CONFIG: EngineConfig = {
   ladderTargetRatio: 1.00,
   ladderStretchRatio: 1.10,
   ladderStepUpSuccesses: 3,
+
+  anchorWindowDays: 56,
+  anchorTrimPercent: 0.10,
+  maxDecayPerWeek: 0.05,
+  stepBaselineSafetyFloor: 3000,
+  sleepBaselineSafetyFloor: 360,
+  missingDataCanCauseLapse: false,
 };

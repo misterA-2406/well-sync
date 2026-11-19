@@ -42,6 +42,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { calculateBaseline, normalizeDateString } from '../baseline';
 import { detectBarrierHypotheses } from '../barriers';
+import { DEFAULT_ENGINE_CONFIG } from '../config';
 import { calculateLadderTargets } from '../ladder';
 import { evaluateHistory } from '../state';
 import { DailyRecord } from '../types';
@@ -114,7 +115,7 @@ describe('Phase 4: Adversarial & Edge Case Audit Test Suite (35 Cases)', () => {
     const results = evaluateHistory(history, userGoal, 'steps');
     results.forEach((r) => {
       expect(r.evaluation.isMissing).toBe(true);
-      expect(r.evaluation.isBelowPar).toBe(true);
+      expect(r.evaluation.isBelowPar).toBe(false);
       expect(r.isSuccessDay).toBe(false);
     });
   });
@@ -194,14 +195,14 @@ describe('Phase 4: Adversarial & Edge Case Audit Test Suite (35 Cases)', () => {
   });
 
   // Case 12: Missing day between low days
-  it('Case 12: missing day counts as below-par and sustains the lapse trigger streak', () => {
+  it('Case 12: missing day counts as below-par and sustains the lapse trigger streak under missingDataCanCauseLapse', () => {
     const records: DailyRecord[] = [];
     for (let i = 1; i <= 7; i++) records.push({ date: `2026-10-0${i}`, steps: 8000 });
     records.push({ date: '2026-10-08', steps: 2000 });
-    records.push({ date: '2026-10-09', isMissing: true }); // missing day counts as below-par
+    records.push({ date: '2026-10-09', isMissing: true }); // missing day
     records.push({ date: '2026-10-10', steps: 2000 });
 
-    const results = evaluateHistory(records, userGoal, 'steps');
+    const results = evaluateHistory(records, userGoal, 'steps', { ...DEFAULT_ENGINE_CONFIG, missingDataCanCauseLapse: true });
     const day10 = results[9];
     expect(day10.state).toBe('LAPSED');
   });

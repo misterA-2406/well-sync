@@ -16,6 +16,7 @@
 
 import { describe, expect, it } from 'vitest';
 import { calculateBaseline, normalizeDateString } from '../baseline';
+import { DEFAULT_ENGINE_CONFIG } from '../config';
 import { calculateLadderTargets, getTargetForLevel, stepDownOnLapse, stepUpLadder } from '../ladder';
 import { getTechniqueCard } from '../recommendations';
 import { evaluateHistory } from '../state';
@@ -145,13 +146,18 @@ describe('Spec Item 4: Missing Days Handling', () => {
       { date: '2026-10-10', steps: null },
     ];
 
-    const results = evaluateHistory(testRecords, userGoal, 'steps');
+    // With legacy flag missingDataCanCauseLapse: true, missing days count as below-par
+    const results = evaluateHistory(testRecords, userGoal, 'steps', { ...DEFAULT_ENGINE_CONFIG, missingDataCanCauseLapse: true });
     expect(results[7].evaluation.isMissing).toBe(true);
     expect(results[7].evaluation.isBelowPar).toBe(true);
     expect(results[8].evaluation.isMissing).toBe(true);
     expect(results[9].evaluation.isMissing).toBe(true);
-    // 3 consecutive missing days trigger LAPSED
+    // 3 consecutive missing days trigger LAPSED under legacy mode
     expect(results[9].state).toBe('LAPSED');
+
+    // Under modern anti-erosion rules (default), missing wearable data does NOT create a lapse
+    const resultsSafe = evaluateHistory(testRecords, userGoal, 'steps');
+    expect(resultsSafe[9].state).toBe('ON_TRACK');
   });
 });
 

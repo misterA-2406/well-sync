@@ -69,6 +69,7 @@ export interface EngineDayResult {
   isSuccessDay: boolean;
   isTargetAttained: boolean;
   baseline: number;
+  isBaselineFrozen?: boolean;
   isColdStart: boolean;
   isLearningBaseline: boolean;
   learningMessage?: string;

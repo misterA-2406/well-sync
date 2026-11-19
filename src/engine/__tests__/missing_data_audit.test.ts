@@ -10,6 +10,7 @@
 
 import { describe, expect, it } from 'vitest';
 import { calculateBaseline } from '../baseline';
+import { DEFAULT_ENGINE_CONFIG } from '../config';
 import { evaluateHistory } from '../state';
 import { DailyRecord } from '../types';
 
@@ -41,11 +42,16 @@ describe('Missing Data Treatment & Comparative Analysis', () => {
       { date: '2026-10-16', isMissing: true },
       { date: '2026-10-17', isMissing: true },
     ];
-    const resMissing = evaluateHistory(missingHistory, userGoal, 'steps');
-    // Current Rule: missing days count as below-par and trigger LAPSED
-    expect(resMissing[16].state).toBe('LAPSED');
-    expect(resMissing[16].evaluation.isMissing).toBe(true);
-    expect(resMissing[16].ladderLevel).toBe('MINIMUM');
+    // Default Anti-Erosion Rule: missing days do NOT create false lapses!
+    const resSafe = evaluateHistory(missingHistory, userGoal, 'steps');
+    expect(resSafe[16].state).toBe('ON_TRACK');
+    expect(resSafe[16].evaluation.isMissing).toBe(true);
+
+    // Legacy Comparison: with missingDataCanCauseLapse = true, missing days counted as below-par
+    const resLegacy = evaluateHistory(missingHistory, userGoal, 'steps', { ...DEFAULT_ENGINE_CONFIG, missingDataCanCauseLapse: true });
+    expect(resLegacy[16].state).toBe('LAPSED');
+    expect(resLegacy[16].evaluation.isMissing).toBe(true);
+    expect(resLegacy[16].ladderLevel).toBe('MINIMUM');
 
     // Scenario C: Isolated missing day followed by adherence does NOT lapse
     const isolatedMissingHistory: DailyRecord[] = [
@@ -56,8 +62,7 @@ describe('Missing Data Treatment & Comparative Analysis', () => {
     ];
     const resIsolated = evaluateHistory(isolatedMissingHistory, userGoal, 'steps');
     expect(resIsolated[15].state).toBe('ON_TRACK');
-    expect(resIsolated[16].state).toBe('SLIPPING'); // 7-day mean drops < 80% due to two zero days
-    expect(resIsolated[16].consecutiveBelowPar).toBe(1); // but NOT lapsed (needs 3 consecutive)
+    expect(resIsolated[16].state).toBe('ON_TRACK'); // Isolated missing days do not degrade state
   });
 
   it('verifies baseline contamination protection: missing days are excluded from rolling median baseline', () => {

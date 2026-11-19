@@ -44,16 +44,12 @@ export function calculate7DayMean(
         const val = metric === 'steps' ? r.steps : r.sleepMinutes;
         if (typeof val === 'number' && !isNaN(val)) {
           dayValues.push(val);
-        } else {
-          dayValues.push(0);
         }
-      } else {
-        dayValues.push(0);
       }
     }
   }
 
-  if (dayValues.length === 0) return 0;
+  if (dayValues.length === 0) return -1; // -1 indicates no recorded days in 7-day window
   const sum = dayValues.reduce((a, b) => a + b, 0);
   return sum / dayValues.length;
 }
@@ -72,13 +68,16 @@ export function processDay({
 }: ProcessDayContext): EngineDayResult {
   const dateStr = normalizeDateString(currentRecord.date);
 
-  // 1. Calculate Baseline for current day
-  const { baseline, isColdStart, validDaysCount } = calculateBaseline(
+  // 1. Calculate Baseline for current day with anti-erosion safeguards
+  const { baseline, isColdStart, isFrozen } = calculateBaseline(
     history,
     dateStr,
     metric,
     userGoal,
-    config
+    config,
+    previousResult?.state,
+    previousResult?.baseline,
+    previousResult?.date
   );
 
   // 2. Cold-start suppression check:
@@ -90,7 +89,9 @@ export function processDay({
   const maxSafeValue = metric === 'steps' ? 100000 : 1440;
   const actualValue = isMissing ? 0 : Math.max(0, Math.min(maxSafeValue, Number(rawVal)));
 
-  const totalRecordedValidDays = validDaysCount + (!isMissing && actualValue >= 0 ? 1 : 0);
+  const totalRecordedValidDays =
+    history.filter(r => !r.isMissing && (metric === 'steps' ? r.steps !== null && r.steps !== undefined : r.sleepMinutes !== null && r.sleepMinutes !== undefined)).length +
+    (!isMissing ? 1 : 0);
   const isLearningBaseline = totalRecordedValidDays < config.minDaysForLapseDetection;
   const learningMessage = isLearningBaseline ? 'learning your baseline' : undefined;
 
@@ -115,10 +116,13 @@ export function processDay({
 
   // On Minimum rung: below-par only if failing to meet the Minimum target.
   // On Target/Stretch: below-par if failing to reach 60% of baseline.
-  const isBelowPar = isMissing || (
-    prevLadderLevel === 'MINIMUM'
-      ? actualValue < ladderTargets.minimum
-      : actualValue < thresholdValue
+  // Missing data protection: When config.missingDataCanCauseLapse is false (default), missing data does NOT count as below-par.
+  const isBelowPar = (config.missingDataCanCauseLapse && isMissing) || (
+    !isMissing && (
+      prevLadderLevel === 'MINIMUM'
+        ? actualValue < ladderTargets.minimum
+        : actualValue < thresholdValue
+    )
   );
 
   const evaluation: DayEvaluation = {
@@ -146,9 +150,11 @@ export function processDay({
   // consecutiveBelowPar tracks below-par failure streaks for lapse detection
   if (isBelowPar) {
     consecutiveBelowPar += 1;
-  } else {
+  } else if (!isMissing || config.missingDataCanCauseLapse) {
+    // A recorded valid day at or above par resets consecutiveBelowPar to zero
     consecutiveBelowPar = 0;
   }
+  // Note: if isMissing && !config.missingDataCanCauseLapse, consecutiveBelowPar pauses without incrementing or causing false lapses
 
   // consecutiveSuccessDays tracks meeting current ladder target for step-up and recovery
   if (isSuccessDay) {
@@ -194,7 +200,7 @@ export function processDay({
   } else {
     // Check for SLIPPING: 7-day rolling mean < 80% of baseline and not lapsed
     const sevenDayMean = calculate7DayMean(history, currentRecord, metric);
-    const isSlippingMean = baseline > 0 && sevenDayMean < baseline * config.slippingMeanRatio;
+    const isSlippingMean = sevenDayMean >= 0 && baseline > 0 && sevenDayMean < baseline * config.slippingMeanRatio;
 
     if (isSlippingMean) {
       nextState = 'SLIPPING';
@@ -226,6 +232,7 @@ export function processDay({
     isSuccessDay,
     isTargetAttained: isSuccessDay,
     baseline,
+    isBaselineFrozen: isFrozen,
     isColdStart,
     isLearningBaseline,
     learningMessage,
@@ -281,3 +288,26 @@ export function evaluateHistory(
 
   return results;
 }
+
+/**
+ * Generates the authoritative Mermaid state diagram directly from engine transition rules.
+ * Keeps documentation and source code strictly in sync.
+ */
+export function getStateTransitionDiagramMermaid(): string {
+  return `stateDiagram-v2
+    [*] --> ON_TRACK : Initial / Cold Start (< 7 valid days)
+
+    ON_TRACK --> SLIPPING : 7-Day Mean < 80% Baseline & Below-Par < 3
+    SLIPPING --> ON_TRACK : 7-Day Mean >= 80% Baseline & Below-Par < 3
+
+    ON_TRACK --> LAPSED : 3 Consecutive Below-Par Days
+    SLIPPING --> LAPSED : 3 Consecutive Below-Par Days
+
+    LAPSED --> RECOVERING : 1st Day >= 50% Minimum Rung
+    LAPSED --> LAPSED : Day < 50% Minimum Rung
+
+    RECOVERING --> ON_TRACK : 3 Consecutive Days >= 50% Minimum (Return Count +1)
+    RECOVERING --> LAPSED : 3 Consecutive Below-Par Days During Recovery
+    RECOVERING --> RECOVERING : Day 1-2 >= 50% Minimum Rung`;
+}
+
