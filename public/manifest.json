@@ -1,0 +1,20 @@
+{
+  "short_name": "WellSync",
+  "name": "WellSync — Sustaining Healthy Behaviors",
+  "description": "Privacy-first, deterministic behavioral health support for sustaining and recovering habits without punitive streak resets.",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "any",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#F5F5EF",
+  "theme_color": "#183C32",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "lang": "en",
+  "dir": "auto"
+}

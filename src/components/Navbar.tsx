@@ -25,6 +25,8 @@ interface NavbarProps {
   onChangeTextSize: (size: 'standard' | 'large' | 'xl') => void;
   language: Language;
   onToggleLanguage: () => void;
+  onTriggerJudgeDemo?: () => void;
+  isJudgeDemoMode?: boolean;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -35,6 +37,8 @@ export const Navbar: React.FC<NavbarProps> = ({
   onChangeTextSize,
   language,
   onToggleLanguage,
+  onTriggerJudgeDemo,
+  isJudgeDemoMode,
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
   const isLapsedOrSlipping = currentState === 'LAPSED' || currentState === 'SLIPPING';
@@ -212,6 +216,18 @@ export const Navbar: React.FC<NavbarProps> = ({
                   A++
                 </button>
               </div>
+
+              {/* Judge Demo 90s Button */}
+              {onTriggerJudgeDemo && !isJudgeDemoMode && (
+                <button
+                  type="button"
+                  onClick={onTriggerJudgeDemo}
+                  className="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold border border-sand-300 bg-sand-50 hover:bg-sand-100 text-sand-800 shadow-xs transition-colors focus:outline-hidden focus-visible:ring-2 focus-visible:ring-sand-500"
+                  title="Load 90-second Tariq journey demonstration"
+                >
+                  <span>⚡ {language === 'ar' ? 'عرض تجريبي للتحكيم (90ث)' : 'Judge Demo (90s)'}</span>
+                </button>
+              )}
 
               {/* Language Switcher */}
               <button

@@ -19,13 +19,20 @@ import {
 } from './storage/storage';
 import { BehaviorMetric, DailyRecord, UserEngineProfile } from './engine/types';
 import { evaluateHistory } from './engine/state';
-import { SyntheticPersona } from './data/syntheticPersonas';
-import { queueCheckinForPilotSync } from './services/pilotSync';
+import { ContextModeType } from './engine/contextModes';
+import { SYNTHETIC_PERSONAS, SyntheticPersona } from './data/syntheticPersonas';
+import {
+  queueCheckinForPilotSync,
+  loadPilotSyncState,
+  savePilotSyncState,
+} from './services/pilotSync';
 
 export function App() {
   const [appState, setAppState] = useState<AppStorageState>(() => loadAppState());
   const [currentTab, setCurrentTab] = useState<ScreenTab>('today');
   const [activeMetric, setActiveMetric] = useState<BehaviorMetric>('steps');
+  const [isJudgeDemoMode, setIsJudgeDemoMode] = useState<boolean>(false);
+  const [preDemoState, setPreDemoState] = useState<AppStorageState | null>(null);
 
   // Sync to local storage on state updates
   useEffect(() => {
@@ -74,12 +81,49 @@ export function App() {
   }, [latestResult, appState.activeRecoveryCommitment]);
 
   // Handlers
-  const handleCompleteOnboarding = (profile: UserEngineProfile) => {
+  const handleCompleteOnboarding = (
+    profile: UserEngineProfile,
+    initialContextMode?: ContextModeType,
+    syncOptIn?: boolean
+  ) => {
     setAppState((prev) => ({
       ...prev,
       profile,
       hasCompletedOnboarding: true,
+      contextConfig: initialContextMode && initialContextMode !== 'standard'
+        ? { ...prev.contextConfig, activeMode: initialContextMode }
+        : prev.contextConfig,
     }));
+    if (syncOptIn) {
+      const currentSync = loadPilotSyncState();
+      savePilotSyncState({ ...currentSync, enabled: true });
+    }
+  };
+
+  const handleTriggerJudgeDemo = () => {
+    setPreDemoState(appState);
+    const tariq = SYNTHETIC_PERSONAS[0];
+    setAppState((prev) => ({
+      ...prev,
+      profile: tariq.profile,
+      history: tariq.history,
+      hasCompletedOnboarding: true,
+      contextConfig: {
+        ...prev.contextConfig,
+        activeMode: 'shift_work',
+      },
+    }));
+    setIsJudgeDemoMode(true);
+    setCurrentTab('today');
+  };
+
+  const handleExitJudgeDemo = () => {
+    if (preDemoState) {
+      setAppState(preDemoState);
+    } else {
+      setAppState(loadAppState());
+    }
+    setIsJudgeDemoMode(false);
   };
 
   const handleSaveRecord = (record: DailyRecord) => {
@@ -200,6 +244,26 @@ export function App() {
   return (
     <div className={`min-h-screen bg-[#F5F5EF] text-[#25332D] flex flex-col justify-between ${getTextSizeClass()}`}>
       <div>
+        {isJudgeDemoMode && (
+          <aside aria-label="Demo status" className="bg-[#FAF4EB] border-b border-[#ECD9BD] px-4 py-2.5 text-xs text-sand-900 font-semibold sticky top-0 z-50 shadow-xs flex flex-wrap items-center justify-between gap-3">
+            <div className="flex items-center gap-2.5">
+              <span className="px-2.5 py-0.5 rounded-full bg-sand-800 text-white font-bold text-[10px] uppercase tracking-wide">
+                Judge Demo Mode
+              </span>
+              <span>
+                Tariq's 90s Walkthrough: 14d Baseline Established → 3d Night Shifts Disruption → 50% Minimum Rung Step-Down → 3d Recovery → Return Count Celebrated.
+              </span>
+            </div>
+            <button
+              type="button"
+              onClick={handleExitJudgeDemo}
+              className="px-3 py-1 bg-white hover:bg-ivory-50 text-sand-900 font-bold rounded-xl border border-sand-300 transition-colors shadow-xs"
+            >
+              Exit Demo Mode
+            </button>
+          </aside>
+        )}
+
         <Navbar
           currentTab={currentTab}
           onSelectTab={setCurrentTab}
@@ -208,6 +272,8 @@ export function App() {
           onChangeTextSize={handleChangeTextSize}
           language={appState.language}
           onToggleLanguage={handleToggleLanguage}
+          onTriggerJudgeDemo={handleTriggerJudgeDemo}
+          isJudgeDemoMode={isJudgeDemoMode}
         />
 
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 pb-24 lg:pb-8">

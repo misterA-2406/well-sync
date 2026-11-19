@@ -3,6 +3,15 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 import './index.css';
 
+// Register offline service worker if supported
+if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch((err) => {
+      console.warn('[WellSync SW] Registration failed:', err);
+    });
+  });
+}
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <App />
