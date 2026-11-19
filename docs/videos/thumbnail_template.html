@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800;900&family=Playfair+Display:wght@700;900&display=swap');
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      width: 1280px;
+      height: 720px;
+      overflow: hidden;
+      background: linear-gradient(135deg, #0F201B 0%, #183C32 50%, #0D1B17 100%);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      color: #FFFFFF;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 60px 70px;
+    }
+
+    /* Ambient background glow */
+    .glow-orange {
+      position: absolute;
+      top: -80px;
+      right: 100px;
+      width: 480px;
+      height: 480px;
+      background: radial-gradient(circle, rgba(201, 122, 72, 0.28) 0%, rgba(201, 122, 72, 0) 70%);
+      pointer-events: none;
+    }
+
+    .glow-green {
+      position: absolute;
+      bottom: -100px;
+      left: 150px;
+      width: 550px;
+      height: 550px;
+      background: radial-gradient(circle, rgba(74, 150, 126, 0.25) 0%, rgba(74, 150, 126, 0) 70%);
+      pointer-events: none;
+    }
+
+    /* Top Bar */
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 10;
+    }
+
+    .badge-competition {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(12px);
+      padding: 10px 22px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      color: #A3E6D0;
+      text-transform: uppercase;
+    }
+
+    .badge-track {
+      background: #C97A48;
+      color: #FFFFFF;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .collaborators {
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.7);
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    /* Main Content Area */
+    .hero-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 10;
+      margin-top: 20px;
+      margin-bottom: 20px;
+    }
+
+    .headline-group {
+      max-width: 680px;
+    }
+
+    .app-brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .logo-icon {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, #C97A48 0%, #E29363 100%);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 10px 25px rgba(201, 122, 72, 0.4);
+    }
+
+    .logo-icon svg {
+      width: 28px;
+      height: 28px;
+      stroke: #FFFFFF;
+      fill: none;
+      stroke-width: 2.5;
+    }
+
+    .brand-title {
+      font-size: 38px;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+      color: #FFFFFF;
+    }
+
+    .main-headline {
+      font-family: 'Playfair Display', serif;
+      font-size: 52px;
+      line-height: 1.12;
+      font-weight: 900;
+      color: #FFFFFF;
+      margin-bottom: 20px;
+      text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+
+    .main-headline .highlight {
+      color: #F6AD55;
+      font-style: italic;
+    }
+
+    .sub-headline {
+      font-size: 20px;
+      line-height: 1.45;
+      color: #D1E5DE;
+      font-weight: 500;
+    }
+
+    /* Right UI Visual Card */
+    .ui-preview-card {
+      width: 440px;
+      background: rgba(20, 48, 40, 0.75);
+      border: 1.5px solid rgba(163, 230, 208, 0.3);
+      backdrop-filter: blur(20px);
+      border-radius: 24px;
+      padding: 30px;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.45);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 22px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .card-label {
+      font-size: 13px;
+      text-transform: uppercase;
+      font-weight: 800;
+      color: #F6AD55;
+      letter-spacing: 1px;
+    }
+
+    .status-pill {
+      background: rgba(201, 122, 72, 0.25);
+      border: 1px solid #C97A48;
+      color: #FBD38D;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 18px;
+    }
+
+    .stat-box {
+      flex: 1;
+    }
+
+    .stat-box:first-child {
+      border-right: 1px solid rgba(255,255,255,0.1);
+      padding-right: 15px;
+      margin-right: 15px;
+    }
+
+    .stat-val {
+      font-size: 32px;
+      font-weight: 900;
+      color: #FFFFFF;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .stat-lbl {
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.6);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 600;
+    }
+
+    .ladder-bar {
+      margin-top: 10px;
+      background: rgba(0,0,0,0.3);
+      border-radius: 12px;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .ladder-text {
+      font-size: 12px;
+      font-weight: 700;
+      color: #A3E6D0;
+    }
+
+    .ladder-pct {
+      font-size: 13px;
+      font-weight: 900;
+      color: #F6AD55;
+    }
+
+    /* Bottom Features Ribbon */
+    .bottom-ribbon {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+      z-index: 10;
+    }
+
+    .features-list {
+      display: flex;
+      gap: 30px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #E2E8F0;
+    }
+
+    .feature-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .check-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #48BB78;
+    }
+
+    .duration-badge {
+      background: rgba(0,0,0,0.4);
+      border: 1px solid rgba(255,255,255,0.2);
+      padding: 8px 18px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 800;
+      color: #FFFFFF;
+      letter-spacing: 0.5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="glow-orange"></div>
+  <div class="glow-green"></div>
+
+  <!-- Top Bar -->
+  <div class="top-bar">
+    <div class="badge-competition">
+      <span>Future Health Abu Dhabi 2026</span>
+      <span class="badge-track">Challenge 09</span>
+    </div>
+    <div class="collaborators">
+      Microsoft • Inception 42 • MBZUAI
+    </div>
+  </div>
+
+  <!-- Hero Center Area -->
+  <div class="hero-content">
+    <div class="headline-group">
+      <div class="app-brand">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+          </svg>
+        </div>
+        <span class="brand-title">WellSync</span>
+      </div>
+
+      <h1 class="main-headline">
+        Recovery Is Easier<br>Than <span class="highlight">Restarting</span>.
+      </h1>
+
+      <p class="sub-headline">
+        Replacing punitive streak resets with an adaptive 50% target ladder engineered for Abu Dhabi shift workers and climate rhythms.
+      </p>
+    </div>
+
+    <!-- UI Snapshot Card -->
+    <div class="ui-preview-card">
+      <div class="card-header">
+        <span class="card-label">Deterministic Engine</span>
+        <span class="status-pill">RECOVERING</span>
+      </div>
+
+      <div class="stat-row">
+        <div class="stat-box">
+          <div class="stat-val">0.0</div>
+          <div class="stat-lbl">Streak Resets (0%)</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-val">3.1 <span style="font-size: 18px; color: #F6AD55;">days</span></div>
+          <div class="stat-lbl">Mean Recovery Time</div>
+        </div>
+      </div>
+
+      <div class="ladder-bar">
+        <span class="ladder-text">Adaptive Step-Down Target</span>
+        <span class="ladder-pct">50% Minimum Rung</span>
+      </div>
+
+      <div style="margin-top: 14px; font-size: 11px; color: rgba(255,255,255,0.6); display: flex; justify-content: space-between;">
+        <span>Active Days: <strong>17 Preserved</strong></span>
+        <span>Return Count: <strong>+1 Rebound</strong></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Ribbon -->
+  <div class="bottom-ribbon">
+    <div class="features-list">
+      <div class="feature-item">
+        <span class="check-dot"></span>
+        <span>71-Participant LifeSnaps Replay</span>
+      </div>
+      <div class="feature-item">
+        <span class="check-dot"></span>
+        <span>100% Local-First Privacy</span>
+      </div>
+      <div class="feature-item">
+        <span class="check-dot"></span>
+        <span>Bilingual Arabic RTL</span>
+      </div>
+      <div class="feature-item">
+        <span class="check-dot"></span>
+        <span>SEHA Shift-Work Mode</span>
+      </div>
+    </div>
+
+    <div class="duration-badge">
+      ⏱ 3-MIN DEMO
+    </div>
+  </div>
+</body>
+</html>
