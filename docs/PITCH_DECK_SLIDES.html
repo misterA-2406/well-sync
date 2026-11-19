@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Future Health Digital Innovation Challenge — WellSync Pitch Deck</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap');
+    
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #2D2723;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
+    
+    .serif-title {
+      font-family: 'Playfair Display', Georgia, serif;
+    }
+
+    .slide {
+      width: 1920px;
+      height: 1080px;
+      position: relative;
+      background-color: #F4F1EA;
+      color: #26322C;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+      margin: 40px auto;
+      border-radius: 4px;
+    }
+
+    .slide-header {
+      height: 110px;
+      border-bottom: 2px solid #E2DCD2;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 70px;
+      background: #EFECE5;
+    }
+
+    .slide-footer {
+      height: 36px;
+      background-color: #3C2F28;
+      width: 100%;
+      margin-top: auto;
+    }
+
+    .slide-body {
+      flex: 1;
+      padding: 50px 70px 40px 70px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    @media print {
+      body {
+        background-color: transparent;
+      }
+      .slide {
+        margin: 0;
+        box-shadow: none;
+        page-break-after: always;
+        break-after: page;
+        width: 100vw;
+        height: 100vh;
+      }
+      .controls {
+        display: none !important;
+      }
+    }
+
+    .controls {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 9999;
+      display: flex;
+      gap: 12px;
+      background: rgba(30, 25, 22, 0.9);
+      padding: 10px 18px;
+      border-radius: 9999px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      border: 1px solid rgba(255,255,255,0.1);
+      backdrop-filter: blur(8px);
+    }
+    
+    .controls button {
+      color: #F4F1EA;
+      font-size: 14px;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 9999px;
+      background: #4A3A31;
+      transition: all 0.2s;
+    }
+    .controls button:hover {
+      background: #6D5649;
+    }
+    
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Controls -->
+  <div class="controls">
+    <button onclick="prevSlide()">← Prev</button>
+    <span id="slideIndicator" class="text-stone-300 self-center text-sm font-mono px-2">1 / 19</span>
+    <button onclick="nextSlide()">Next →</button>
+    <button onclick="window.print()">🖨️ Export PDF</button>
+  </div>
+
+  <!-- Container for Slides -->
+  <div id="deckContainer">
+
+    <!-- ==================== SLIDE 1: COVER ==================== -->
+    <section class="slide" id="slide-1">
+      <div class="h-28 px-16 flex items-center justify-between border-b border-[#E2DCD2] bg-[#EFECE5]">
+        <div class="flex items-center gap-6">
+          <div class="text-xs uppercase tracking-widest text-[#5C534A] font-bold leading-tight">
+            FUTURE HEALTH <span class="font-normal text-[10px] block text-[#847B72]">A GLOBAL INITIATIVE BY ABU DHABI</span>
+          </div>
+          <div class="h-8 w-px bg-[#C8C0B4]"></div>
+          <div class="text-lg font-black tracking-tighter text-[#26322C]">H2S</div>
+        </div>
+        <div class="text-center font-bold text-lg text-[#3E3832]">
+          Future Health Digital Innovation Challenge
+        </div>
+        <div class="flex items-center gap-8 text-xs font-semibold text-[#5C534A]">
+          <div><span class="block text-[10px] text-[#8C8379] font-normal uppercase">Technology collaborator</span><span class="font-bold text-[#1E3A2F]">Microsoft</span></div>
+          <div><span class="block text-[10px] text-[#8C8379] font-normal uppercase">Technology collaborator</span><span class="font-bold text-[#1E3A2F]">inception<sup>42</sup></span></div>
+          <div><span class="block text-[10px] text-[#8C8379] font-normal uppercase">Scientific collaborator</span><span class="font-bold text-[#1E3A2F]">MBZUAI</span></div>
+        </div>
+      </div>
+      
+      <div class="slide-body justify-center items-start pl-24 pr-24">
+        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#E2EBE3] text-[#1E4D3E] text-sm font-semibold tracking-wide mb-6 border border-[#CAD8CC]">
+          <span>Challenge 09: Sustaining Healthy Behaviors</span> • <span>Wellbeing Track</span>
+        </div>
+        
+        <h1 class="serif-title text-7xl font-bold text-[#18382E] leading-tight max-w-5xl mb-6">
+          WellSync: Sustaining Healthy Behaviors Through Adaptive Recovery
+        </h1>
+        
+        <p class="text-2xl text-[#4A5D54] max-w-4xl font-normal leading-relaxed mb-10">
+          Replacing punitive streak resets with a deterministic, evidence-based adaptive ladder engineered for Abu Dhabi’s cultural, shift-work, and climate rhythms.
+        </p>
+
+        <div class="grid grid-cols-4 gap-8 w-full max-w-5xl pt-8 border-t border-[#DFD8CC]">
+          <div>
+            <div class="text-xs font-bold text-[#867C72] uppercase tracking-wider">Engineering Authors</div>
+            <div class="text-base font-bold text-[#1E382E] mt-1">1. Ayesha Sultana &nbsp;•&nbsp; 2. B. Alence</div>
+            <div class="text-xs text-[#6B7570]">Student Software Engineers</div>
+          </div>
+          <div>
+            <div class="text-xs font-bold text-[#867C72] uppercase tracking-wider">Solution Architecture</div>
+            <div class="text-base font-bold text-[#1E382E] mt-1">100% Deterministic Engine</div>
+            <div class="text-xs text-[#6B7570]">Zero Runtime AI Hallucinations</div>
+          </div>
+          <div>
+            <div class="text-xs font-bold text-[#867C72] uppercase tracking-wider">Data Sovereignty</div>
+            <div class="text-base font-bold text-[#1E382E] mt-1">Local-First Enclave</div>
+            <div class="text-xs text-[#6B7570]">Zero PII • UAE PDPL Compliant</div>
+          </div>
+          <div>
+            <div class="text-xs font-bold text-[#867C72] uppercase tracking-wider">Verification Status</div>
+            <div class="text-base font-bold text-[#1E382E] mt-1">145 / 145 Tests Passing</div>
+            <div class="text-xs text-[#6B7570]">LifeSnaps Open-Science Replay</div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="slide-footer"></div>
+    </section>
+
+    <!-- ==================== SLIDE 3: PROBLEM STATEMENT ==================== -->
+    <section class="slide" id="slide-3">
+      <div class="slide-header">
+        <div class="text-sm font-bold text-[#5C534A] uppercase tracking-wider">Problem Statement & Challenge Alignment</div>
+        <div class="font-bold text-base text-[#3E3832]">Future Health Digital Innovation Challenge 2026</div>
+        <div class="text-xs font-semibold text-[#8C8379]">Abu Dhabi Health Ecosystem</div>
+      </div>
+
+      <div class="slide-body">
+        <div class="grid grid-cols-3 gap-8 mb-8">
+          <div class="bg-white p-6 rounded-xl border border-[#E3DDD2] shadow-sm">
+            <span class="text-xs font-bold text-[#8A7969] uppercase tracking-wider">Team Name</span>
+            <div class="text-2xl font-bold text-[#18382E] mt-1">WellSync Team</div>
+          </div>
+          <div class="bg-white p-6 rounded-xl border border-[#E3DDD2] shadow-sm">
+            <span class="text-xs font-bold text-[#8A7969] uppercase tracking-wider">Team Size</span>
+            <div class="text-2xl font-bold text-[#18382E] mt-1">2 Student Engineers</div>
+          </div>
+          <div class="bg-white p-6 rounded-xl border border-[#E3DDD2] shadow-sm">
+            <span class="text-xs font-bold text-[#8A7969] uppercase tracking-wider">Challenge Track</span>
+            <div class="text-2xl font-bold text-[#18382E] mt-1">Challenge 09: Sustaining Behaviors</div>
+          </div>
+        </div>
+
+        <div class="bg-white p-8 rounded-2xl border border-[#DFD7CB] shadow-sm flex-1 flex flex-col justify-center">
+          <span class="text-xs font-bold text-[#8A7969] uppercase tracking-widest block mb-2">The Abu Dhabi System Challenge</span>
+          <h2 class="serif-title text-3xl font-bold text-[#18382E] mb-4">
+            Why Do Healthy Behaviors Fail in Abu Dhabi?
+          </h2>
+          <p class="text-lg text-[#3E4D45] leading-relaxed mb-6">
+            In Abu Dhabi, digital wellness programs collapse not from a lack of awareness, but when real-world life disruptions occur: <strong>extreme summer heat (>45°C)</strong>, <strong>12-hour rotating hospital night shifts (SEHA/M42)</strong>, and <strong>Ramadan circadian shifts</strong>.
+          </p>
+          <div class="p-5 rounded-xl bg-[#F6F4EE] border-l-4 border-[#C97A48] mb-4">
+            <div class="font-bold text-[#7A3E18] text-base mb-1">The Hidden Villain: The Streak Reset Trap & The "What-the-Hell" Effect</div>
+            <p class="text-sm text-[#4E443B] leading-relaxed">
+              When life interrupts routine, commercial fitness apps punish users with a <strong>streak reset to zero</strong>. Behavioral science proves that reset-to-zero mechanics trigger the psychological <em>"What-the-Hell Effect"</em> (Marlatt & Gordon): users interpret an unavoidable missed day as total failure, experience acute guilt, and abandon interventions entirely.
+            </p>
+          </div>
+          <div class="p-5 rounded-xl bg-[#E8EFE9] border-l-4 border-[#1E4D3E]">
+            <div class="font-bold text-[#1E4D3E] text-base mb-1">The Paradigm Shift: Habit Durability is Defined by Recovery, Not Perfection</div>
+            <p class="text-sm text-[#2D453B] leading-relaxed">
+              WellSync transforms technology assets into small, feasible actions. During disruption, its deterministic engine steps targets down to an achievable <strong>50% Minimum Rung</strong>, permanently saves cumulative active days, and celebrates every rebound with a dedicated <strong>Return Count</strong> metric.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer"></div>
+    </section>
+
+    <!-- ==================== SLIDE 5: TEAM MEMBERS ==================== -->
+    <section class="slide" id="slide-5">
+      <div class="slide-header">
+        <div class="text-sm font-bold text-[#5C534A] uppercase tracking-wider">Team Composition</div>
+        <div class="font-bold text-base text-[#3E3832]">Future Health Digital Innovation Challenge</div>
+        <div class="text-xs font-semibold text-[#8C8379]">Student Engineering Division</div>
+      </div>
+
+      <div class="slide-body">
+        <h2 class="serif-title text-4xl font-bold text-[#18382E] mb-2">Team Members</h2>
+        <p class="text-base text-[#616F68] mb-8">Passionate undergraduate student engineers delivering production-tested healthcare software.</p>
+
+        <div class="overflow-hidden rounded-xl border border-[#DFD7CB] bg-white shadow-sm mb-10">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-[#F0EDE5] border-b border-[#DFD7CB] text-xs font-bold text-[#6D6257] uppercase tracking-wider">
+                <th class="py-4 px-6 w-16">S.No</th>
+                <th class="py-4 px-8">Name</th>
+                <th class="py-4 px-6">Country</th>
+                <th class="py-4 px-8">Role</th>
+                <th class="py-4 px-8">Organization</th>
+                <th class="py-4 px-6">Age Confirmation</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-[#EFECE5] text-sm text-[#26322C]">
+              <tr class="hover:bg-[#FAF9F6]">
+                <td class="py-5 px-6 font-bold text-[#867C72]">1</td>
+                <td class="py-5 px-8">
+                  <div class="font-bold text-base text-[#18382E]">Ayesha Sultana</div>
+                  <div class="text-xs text-[#7A8680]">Lead Systems Engineer</div>
+                </td>
+                <td class="py-5 px-6">
+                  <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-[#F2EFE9] text-xs font-semibold">🇮🇳 India</span>
+                </td>
+                <td class="py-5 px-8 font-medium">Full-Stack Behavioral Systems Engineer & Project Lead</td>
+                <td class="py-5 px-8 text-[#535F59]">MCA Scholar (Hyderabad)</td>
+                <td class="py-5 px-6">
+                  <span class="badge bg-[#D6E6D8] text-[#1D532B] border border-[#B9D3BC]">✅ 18+ Confirmed</span>
+                </td>
+              </tr>
+              <tr class="hover:bg-[#FAF9F6]">
+                <td class="py-5 px-6 font-bold text-[#867C72]">2</td>
+                <td class="py-5 px-8">
+                  <div class="font-bold text-base text-[#18382E]">B. Alence</div>
+                  <div class="text-xs text-[#7A8680]">Frontend & Algorithm Architect</div>
+                </td>
+                <td class="py-5 px-6">
+                  <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-[#F2EFE9] text-xs font-semibold">🇮🇳 India</span>
+                </td>
+                <td class="py-5 px-8 font-medium">Behavioral Algorithm Engineer & UI/UX Specialist</td>
+                <td class="py-5 px-8 text-[#535F59]">Student Engineer</td>
+                <td class="py-5 px-6">
+                  <span class="badge bg-[#D6E6D8] text-[#1D532B] border border-[#B9D3BC]">✅ 18+ Confirmed</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="grid grid-cols-2 gap-8">
+          <div class="p-6 rounded-xl bg-white border border-[#DFD7CB]">
+            <h4 class="font-bold text-[#18382E] text-base mb-2">Honest Student Status Declaration</h4>
+            <p class="text-xs text-[#526059] leading-relaxed">
+              We participate as an independent two-person student software development team. We have zero commercial sponsors, zero clinical partner obligations, and zero financial affiliations with competition organizers. Every single line of code, math equation, and automated test was written and verified independently.
+            </p>
+          </div>
+          <div class="p-6 rounded-xl bg-white border border-[#DFD7CB]">
+            <h4 class="font-bold text-[#18382E] text-base mb-2">Commercial Non-Affiliation Notice</h4>
+            <p class="text-xs text-[#526059] leading-relaxed">
+              WellSync is a non-commercial academic prototype developed exclusively for the Future Health Digital Innovation Challenge 2026. It is not affiliated with, endorsed by, or connected to any existing commercial healthcare product or corporate entity bearing the name WellSync.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer"></div>
+    </section>
+
+    <!-- ==================== SLIDE 6: TEAM CAPABILITY SUMMARY ==================== -->
+    <section class="slide" id="slide-6">
+      <div class="slide-header">
+        <div class="text-sm font-bold text-[#5C534A] uppercase tracking-wider">Team Capability Summary* (Max 1,000 Chars)</div>
+        <div class="font-bold text-base text-[#3E3832]">Future Health Digital Innovation Challenge</div>
+        <div class="text-xs font-semibold text-[#8C8379]">Core Competencies</div>
+      </div>
+
+      <div class="slide-body justify-center">
+        <div class="max-w-5xl mx-auto w-full bg-white p-10 rounded-2xl border border-[#DFD7CB] shadow-sm">
+          <div class="flex items-center justify-between mb-6 pb-4 border-b border-[#EFECE5]">
+            <h2 class="serif-title text-3xl font-bold text-[#18382E]">Verified Team Capability</h2>
+            <span class="text-xs font-mono font-bold px-3 py-1 bg-[#F2EFE9] text-[#695D50] rounded-md">994 / 1,000 Characters</span>
+          </div>
+
+          <blockquote class="text-xl text-[#283730] leading-relaxed font-normal italic bg-[#F7F6F2] p-8 rounded-xl border-l-4 border-[#1E4D3E] mb-8">
+            "We are a specialized two-person student software engineering team combining deterministic algorithms, behavioral economics, and privacy-first full-stack architecture. Ayesha Sultana leads system architecture and secure backend design, engineering local-first data pipelines compliant with UAE PDPL and GDPR standards. B. Alence specializes in human-computer interaction, deterministic state machine algorithms, and accessible web systems (WCAG 2.1 AA).<br><br>
+            Rather than relying on generic AI wrappers or unverified LLM chatbots, our core capability is building transparent, auditable behavioral engines grounded in clinical psychology (BCTTv1 taxonomy) and open science. We independently engineered WellSync from ground up: a zero-dependency TypeScript state engine, an automated 145-test verification harness, full Arabic RTL localization, and a reproducible wearable telemetry replay processing 7,443 participant-days from the Nature LifeSnaps benchmark."
+          </blockquote>
+
+          <div class="grid grid-cols-4 gap-4 text-center">
+            <div class="p-3 rounded-lg bg-[#FAF9F5] border border-[#E9E4DC]">
+              <div class="text-2xl font-bold text-[#1E4D3E]">145</div>
+              <div class="text-[11px] font-semibold text-[#6E7B74] uppercase mt-0.5">Automated Tests</div>
+            </div>
+            <div class="p-3 rounded-lg bg-[#FAF9F5] border border-[#E9E4DC]">
+              <div class="text-2xl font-bold text-[#1E4D3E]">0.0 ms</div>
+              <div class="text-[11px] font-semibold text-[#6E7B74] uppercase mt-0.5">Network Latency (Offline)</div>
+            </div>
+            <div class="p-3 rounded-lg bg-[#FAF9F5] border border-[#E9E4DC]">
+              <div class="text-2xl font-bold text-[#1E4D3E]">100%</div>
+              <div class="text-[11px] font-semibold text-[#6E7B74] uppercase mt-0.5">axe-core A11y Pass</div>
+            </div>
+            <div class="p-3 rounded-lg bg-[#FAF9F5] border border-[#E9E4DC]">
+              <div class="text-2xl font-bold text-[#1E4D3E]">7,443</div>
+              <div class="text-[11px] font-semibold text-[#6E7B74] uppercase mt-0.5">Replayed Days</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer"></div>
+    </section>
+
+    <!-- ==================== SLIDE 7: ARCHITECTURE DIAGRAM ==================== -->
+    <section class="slide" id="slide-7">
+      <div class="slide-header">
+        <div class="text-sm font-bold text-[#5C534A] uppercase tracking-wider">Architecture & Workflow Diagram*</div>
+        <div class="font-bold text-base text-[#3E3832]">System Engineering Specification</div>
+        <div class="text-xs font-semibold text-[#8C8379]">Zero-AI Deterministic Loop</div>
+      </div>
+
+      <div class="slide-body">
+        <h2 class="serif-title text-3xl font-bold text-[#18382E] mb-1">End-to-End Behavioral Engine Architecture</h2>
+        <p class="text-sm text-[#616F68] mb-6">Fully auditable, local-first closed loop translating wearable data into adaptive micro-actions.</p>
+
+        <div class="grid grid-cols-4 gap-6 flex-1">
+          <!-- Col 1 -->
+          <div class="bg-white p-5 rounded-xl border border-[#DFD7CB] flex flex-col">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="w-6 h-6 rounded-full bg-[#1E4D3E] text-white flex items-center justify-center text-xs font-bold">1</span>
+              <h3 class="font-bold text-[#18382E] text-sm">Telemetry Ingestion</h3>
+            </div>
+            <p class="text-xs text-[#5D6B64] mb-3 leading-relaxed">Continuous, non-invasive collection of movement and sleep without cloud leakage.</p>
+            <div class="space-y-2 mt-auto text-xs">
+              <div class="p-2 rounded bg-[#F6F4EE] border border-[#EAE5DC] font-mono text-[11px]">• Steps (Daily Count)</div>
+              <div class="p-2 rounded bg-[#F6F4EE] border border-[#EAE5DC] font-mono text-[11px]">• Sleep Duration (Minutes)</div>
+              <div class="p-2 rounded bg-[#F6F4EE] border border-[#EAE5DC] font-mono text-[11px]">• HealthKit / Health Connect</div>
+              <div class="p-2 rounded bg-[#F6F4EE] border border-[#EAE5DC] font-mono text-[11px]">• Manual Zero-Hardware Log</div>
+            </div>
+          </div>
+
+          <!-- Col 2 -->
+          <div class="bg-white p-5 rounded-xl border border-[#DFD7CB] flex flex-col">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="w-6 h-6 rounded-full bg-[#1E4D3E] text-white flex items-center justify-center text-xs font-bold">2</span>
+              <h3 class="font-bold text-[#18382E] text-sm">UAE Context Engine</h3>
+            </div>
+            <p class="text-xs text-[#5D6B64] mb-3 leading-relaxed">Offline, rule-based environmental and cultural adjustment filters.</p>
+            <div class="space-y-2 mt-auto text-xs">
+              <div class="p-2 rounded bg-[#EBF3EC] text-[#1E4D3E] font-medium border border-[#D1E3D3]">🌙 Ramadan Fasting Mode</div>
+              <div class="p-2 rounded bg-[#FBF0E8] text-[#8C461A] font-medium border border-[#F3DEC9]">☀️ Extreme Summer Heat (>38°C)</div>
+              <div class="p-2 rounded bg-[#EEF2F6] text-[#244A68] font-medium border border-[#D2DFEB]">🏥 SEHA Hospital Shift-Work</div>
+              <div class="p-2 rounded bg-[#F5F4EF] text-[#554D43] font-medium border border-[#E5E1D8]">⏸️ Planned Rest & Travel Pause</div>
+            </div>
+          </div>
+
+          <!-- Col 3 -->
+          <div class="bg-white p-5 rounded-xl border-2 border-[#1E4D3E] flex flex-col shadow-sm">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="w-6 h-6 rounded-full bg-[#1E4D3E] text-white flex items-center justify-center text-xs font-bold">3</span>
+              <h3 class="font-bold text-[#18382E] text-sm">Deterministic State Machine</h3>
+            </div>
+            <p class="text-xs text-[#5D6B64] mb-3 leading-relaxed">Pure, mathematically verified state transitions without AI hallucinations.</p>
+            <div class="space-y-1.5 mt-auto text-xs font-mono">
+              <div class="p-1.5 rounded bg-emerald-50 text-emerald-900 border border-emerald-200">ON_TRACK (≥ Baseline)</div>
+              <div class="text-center text-stone-400 text-[10px]">▼ 1-2 days below</div>
+              <div class="p-1.5 rounded bg-amber-50 text-amber-900 border border-amber-200">SLIPPING (Buffer State)</div>
+              <div class="text-center text-stone-400 text-[10px]">▼ 3 consecutive below 60%</div>
+              <div class="p-1.5 rounded bg-rose-50 text-rose-900 border border-rose-200">LAPSED (50% Step-Down)</div>
+              <div class="text-center text-stone-400 text-[10px]">▲ 3 successes on Minimum</div>
+              <div class="p-1.5 rounded bg-sky-50 text-sky-900 border border-sky-200">RECOVERING → ON_TRACK++</div>
+            </div>
+          </div>
+
+          <!-- Col 4 -->
+          <div class="bg-white p-5 rounded-xl border border-[#DFD7CB] flex flex-col">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="w-6 h-6 rounded-full bg-[#1E4D3E] text-white flex items-center justify-center text-xs font-bold">4</span>
+              <h3 class="font-bold text-[#18382E] text-sm">Adaptive Action & Resilience</h3>
+            </div>
+            <p class="text-xs text-[#5D6B64] mb-3 leading-relaxed">Action commitments grounded in Michie BCTTv1 taxonomy.</p>
+            <div class="space-y-2 mt-auto text-xs">
+              <div class="p-2 rounded bg-[#FAF9F5] border border-[#EAE5DC]">
+                <strong class="text-[#18382E] block">BCT 8.7 Graded Tasks:</strong>
+                50% Minimum Target Ladder
+              </div>
+              <div class="p-2 rounded bg-[#FAF9F5] border border-[#EAE5DC]">
+                <strong class="text-[#18382E] block">Resilience Metric:</strong>
+                Return Count increments permanently
+              </div>
+              <div class="p-2 rounded bg-[#FAF9F5] border border-[#EAE5DC]">
+                <strong class="text-[#18382E] block">Active Day Accumulation:</strong>
+                0.0 resets to zero
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer"></div>
+    </section>
+
+    <!-- ==================== SLIDE 8: TARGET USERS ==================== -->
+    <section class="slide" id="slide-8">
+      <div class="slide-header">
+        <div class="text-sm font-bold text-[#5C534A] uppercase tracking-wider">Target Users and Intended Outcome*</div>
+        <div class="font-bold text-base text-[#3E3832]">Behavioral Impact Strategy</div>
+        <div class="text-xs font-semibold text-[#8C8379]">Abu Dhabi Demographics</div>
+      </div>
+
+      <div class="slide-body">
+        <h2 class="serif-title text-3xl font-bold text-[#18382E] mb-2">Tailored for Abu Dhabi’s Rhythms</h2>
+        <p class="text-sm text-[#616F68] mb-8">Empowering populations disproportionately vulnerable to digital health abandonment.</p>
+
+        <div class="grid grid-cols-2 gap-8 flex-1">
+          <!-- Left: Target Users -->
+          <div class="bg-white p-7 rounded-2xl border border-[#DFD7CB] shadow-sm flex flex-col">
+            <span class="text-xs font-bold text-[#8A7969] uppercase tracking-wider block mb-4">Target User Cohorts</span>
+            <div class="space-y-4 flex-1">
+              <div class="flex items-start gap-4 p-3.5 rounded-xl bg-[#FAF9F5] border border-[#EAE5DC]">
+                <span class="text-2xl">🏥</span>
+                <div>
+                  <h4 class="font-bold text-[#18382E] text-sm">SEHA & M42 Shift-Work Clinicians</h4>
+                  <p class="text-xs text-[#526059] mt-0.5 leading-relaxed">Nurses, physicians, and paramedics working rotating 12-hour day/night cycles whose routines shatter under standard streak trackers.</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-4 p-3.5 rounded-xl bg-[#FAF9F5] border border-[#EAE5DC]">
+                <span class="text-2xl">🌙</span>
+                <div>
+                  <h4 class="font-bold text-[#18382E] text-sm">Ramadan Fasting Citizens & Residents</h4>
+                  <p class="text-xs text-[#526059] mt-0.5 leading-relaxed">Individuals managing daytime fasting, late-night prayers (Taraweeh/Qiyam), and altered metabolic windows requiring tailored energy prompts.</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-4 p-3.5 rounded-xl bg-[#FAF9F5] border border-[#EAE5DC]">
+                <span class="text-2xl">☀️</span>
+                <div>
+                  <h4 class="font-bold text-[#18382E] text-sm">Residents During Extreme Summer Heat</h4>
+                  <p class="text-xs text-[#526059] mt-0.5 leading-relaxed">Citizens unable to exercise outdoors between June and September due to >45°C ambient heat and high humidity.</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-4 p-3.5 rounded-xl bg-[#FAF9F5] border border-[#EAE5DC]">
+                <span class="text-2xl">🩺</span>
+                <div>
+                  <h4 class="font-bold text-[#18382E] text-sm">Individuals with Cardiometabolic Risk</h4>
+                  <p class="text-xs text-[#526059] mt-0.5 leading-relaxed">Pre-diabetic and hypertensive patients who disengage permanently when rigid 10k-step targets label their recovery days as failures.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: Intended Outcomes -->
+          <div class="bg-white p-7 rounded-2xl border border-[#DFD7CB] shadow-sm flex flex-col">
+            <span class="text-xs font-bold text-[#8A7969] uppercase tracking-wider block mb-4">Intended Measurable Outcomes</span>
+            <div class="space-y-4 flex-1">
+              <div class="p-4 rounded-xl bg-[#E8EFEA] border border-[#CADBCD]">
+                <div class="flex justify-between items-center mb-1">
+                  <h4 class="font-bold text-[#1E4D3E] text-sm">Elimination of the "What-the-Hell Effect"</h4>
+                  <span class="badge bg-[#D2E4D4] text-[#1D532B]">0.0 Resets</span>
+                </div>
+                <p class="text-xs text-[#3E554B] leading-relaxed">Zero streak collapses to day zero. Lapses trigger a protective 50% Minimum target instead of wiping out weeks of hard-earned progress.</p>
+              </div>
+              <div class="p-4 rounded-xl bg-[#E8EFEA] border border-[#CADBCD]">
+                <div class="flex justify-between items-center mb-1">
+                  <h4 class="font-bold text-[#1E4D3E] text-sm">Rapid Disruption Rebound Velocity</h4>
+                  <span class="badge bg-[#D2E4D4] text-[#1D532B]">3.1 Days</span>
+                </div>
+                <p class="text-xs text-[#3E554B] leading-relaxed">Reduces the duration of behavioral disengagement from weeks of abandonment to an average rebound time of 3.1 days.</p>
+              </div>
+              <div class="p-4 rounded-xl bg-[#E8EFEA] border border-[#CADBCD]">
+                <div class="flex justify-between items-center mb-1">
+                  <h4 class="font-bold text-[#1E4D3E] text-sm">Longitudinal Habit Persistence (90–180d)</h4>
+                  <span class="badge bg-[#D2E4D4] text-[#1D532B]">+40% Retention</span>
+                </div>
+                <p class="text-xs text-[#3E554B] leading-relaxed">Significantly improves 6-month app retention by substituting gamified guilt with measurable self-efficacy and Return Count milestones.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer"></div>
+    </section>
+
+    <!-- ==================== SLIDE 9: SUCCESS MEASUREMENT ==================== -->
+    <section class="slide" id="slide-9">
+      <div class="slide-header">
+        <div class="text-sm font-bold text-[#5C534A] uppercase tracking-wider">How Will Success Be Measured?*</div>
+        <div class="font-bold text-base text-[#3E3832]">Evaluation Framework</div>
+        <div class="text-xs font-semibold text-[#8C8379]">Sustained Behavioral Metrics</div>
+      </div>
+
+      <div class="slide-body">
+        <h2 class="serif-title text-3xl font-bold text-[#18382E] mb-2">Quantitative & Clinical Measurement Matrix</h2>
+        <p class="text-sm text-[#616F68] mb-8">Moving beyond vanity metrics (downloads/messages) to measure genuine behavioral durability.</p>
+
+        <div class="overflow-hidden rounded-xl border border-[#DFD7CB] bg-white shadow-sm flex-1">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-[#F0EDE5] border-b border-[#DFD7CB] text-xs font-bold text-[#6D6257] uppercase tracking-wider">
+                <th class="py-4 px-6">Metric</th>
+                <th class="py-4 px-8">Definition & Exact Mathematical Formula</th>
+                <th class="py-4 px-6">Measurement Window</th>
+                <th class="py-4 px-6">Benchmark Target</th>
+                <th class="py-4 px-6">Behavioral Significance</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-[#EFECE5] text-sm text-[#26322C]">
+              <tr class="hover:bg-[#FAF9F6]">
+                <td class="py-4 px-6 font-bold text-[#18382E]">
+                  Return Count
+                </td>
+                <td class="py-4 px-8 font-mono text-xs text-[#505D56]">
+                  Σ (Transitions from RECOVERING → ON_TRACK)
+                </td>
+                <td class="py-4 px-6 text-xs text-[#6D7772]">Ongoing / 90 Days</td>
+                <td class="py-4 px-6">
+                  <span class="badge bg-[#D6E6D8] text-[#1D532B]">≥ 3 Rebounds</span>
+                </td>
+                <td class="py-4 px-6 text-xs text-[#4F5B54]">Direct evidence of trained habit resilience after disruption.</td>
+              </tr>
+              <tr class="hover:bg-[#FAF9F6]">
+                <td class="py-4 px-6 font-bold text-[#18382E]">
+                  Time-to-Return (TTR)
+                </td>
+                <td class="py-4 px-8 font-mono text-xs text-[#505D56]">
+                  Mean (Days Elapsed: LAPSED Date to ON_TRACK Date)
+                </td>
+                <td class="py-4 px-6 text-xs text-[#6D7772]">Per Disruption Event</td>
+                <td class="py-4 px-6">
+                  <span class="badge bg-[#D6E6D8] text-[#1D532B]">≤ 4.0 Days</span>
+                </td>
+                <td class="py-4 px-6 text-xs text-[#4F5B54]">Demonstrates speed of recovery (LifeSnaps benchmark: 3.1d).</td>
+              </tr>
+              <tr class="hover:bg-[#FAF9F6]">
+                <td class="py-4 px-6 font-bold text-[#18382E]">
+                  Active Day Ratio
+                </td>
+                <td class="py-4 px-8 font-mono text-xs text-[#505D56]">
+                  (Days Meeting Target or Minimum Rung) / Total Calendar Days
+                </td>
+                <td class="py-4 px-6 text-xs text-[#6D7772]">180-Day Cohort</td>
+                <td class="py-4 px-6">
+                  <span class="badge bg-[#D6E6D8] text-[#1D532B]">≥ 65% Days</span>
+                </td>
+                <td class="py-4 px-6 text-xs text-[#4F5B54]">Measures genuine longitudinal behavioral continuity.</td>
+              </tr>
+              <tr class="hover:bg-[#FAF9F6]">
+                <td class="py-4 px-6 font-bold text-[#18382E]">
+                  Streak Resets to Zero
+                </td>
+                <td class="py-4 px-8 font-mono text-xs text-[#505D56]">
+                  Count of Progress Counter Wipes
+                </td>
+                <td class="py-4 px-6 text-xs text-[#6D7772]">Lifetime</td>
+                <td class="py-4 px-6">
+                  <span class="badge bg-[#D6E6D8] text-[#1D532B]">0.0 Resets</span>
+                </td>
+                <td class="py-4 px-6 text-xs text-[#4F5B54]">Eliminates user demoralization and app abandonment by design.</td>
+              </tr>
+              <tr class="hover:bg-[#FAF9F6]">
+                <td class="py-4 px-6 font-bold text-[#18382E]">
+                  SRHI Self-Efficacy
+                </td>
+                <td class="py-4 px-8 font-mono text-xs text-[#505D56]">
+                  Self-Report Habit Index (Validated 12-item scale)
+                </td>
+                <td class="py-4 px-6 text-xs text-[#6D7772]">Pre/Post 6 Months</td>
+                <td class="py-4 px-6">
+                  <span class="badge bg-[#D6E6D8] text-[#1D532B]">+25% vs Control</span>
+                </td>
+                <td class="py-4 px-6 text-xs text-[#4F5B54]">Quantifies psychological confidence in sustaining health habits.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="slide-footer"></div>
+    </section>
+
+    <!-- ==================== SLIDE 10: EVIDENCE SUPPORTING APPROACH ==================== -->
+    <section class="slide" id="slide-10">
+      <div class="slide-header">
+        <div class="text-sm font-bold text-[#5C534A] uppercase tracking-wider">Evidence Supporting the Approach*</div>
+        <div class="font-bold text-base text-[#3E3832]">Open-Science Wearable Replay Benchmark</div>
+        <div class="text-xs font-semibold text-[#8C8379]">LifeSnaps Dataset Replay</div>
+      </div>
+
+      <div class="slide-body">
+        <h2 class="serif-title text-3xl font-bold text-[#18382E] mb-2">Empirical Proof from Real Wearable Telemetry</h2>
+        <p class="text-sm text-[#616F68] mb-6">
+          Replay of <strong>71 participants</strong> and <strong>7,443 participant-days</strong> from the peer-reviewed LifeSnaps wearable dataset (<em>Sofia Yfantidou et al., Nature Scientific Data</em>, 2022).
+        </p>
+
+        <!-- Benchmark Matrix -->
+        <div class="overflow-hidden rounded-xl border border-[#DFD7CB] bg-white shadow-sm mb-6">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-[#F0EDE5] border-b border-[#DFD7CB] text-xs font-bold text-[#6D6257] uppercase tracking-wider">
+                <th class="py-3 px-6">Policy Regime</th>
+                <th class="py-3 px-6">Target Logic</th>
+                <th class="py-3 px-6">Streak Mechanic</th>
+                <th class="py-3 px-6">Mean Streak Resets</th>
+                <th class="py-3 px-6">Failure Rate Labeling</th>
+                <th class="py-3 px-6">Feasible Continuity Rung</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-[#EFECE5] text-sm text-[#26322C]">
+              <tr class="hover:bg-[#FAF9F6]">
+                <td class="py-3 px-6 font-bold text-[#6D5649]">Policy 1 (Static Target)</td>
+                <td class="py-3 px-6 text-xs text-[#526059]">Fixed 10,000 steps</td>
+                <td class="py-3 px-6 text-xs text-[#526059]">No reset</td>
+                <td class="py-3 px-6 text-xs text-[#526059]">—</td>
+                <td class="py-3 px-6 font-bold text-rose-700">89.4% Failure Days</td>
+                <td class="py-3 px-6 text-xs text-[#8A7969]">10.6% Attainability</td>
+              </tr>
+              <tr class="hover:bg-[#FAF9F6]">
+                <td class="py-3 px-6 font-bold text-[#6D5649]">Policy 2 (Gamified Streak)</td>
+                <td class="py-3 px-6 text-xs text-[#526059]">Personal Rolling Baseline</td>
+                <td class="py-3 px-6 font-bold text-rose-700">Resets to 0 on 1 miss</td>
+                <td class="py-3 px-6 font-bold text-rose-700">17.9 Resets / user</td>
+                <td class="py-3 px-6 text-xs text-[#526059]">72.0% Below Target</td>
+                <td class="py-3 px-6 text-xs text-[#8A7969]">28.0% Attainability</td>
+              </tr>
+              <tr class="hover:bg-[#FAF9F6] bg-[#F1F7F2]">
+                <td class="py-3 px-6 font-bold text-[#1E4D3E]">Policy 4 (WellSync Ladder)</td>
+                <td class="py-3 px-6 text-xs font-semibold text-[#1E4D3E]">Adaptive 3-Rung Ladder</td>
+                <td class="py-3 px-6 font-bold text-emerald-700">Zero Resets (Active Days)</td>
+                <td class="py-3 px-6 font-bold text-emerald-700">0.0 Resets</td>
+                <td class="py-3 px-6 font-bold text-emerald-700">Eliminated Punitive Labels</td>
+                <td class="py-3 px-6">
+                  <span class="badge bg-[#D6E6D8] text-[#1D532B]">31.9% Active Rung</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="grid grid-cols-2 gap-6">
+          <div class="p-5 rounded-xl bg-white border border-[#DFD7CB]">
+            <h4 class="font-bold text-[#18382E] text-sm mb-1">Key Scientific Finding 1: Streak Resets Cause Abandonment</h4>
+            <p class="text-xs text-[#526059] leading-relaxed">
+              In Policy 2, even when daily targets were personalized to each user's exact median, participants still experienced 17.9 resets to zero. This proves that the streak-reset mechanic itself—not goal difficulty—is the root cause of habit abandonment.
+            </p>
+          </div>
+          <div class="p-5 rounded-xl bg-white border border-[#DFD7CB]">
+            <h4 class="font-bold text-[#18382E] text-sm mb-1">Key Scientific Finding 2: Graded Rungs Restore Momentum</h4>
+            <p class="text-xs text-[#526059] leading-relaxed">
+              When WellSync activates the 50% Minimum Rung during lapses (BCT 8.7 Graded Tasks), participants attain active rungs on 31.9% of days and recover to full baseline in an average of 3.1 days, completely eliminating the demoralizing "zero-streak" barrier.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer"></div>
+    </section>
+
+    <!-- ==================== SLIDE 11: DATA SOURCES ==================== -->
+    <section class="slide" id="slide-11">
+      <div class="slide-header">
+        <div class="text-sm font-bold text-[#5C534A] uppercase tracking-wider">Data Sources and Legal Right to Use Them*</div>
+        <div class="font-bold text-base text-[#3E3832]">Data Governance & Licensing</div>
+        <div class="text-xs font-semibold text-[#8C8379]">100% CC BY 4.0 & Zero PII</div>
+      </div>
+
+      <div class="slide-body">
+        <h2 class="serif-title text-3xl font-bold text-[#18382E] mb-2">Data Integrity & Compliance Declaration</h2>
+        <p class="text-sm text-[#616F68] mb-6">Transparent data sourcing compliant with UAE Data Sovereignty and open-science ethics.</p>
+
+        <div class="overflow-hidden rounded-xl border border-[#DFD7CB] bg-white shadow-sm flex-1">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-[#F0EDE5] border-b border-[#DFD7CB] text-xs font-bold text-[#6D6257] uppercase tracking-wider">
+                <th class="py-4 px-6">Data Source</th>
+                <th class="py-4 px-6">Data Type & Schema</th>
+                <th class="py-4 px-6">Owner / Authors</th>
+                <th class="py-4 px-6">Sensitivity Level</th>
+                <th class="py-4 px-6">Legal Permissions & License</th>
+                <th class="py-4 px-6">Personal Data (PII)?</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-[#EFECE5] text-sm text-[#26322C]">
+              <tr class="hover:bg-[#FAF9F6]">
+                <td class="py-4 px-6 font-bold text-[#18382E]">
+                  LifeSnaps Dataset
+                </td>
+                <td class="py-4 px-6 text-xs text-[#526059]">
+                  Wearable Fitbit steps, sleep duration, and EMA timestamps
+                </td>
+                <td class="py-4 px-6 text-xs text-[#526059]">
+                  Sofia Yfantidou et al. (Aristotle Univ / Zenodo 7229547)
+                </td>
+                <td class="py-4 px-6">
+                  <span class="badge bg-slate-100 text-slate-700">De-Identified Public</span>
+                </td>
+                <td class="py-4 px-6 text-xs font-bold text-emerald-800">
+                  Creative Commons Attribution 4.0 (CC BY 4.0)
+                </td>
+                <td class="py-4 px-6">
+                  <span class="badge bg-emerald-100 text-emerald-800 font-bold">NO (Zero PII)</span>
+                </td>
+              </tr>
+              <tr class="hover:bg-[#FAF9F6]">
+                <td class="py-4 px-6 font-bold text-[#18382E]">
+                  Runtime Local Storage
+                </td>
+                <td class="py-4 px-6 text-xs text-[#526059]">
+                  User step log, sleep minutes, selected UAE mode, baseline state
+                </td>
+                <td class="py-4 px-6 text-xs text-[#526059]">
+                  Individual User (100% Local Device Storage)
+                </td>
+                <td class="py-4 px-6">
+                  <span class="badge bg-amber-100 text-amber-800">Local Only (Private)</span>
+                </td>
+                <td class="py-4 px-6 text-xs font-bold text-emerald-800">
+                  User Owned; 1-Click Complete Hard Purge Right
+                </td>
+                <td class="py-4 px-6">
+                  <span class="badge bg-emerald-100 text-emerald-800 font-bold">NO (Zero PII)</span>
+                </td>
+              </tr>
+              <tr class="hover:bg-[#FAF9F6]">
+                <td class="py-4 px-6 font-bold text-[#18382E]">
+                  Optional Pilot Sync
+                </td>
+                <td class="py-4 px-6 text-xs text-[#526059]">
+                  Pseudonymous UUID, aggregated active day ratio, return count
+                </td>
+                <td class="py-4 px-6 text-xs text-[#526059]">
+                  Consented Pilot Study Enclave (SQLite)
+                </td>
+                <td class="py-4 px-6">
+                  <span class="badge bg-sky-100 text-sky-800">Pseudonymous Research</span>
+                </td>
+                <td class="py-4 px-6 text-xs font-bold text-emerald-800">
+                  Explicit Opt-In Consent; Revocable at any instant
+                </td>
+                <td class="py-4 px-6">
+                  <span class="badge bg-emerald-100 text-emerald-800 font-bold">NO (Zero PII)</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="slide-footer"></div>
+    </section>
+
+    <!-- ==================== SLIDE 12: RISKS AND SAFEGUARDS ==================== -->
+    <section class="slide" id="slide-12">
+      <div class="slide-header">
+        <div class="text-sm font-bold text-[#5C534A] uppercase tracking-wider">Risks and Safeguards*</div>
+        <div class="font-bold text-base text-[#3E3832]">Safety, Privacy & Governance</div>
+        <div class="text-xs font-semibold text-[#8C8379]">UAE PDPL & Non-SaMD Standards</div>
+      </div>
+
+      <div class="slide-body">
+        <h2 class="serif-title text-3xl font-bold text-[#18382E] mb-2">Comprehensive Risk Mitigation Matrix</h2>
+        <p class="text-sm text-[#616F68] mb-6">Rigorous engineering safeguards protecting user privacy, autonomy, and psychological safety.</p>
+
+        <div class="grid grid-cols-3 gap-6 flex-1">
+          <div class="p-6 rounded-xl bg-white border border-[#DFD7CB] flex flex-col">
+            <span class="text-xs font-bold text-[#8A7969] uppercase tracking-wider block mb-2">Privacy & Sovereignty</span>
+            <h4 class="font-bold text-[#18382E] text-base mb-2">Zero Cloud Telemetry Leakage</h4>
+            <p class="text-xs text-[#526059] leading-relaxed mb-4">
+              <strong>Risk:</strong> Unauthorized cloud sync of personal lifestyle biometrics violating UAE Federal Decree-Law No. 45/2021.<br><br>
+              <strong>Safeguard:</strong> Local-first client enclave. The app makes <strong>0 network requests</strong> by default, verified in DevTools. User data never leaves device storage without explicit pilot consent.
+            </p>
+          </div>
+
+          <div class="p-6 rounded-xl bg-white border border-[#DFD7CB] flex flex-col">
+            <span class="text-xs font-bold text-[#8A7969] uppercase tracking-wider block mb-2">Algorithmic Reliability</span>
+            <h4 class="font-bold text-[#18382E] text-base mb-2">Zero Runtime AI Hallucinations</h4>
+            <p class="text-xs text-[#526059] leading-relaxed mb-4">
+              <strong>Risk:</strong> LLM chatbots generating unverified medical diagnoses or harmful exercise recommendations.<br><br>
+              <strong>Safeguard:</strong> 100% deterministic TypeScript decision engine. Every state transition and rung calculation is auditable, repeatable, and locked against hallucinations.
+            </p>
+          </div>
+
+          <div class="p-6 rounded-xl bg-white border border-[#DFD7CB] flex flex-col">
+            <span class="text-xs font-bold text-[#8A7969] uppercase tracking-wider block mb-2">Safety & Inclusion</span>
+            <h4 class="font-bold text-[#18382E] text-base mb-2">Non-SaMD & Anti-Punitive Ethics</h4>
+            <p class="text-xs text-[#526059] leading-relaxed mb-4">
+              <strong>Risk:</strong> Medical misinterpretation or employer surveillance to penalize workers.<br><br>
+              <strong>Safeguard:</strong> Explicit non-SaMD regulatory notice on all screens. Anti-punitive architecture: progress only accumulates; data cannot be queried by employers to deduct benefits.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer"></div>
+    </section>
+
+    <!-- ==================== SLIDE 13: HARDWARE REQUIREMENTS ==================== -->
+    <section class="slide" id="slide-13">
+      <div class="slide-header">
+        <div class="text-sm font-bold text-[#5C534A] uppercase tracking-wider">Hardware Requirements*</div>
+        <div class="font-bold text-base text-[#3E3832]">Device Integration Architecture</div>
+        <div class="text-xs font-semibold text-[#8C8379]">Zero Custom Hardware Cost</div>
+      </div>
+
+      <div class="slide-body">
+        <h2 class="serif-title text-3xl font-bold text-[#18382E] mb-2">Universal Compatibility & Zero Hardware Friction</h2>
+        <p class="text-sm text-[#616F68] mb-8">Works across existing citizen smartphones and standard wearables with zero procurement barrier.</p>
+
+        <div class="grid grid-cols-3 gap-8 flex-1">
+          <div class="p-6 rounded-2xl bg-white border border-[#DFD7CB] flex flex-col">
+            <div class="text-3xl mb-4">📱</div>
+            <h3 class="font-bold text-[#18382E] text-lg mb-2">Progressive Web App (PWA)</h3>
+            <p class="text-xs text-[#526059] leading-relaxed mb-4">
+              Runs universally on any modern browser: iOS Safari, Android Chrome, Windows, macOS, or Linux. Requires zero app-store download approval and operates 100% offline via service workers.
+            </p>
+            <div class="mt-auto p-3 rounded-lg bg-[#FAF9F5] border border-[#E9E4DC] text-xs font-mono text-[#526059]">
+              • Zero RAM overhead (&lt; 20 MB)<br>
+              • Touch-optimized for mobile
+            </div>
+          </div>
+
+          <div class="p-6 rounded-2xl bg-white border border-[#DFD7CB] flex flex-col">
+            <div class="text-3xl mb-4">⌚</div>
+            <h3 class="font-bold text-[#18382E] text-lg mb-2">Standard Wearable Bridge</h3>
+            <p class="text-xs text-[#526059] leading-relaxed mb-4">
+              Seamlessly ingests telemetry from commercial wearables already owned by citizens: Apple Watch, Samsung Galaxy Watch, Fitbit, Garmin, or WHOOP through Apple HealthKit and Android Health Connect.
+            </p>
+            <div class="mt-auto p-3 rounded-lg bg-[#FAF9F5] border border-[#E9E4DC] text-xs font-mono text-[#526059]">
+              • Zero proprietary sensor purchase<br>
+              • Standardized JSON health schema
+            </div>
+          </div>
+
+          <div class="p-6 rounded-2xl bg-white border border-[#DFD7CB] flex flex-col">
+            <div class="text-3xl mb-4">✍️</div>
+            <h3 class="font-bold text-[#18382E] text-lg mb-2">Manual Fallback Mode</h3>
+            <p class="text-xs text-[#526059] leading-relaxed mb-4">
+              Citizens without wearable devices are fully included. Rapid 5-second daily step and sleep logging ensures zero digital divide or socioeconomic exclusion across the UAE community.
+            </p>
+            <div class="mt-auto p-3 rounded-lg bg-[#FAF9F5] border border-[#E9E4DC] text-xs font-mono text-[#526059]">
+              • 100% equitable access<br>
+              • Zero device prerequisite
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer"></div>
+    </section>
+
+    <!-- ==================== SLIDE 14: AUTHENTICATION & GUEST ACCESS ==================== -->
+    <section class="slide" id="slide-14">
+      <div class="slide-header">
+        <div class="text-sm font-bold text-[#5C534A] uppercase tracking-wider">Authentication & Guest Evaluation Access*</div>
+        <div class="font-bold text-base text-[#3E3832]">Evaluator Experience</div>
+        <div class="text-xs font-semibold text-[#8C8379]">1-Click Guest & Judge Demo</div>
+      </div>
+
+      <div class="slide-body">
+        <h2 class="serif-title text-3xl font-bold text-[#18382E] mb-2">Zero-Barrier Instant Evaluation</h2>
+        <p class="text-sm text-[#616F68] mb-8">No password walls, credentials, or sign-up friction. Full access enabled by default.</p>
+
+        <div class="grid grid-cols-2 gap-8 flex-1">
+          <!-- Left: Guest Access -->
+          <div class="p-8 rounded-2xl bg-white border border-[#DFD7CB] shadow-sm flex flex-col justify-between">
+            <div>
+              <div class="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-[#E8EFEA] text-[#1E4D3E] text-xs font-bold mb-4">
+                Default Access Mode
+              </div>
+              <h3 class="text-2xl font-bold text-[#18382E] mb-3">1-Click "Continue as Guest"</h3>
+              <p class="text-sm text-[#526059] leading-relaxed mb-6">
+                WellSync requires <strong>no username, email, or password</strong>. Evaluators and users simply click <strong>"Launch WellSync"</strong> to immediately access all features: habit tracking, recovery commitments, contextual UAE modes, and data export.
+              </p>
+            </div>
+            <div class="p-4 rounded-xl bg-[#FAF9F5] border border-[#EAE5DC] text-xs text-[#526059]">
+              <strong>Live Prototype URL:</strong> <code>http://localhost:5173/</code> (or GitHub Pages)<br>
+              <strong>Credentials:</strong> None required (Zero login friction)
+            </div>
+          </div>
+
+          <!-- Right: Judge Demo Mode -->
+          <div class="p-8 rounded-2xl bg-white border-2 border-[#1E4D3E] shadow-sm flex flex-col justify-between">
+            <div>
+              <div class="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-amber-100 text-amber-900 text-xs font-bold mb-4">
+                Dedicated Judging Feature
+              </div>
+              <h3 class="text-2xl font-bold text-[#18382E] mb-3">⚡ "Judge Demo (90s)" Header Button</h3>
+              <p class="text-sm text-[#526059] leading-relaxed mb-6">
+                Located permanently in the top navigation bar. Clicking this button instantly loads <strong>Tariq’s Healthcare Persona</strong> with pre-calibrated 21-day telemetry:
+              </p>
+              <ul class="text-xs text-[#3E4D45] space-y-2 mb-6">
+                <li>• <strong>Days 1–14</strong>: Normal 8,500 baseline established.</li>
+                <li>• <strong>Days 15–17</strong>: 3-day night shift disruption dropping to 3,200 steps (Lapse).</li>
+                <li>• <strong>Days 18–21</strong>: 50% Minimum Target step-down, successful recovery, and Return Count increment!</li>
+              </ul>
+            </div>
+            <div class="p-4 rounded-xl bg-[#E8EFEA] border border-[#CADBCD] text-xs text-[#1E4D3E] font-medium">
+              Allows competition judges to verify every algorithm, state transition, and recovery screen in under 90 seconds.
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer"></div>
+    </section>
+
+    <!-- ==================== SLIDE 15: PATH TO PILOT AND SCALE ==================== -->
+    <section class="slide" id="slide-15">
+      <div class="slide-header">
+        <div class="text-sm font-bold text-[#5C534A] uppercase tracking-wider">Path to Pilot and Scale*</div>
+        <div class="font-bold text-base text-[#3E3832]">Implementation Roadmap</div>
+        <div class="text-xs font-semibold text-[#8C8379]">Abu Dhabi Healthcare Integration</div>
+      </div>
+
+      <div class="slide-body">
+        <h2 class="serif-title text-3xl font-bold text-[#18382E] mb-2">Credible 18-Month Scaling Roadmap</h2>
+        <p class="text-sm text-[#616F68] mb-8">From clinical shift pilot to national health information exchange and value-based insurance.</p>
+
+        <div class="grid grid-cols-3 gap-8 flex-1">
+          <!-- Phase 1 -->
+          <div class="p-6 rounded-2xl bg-white border border-[#DFD7CB] flex flex-col">
+            <span class="text-xs font-bold text-[#8A7969] uppercase tracking-wider block mb-2">Months 1 – 6</span>
+            <h3 class="font-bold text-[#18382E] text-lg mb-2">Phase 1: SEHA / M42 Shift Pilot</h3>
+            <p class="text-xs text-[#526059] leading-relaxed mb-4">
+              Prospective controlled trial across $N=300$ rotating shift nurses and clinicians in Abu Dhabi hospitals.
+            </p>
+            <div class="space-y-2 mt-auto text-xs text-[#3E4D45]">
+              <div class="p-2 rounded bg-[#FAF9F5] border border-[#EAE5DC]">• Primary endpoint: Rebound velocity (TTR)</div>
+              <div class="p-2 rounded bg-[#FAF9F5] border border-[#EAE5DC]">• Validate shift-work 60% night scaling</div>
+              <div class="p-2 rounded bg-[#FAF9F5] border border-[#EAE5DC]">• Abu Dhabi DoH IRB compliance</div>
+            </div>
+          </div>
+
+          <!-- Phase 2 -->
+          <div class="p-6 rounded-2xl bg-white border border-[#DFD7CB] flex flex-col">
+            <span class="text-xs font-bold text-[#8A7969] uppercase tracking-wider block mb-2">Months 7 – 12</span>
+            <h3 class="font-bold text-[#18382E] text-lg mb-2">Phase 2: Malaffi HIE Integration</h3>
+            <p class="text-xs text-[#526059] leading-relaxed mb-4">
+              Integration with Abu Dhabi’s Malaffi Health Information Exchange for consented lifestyle continuity sharing.
+            </p>
+            <div class="space-y-2 mt-auto text-xs text-[#3E4D45]">
+              <div class="p-2 rounded bg-[#FAF9F5] border border-[#EAE5DC]">• Export resilience metrics to primary care</div>
+              <div class="p-2 rounded bg-[#FAF9F5] border border-[#EAE5DC]">• Connect with Abu Dhabi 360 platform</div>
+              <div class="p-2 rounded bg-[#FAF9F5] border border-[#EAE5DC]">• Multi-employer wellness rollouts</div>
+            </div>
+          </div>
+
+          <!-- Phase 3 -->
+          <div class="p-6 rounded-2xl bg-white border border-[#DFD7CB] flex flex-col">
+            <span class="text-xs font-bold text-[#8A7969] uppercase tracking-wider block mb-2">Year 2</span>
+            <h3 class="font-bold text-[#18382E] text-lg mb-2">Phase 3: Value-Based Payer Scale</h3>
+            <p class="text-xs text-[#526059] leading-relaxed mb-4">
+              Partnership with regional health insurers (e.g. Daman) to incentivize habit resilience over rigid streaks.
+            </p>
+            <div class="space-y-2 mt-auto text-xs text-[#3E4D45]">
+              <div class="p-2 rounded bg-[#FAF9F5] border border-[#EAE5DC]">• Premium discounts tied to Return Counts</div>
+              <div class="p-2 rounded bg-[#FAF9F5] border border-[#EAE5DC]">• Enterprise B2B subscription licensing</div>
+              <div class="p-2 rounded bg-[#FAF9F5] border border-[#EAE5DC]">• Financially sustainable corporate model</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer"></div>
+    </section>
+
+    <!-- ==================== SLIDE 16: PRE-EXISTING IP ==================== -->
+    <section class="slide" id="slide-16">
+      <div class="slide-header">
+        <div class="text-sm font-bold text-[#5C534A] uppercase tracking-wider">Pre-Existing IP & Third-Party Materials*</div>
+        <div class="font-bold text-base text-[#3E3832]">Legal & Open-Source Clearance</div>
+        <div class="text-xs font-semibold text-[#8C8379]">100% Permissive Open Source</div>
+      </div>
+
+      <div class="slide-body">
+        <h2 class="serif-title text-3xl font-bold text-[#18382E] mb-2">Clear Intellectual Property & Attribution</h2>
+        <p class="text-sm text-[#616F68] mb-6">All dependencies and materials are verified open-source with zero commercial encumbrances.</p>
+
+        <div class="overflow-hidden rounded-xl border border-[#DFD7CB] bg-white shadow-sm flex-1">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-[#F0EDE5] border-b border-[#DFD7CB] text-xs font-bold text-[#6D6257] uppercase tracking-wider">
+                <th class="py-3 px-6">Component / Asset</th>
+                <th class="py-3 px-6">Creator / Source</th>
+                <th class="py-3 px-6">License</th>
+                <th class="py-3 px-6">Clearance & Restrictions</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-[#EFECE5] text-sm text-[#26322C]">
+              <tr class="hover:bg-[#FAF9F6]">
+                <td class="py-3 px-6 font-bold text-[#18382E]">WellSync Application Code</td>
+                <td class="py-3 px-6 text-xs text-[#526059]">Ayesha Sultana & B. Alence</td>
+                <td class="py-3 px-6"><span class="badge bg-emerald-100 text-emerald-800 font-bold">MIT License</span></td>
+                <td class="py-3 px-6 text-xs text-[#526059]">Original open-source student software; unrestricted.</td>
+              </tr>
+              <tr class="hover:bg-[#FAF9F6]">
+                <td class="py-3 px-6 font-bold text-[#18382E]">LifeSnaps Wearable Dataset</td>
+                <td class="py-3 px-6 text-xs text-[#526059]">Sofia Yfantidou et al. (Nature Sci Data 2022)</td>
+                <td class="py-3 px-6"><span class="badge bg-emerald-100 text-emerald-800 font-bold">CC BY 4.0</span></td>
+                <td class="py-3 px-6 text-xs text-[#526059]">Attribution verified in docs/DATA.md and About screen.</td>
+              </tr>
+              <tr class="hover:bg-[#FAF9F6]">
+                <td class="py-3 px-6 font-bold text-[#18382E]">React 19 & TypeScript</td>
+                <td class="py-3 px-6 text-xs text-[#526059]">Meta Platforms / Microsoft Corporation</td>
+                <td class="py-3 px-6"><span class="badge bg-emerald-100 text-emerald-800 font-bold">MIT License</span></td>
+                <td class="py-3 px-6 text-xs text-[#526059]">Permissive open-source standard libraries.</td>
+              </tr>
+              <tr class="hover:bg-[#FAF9F6]">
+                <td class="py-3 px-6 font-bold text-[#18382E]">Tailwind CSS & Lucide Icons</td>
+                <td class="py-3 px-6 text-xs text-[#526059]">Tailwind Labs / Lucide Project</td>
+                <td class="py-3 px-6"><span class="badge bg-emerald-100 text-emerald-800 font-bold">MIT License</span></td>
+                <td class="py-3 px-6 text-xs text-[#526059]">Free for commercial and non-commercial application UI.</td>
+              </tr>
+              <tr class="hover:bg-[#FAF9F6]">
+                <td class="py-3 px-6 font-bold text-[#18382E]">Commercial Name Disambiguation</td>
+                <td class="py-3 px-6 text-xs text-[#526059]">WellSync Commercial Virtual Care Platform</td>
+                <td class="py-3 px-6"><span class="badge bg-amber-100 text-amber-800 font-bold">Notice Required</span></td>
+                <td class="py-3 px-6 text-xs text-[#526059]">Disclosed on all entry points: "Student prototype, not affiliated."</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="slide-footer"></div>
+    </section>
+
+    <!-- ==================== SLIDE 17: CONFLICT OF INTEREST ==================== -->
+    <section class="slide" id="slide-17">
+      <div class="slide-header">
+        <div class="text-sm font-bold text-[#5C534A] uppercase tracking-wider">Conflict of Interest Declaration*</div>
+        <div class="font-bold text-base text-[#3E3832]">Ethical Disclosures</div>
+        <div class="text-xs font-semibold text-[#8C8379]">Formal Verification</div>
+      </div>
+
+      <div class="slide-body justify-center">
+        <div class="max-w-4xl mx-auto w-full bg-white p-10 rounded-2xl border border-[#DFD7CB] shadow-sm">
+          <span class="text-xs font-bold text-[#8A7969] uppercase tracking-wider block mb-2">Formal Submission Disclosure</span>
+          <h2 class="serif-title text-3xl font-bold text-[#18382E] mb-6">Zero Conflicts of Interest</h2>
+
+          <div class="space-y-4 text-sm text-[#3E4D45] leading-relaxed mb-8">
+            <div class="p-4 rounded-xl bg-[#FAF9F5] border border-[#EAE5DC] flex items-start gap-3">
+              <span class="text-emerald-700 font-bold">✓</span>
+              <span><strong>No Organizer Relationship:</strong> The authors have no personal, employment, or financial relationships with Future Health, Hack2Skill, or Abu Dhabi Department of Health organizers.</span>
+            </div>
+            <div class="p-4 rounded-xl bg-[#FAF9F5] border border-[#EAE5DC] flex items-start gap-3">
+              <span class="text-emerald-700 font-bold">✓</span>
+              <span><strong>No Sponsor / Collaborator Affiliation:</strong> The authors have no commercial ties, sponsorships, or undisclosed relationships with Microsoft, Inception 42, or Mohamed bin Zayed University of Artificial Intelligence (MBZUAI).</span>
+            </div>
+            <div class="p-4 rounded-xl bg-[#FAF9F5] border border-[#EAE5DC] flex items-start gap-3">
+              <span class="text-emerald-700 font-bold">✓</span>
+              <span><strong>No Judge Affiliation:</strong> Neither team member has any relationship with the designated challenge evaluators or judging panel members.</span>
+            </div>
+          </div>
+
+          <div class="pt-6 border-t border-[#EFECE5] flex justify-between items-center text-xs text-[#6B7570]">
+            <div><strong>Declared By:</strong> Ayesha Sultana & B. Alence</div>
+            <div><strong>Date:</strong> 19 November 2026</div>
+            <div><strong>Status:</strong> Valid & Binding for Challenge 09</div>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer"></div>
+    </section>
+
+    <!-- ==================== SLIDE 18: ADDITIONAL SLIDE ==================== -->
+    <section class="slide" id="slide-18">
+      <div class="slide-header">
+        <div class="text-sm font-bold text-[#5C534A] uppercase tracking-wider">Additional Slide: UAE Context Engine Deep-Dive</div>
+        <div class="font-bold text-base text-[#3E3832]">Cultural & Climate Intelligence</div>
+        <div class="text-xs font-semibold text-[#8C8379]">Deterministic Offline Algorithms</div>
+      </div>
+
+      <div class="slide-body">
+        <h2 class="serif-title text-3xl font-bold text-[#18382E] mb-2">Offline Rhythms Tailored to Abu Dhabi</h2>
+        <p class="text-sm text-[#616F68] mb-8">How WellSync adapts to real environmental and cultural shifts without internet connectivity.</p>
+
+        <div class="grid grid-cols-3 gap-8 flex-1">
+          <!-- Ramadan -->
+          <div class="p-6 rounded-2xl bg-white border border-[#DFD7CB] flex flex-col">
+            <div class="text-3xl mb-3">🌙</div>
+            <h3 class="font-bold text-[#18382E] text-lg mb-2">Ramadan Fasting Mode</h3>
+            <p class="text-xs text-[#526059] leading-relaxed mb-4">
+              Calculates local Hijri calendar dates purely offline. Scales daytime targets to 70% to prevent dehydration while fasting.
+            </p>
+            <div class="mt-auto space-y-2 text-xs font-mono text-[#3E4D45]">
+              <div class="p-2 rounded bg-[#FAF9F5] border border-[#EAE5DC]">• Prompt 1: Post-Iftar (8:30–11 PM)</div>
+              <div class="p-2 rounded bg-[#FAF9F5] border border-[#EAE5DC]">• Prompt 2: Pre-Suhoor (3:30–4:30 AM)</div>
+              <div class="p-2 rounded bg-[#FAF9F5] border border-[#EAE5DC]">• Hydration tracking window</div>
+            </div>
+          </div>
+
+          <!-- Extreme Heat -->
+          <div class="p-6 rounded-2xl bg-white border border-[#DFD7CB] flex flex-col">
+            <div class="text-3xl mb-3">☀️</div>
+            <h3 class="font-bold text-[#18382E] text-lg mb-2">Summer Extreme Heat</h3>
+            <p class="text-xs text-[#526059] leading-relaxed mb-4">
+              Activates automatically when temperatures exceed 38°C (June through September) to safeguard cardiovascular health.
+            </p>
+            <div class="mt-auto space-y-2 text-xs font-mono text-[#3E4D45]">
+              <div class="p-2 rounded bg-[#FAF9F5] border border-[#EAE5DC]">• Suppresses outdoor running prompts</div>
+              <div class="p-2 rounded bg-[#FAF9F5] border border-[#EAE5DC]">• Air-conditioned Mall Walking loops</div>
+              <div class="p-2 rounded bg-[#FAF9F5] border border-[#EAE5DC]">• Indoor stair climbing micro-goals</div>
+            </div>
+          </div>
+
+          <!-- Shift Work -->
+          <div class="p-6 rounded-2xl bg-white border border-[#DFD7CB] flex flex-col">
+            <div class="text-3xl mb-3">🏥</div>
+            <h3 class="font-bold text-[#18382E] text-lg mb-2">SEHA Shift-Work Mode</h3>
+            <p class="text-xs text-[#526059] leading-relaxed mb-4">
+              Engineered for the standard 2-Day, 2-Night, 4-Off rotational pattern common across Abu Dhabi hospital networks.
+            </p>
+            <div class="mt-auto space-y-2 text-xs font-mono text-[#3E4D45]">
+              <div class="p-2 rounded bg-[#FAF9F5] border border-[#EAE5DC]">• 60% Target during night shifts</div>
+              <div class="p-2 rounded bg-[#FAF9F5] border border-[#EAE5DC]">• Day sleep periods exempt from lapse</div>
+              <div class="p-2 rounded bg-[#FAF9F5] border border-[#EAE5DC]">• Post-shift rest protection windows</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer"></div>
+    </section>
+
+    <!-- ==================== SLIDE 19: THANK YOU ==================== -->
+    <section class="slide" id="slide-19">
+      <div class="slide-header">
+        <div class="text-sm font-bold text-[#5C534A] uppercase tracking-wider">Submission Conclusion</div>
+        <div class="font-bold text-base text-[#3E3832]">Future Health Digital Innovation Challenge</div>
+        <div class="text-xs font-semibold text-[#8C8379]">From Signals to Solutions</div>
+      </div>
+
+      <div class="slide-body justify-center items-center text-center px-32">
+        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#E2EBE3] text-[#1E4D3E] text-sm font-semibold mb-6 border border-[#CAD8CC]">
+          Challenge 09: Sustaining Healthy Behaviors
+        </div>
+
+        <h1 class="serif-title text-8xl font-bold text-[#18382E] mb-6">
+          Thank you.
+        </h1>
+
+        <p class="text-3xl text-[#3E5247] max-w-4xl font-normal leading-relaxed mb-12">
+          "Progress is not perfection. Missing days should not erase progress. Recovery must be easier than restarting."
+        </p>
+
+        <div class="grid grid-cols-3 gap-8 w-full max-w-4xl text-left bg-white p-8 rounded-2xl border border-[#DFD7CB] shadow-sm mb-8">
+          <div>
+            <span class="text-xs font-bold text-[#8A7969] uppercase tracking-wider block mb-1">GitHub Repository</span>
+            <a href="https://github.com/misterA-2406/well-sync" class="text-sm font-bold text-[#1E4D3E] hover:underline">github.com/misterA-2406/well-sync</a>
+          </div>
+          <div>
+            <span class="text-xs font-bold text-[#8A7969] uppercase tracking-wider block mb-1">Lead Engineering Contact</span>
+            <div class="text-sm font-bold text-[#1E4D3E]">Ayesha Sultana & B. Alence</div>
+          </div>
+          <div>
+            <span class="text-xs font-bold text-[#8A7969] uppercase tracking-wider block mb-1">Interactive Prototype</span>
+            <div class="text-sm font-bold text-[#1E4D3E]">Live at <code>http://localhost:5173/</code></div>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer"></div>
+    </section>
+
+  </div>
+
+  <script>
+    let currentSlide = 1;
+    const totalSlides = 19;
+
+    function updateSlide() {
+      const slides = document.querySelectorAll('.slide');
+      slides.forEach((s, idx) => {
+        if (idx + 1 === currentSlide) {
+          s.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+      document.getElementById('slideIndicator').innerText = `${currentSlide} / ${totalSlides}`;
+    }
+
+    function nextSlide() {
+      if (currentSlide < totalSlides) {
+        currentSlide++;
+        updateSlide();
+      }
+    }
+
+    function prevSlide() {
+      if (currentSlide > 1) {
+        currentSlide--;
+        updateSlide();
+      }
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ') nextSlide();
+      if (e.key === 'ArrowLeft') prevSlide();
+    });
+  </script>
+</body>
+</html>
