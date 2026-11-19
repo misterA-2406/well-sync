@@ -32,5 +32,10 @@ coverage
 analysis/data/*
 !analysis/data/.gitkeep
 
+# Video and Audio binaries
 docs/videos/*.webm
+docs/videos/*.mp4
+docs/videos/*.mp3
+docs/videos/temp_*
+docs/videos/audio_segments/
 
