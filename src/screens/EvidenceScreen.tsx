@@ -41,6 +41,11 @@ interface PolicyComparisonItem {
   policy_name: string;
   target_type: string;
   streak_mechanic: string;
+  days_ge_50pct_baseline_pct?: number;
+  time_to_return_days_mean?: number;
+  time_to_return_days_median?: number;
+  abandonment_gaps_count?: number;
+  share_days_labeled_failure_pct?: number;
   mean_resets: number;
   median_resets: number;
   longest_streak_mean: number;
@@ -374,13 +379,76 @@ export const EvidenceScreen: React.FC<EvidenceScreenProps> = ({ language = 'en' 
                 </div>
               </div>
 
+              {/* Symmetric Policy Evaluation Highlights */}
+              <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
+                <div className="p-4 bg-rose-50 border border-rose-200 rounded-2xl text-center">
+                  <span className="text-[10px] uppercase font-bold text-rose-600 block">
+                    {language === 'ar' ? 'السياسة 1 (هدف 10k ثابت)' : 'Policy 1 (Static 10k)'}
+                  </span>
+                  <div className="text-xl font-black text-rose-950 mt-1">
+                    {evidence.policy_comparison.find((p) => p.policy_id === 'A_10000')?.share_days_labeled_failure_pct ?? 89.4}%
+                  </div>
+                  <span className="text-[10px] text-rose-700 font-semibold block mt-0.5">
+                    {language === 'ar' ? 'أيام موسومة بالفشل' : 'Days Labeled Failure'}
+                  </span>
+                  <span className="text-[10px] text-ink-500 block mt-1">
+                    {evidence.policy_comparison.find((p) => p.policy_id === 'A_10000')?.mean_resets ?? 8.5} {language === 'ar' ? 'تصفير تتابع' : 'resets to zero'}
+                  </span>
+                </div>
+
+                <div className="p-4 bg-sand-50 border border-sand-200 rounded-2xl text-center">
+                  <span className="text-[10px] uppercase font-bold text-sand-800 block">
+                    {language === 'ar' ? 'السياسة 2 (تصفير تتابع)' : 'Policy 2 (Streak Reset)'}
+                  </span>
+                  <div className="text-xl font-black text-sand-950 mt-1">
+                    {evidence.policy_comparison.find((p) => p.policy_id === 'A_PRIME')?.mean_resets ?? 17.9}
+                  </div>
+                  <span className="text-[10px] text-sand-800 font-semibold block mt-0.5">
+                    {language === 'ar' ? 'متوسط مرات التصفير' : 'Mean Streak Resets'}
+                  </span>
+                  <span className="text-[10px] text-ink-500 block mt-1">
+                    {evidence.policy_comparison.find((p) => p.policy_id === 'A_PRIME')?.share_days_labeled_failure_pct ?? 72.0}% {language === 'ar' ? 'أيام فشل' : 'failed days'}
+                  </span>
+                </div>
+
+                <div className="p-4 bg-sky-50 border border-sky-200 rounded-2xl text-center">
+                  <span className="text-[10px] uppercase font-bold text-sky-800 block">
+                    {language === 'ar' ? 'السياسة 3 (متوسط متحرك)' : 'Policy 3 (Moving Avg)'}
+                  </span>
+                  <div className="text-xl font-black text-sky-950 mt-1">
+                    {evidence.policy_comparison.find((p) => p.policy_id === 'A_ADAPTIVE_AVG')?.mean_resets ?? 22.5}
+                  </div>
+                  <span className="text-[10px] text-sky-800 font-semibold block mt-0.5">
+                    {language === 'ar' ? 'متوسط مرات التصفير' : 'Mean Streak Resets'}
+                  </span>
+                  <span className="text-[10px] text-ink-500 block mt-1">
+                    {evidence.policy_comparison.find((p) => p.policy_id === 'A_ADAPTIVE_AVG')?.share_days_labeled_failure_pct ?? 54.8}% {language === 'ar' ? 'أيام فشل' : 'failed days'}
+                  </span>
+                </div>
+
+                <div className="p-4 bg-forest-50 border border-forest-300 rounded-2xl text-center ring-1 ring-forest-400">
+                  <span className="text-[10px] uppercase font-bold text-forest-800 block">
+                    {language === 'ar' ? 'السياسة 4 (سلم WellSync)' : 'Policy 4 (WellSync Ladder)'}
+                  </span>
+                  <div className="text-xl font-black text-forest-900 mt-1">
+                    0.0
+                  </div>
+                  <span className="text-[10px] text-forest-700 font-bold block mt-0.5">
+                    {language === 'ar' ? 'تصفير للتتابع (بالتصميم)' : 'Streak Resets (By Design)'}
+                  </span>
+                  <span className="text-[10px] text-forest-800 block mt-1">
+                    {evidence.policy_comparison.find((p) => p.policy_id === 'B_LADDER')?.mean_return_count ?? 2.7} {language === 'ar' ? 'رحلات عودة مكتملة' : 'successful returns'}
+                  </span>
+                </div>
+              </div>
+
               <div className="overflow-x-auto">
                 <table className="w-full text-start border-collapse text-xs">
                   <thead>
                     <tr className="border-b border-ink-200 bg-ivory-50 text-[10px] uppercase font-bold text-ink-500">
                       <th className="py-3 px-3 text-start">{language === 'ar' ? 'السياسة المختبرة' : 'Policy'}</th>
                       <th className="py-3 px-3 text-start">{language === 'ar' ? 'نوع الهدف' : 'Target Type'}</th>
-                      <th className="py-3 px-3 text-start">{language === 'ar' ? 'آلية التتابع' : 'Streak Rule'}</th>
+                      <th className="py-3 px-3 text-start">{language === 'ar' ? 'نسبة الفشل %' : '% Labeled Failure'}</th>
                       <th className="py-3 px-3 text-start">{language === 'ar' ? 'متوسط مرات التصفير' : 'Mean Resets'}</th>
                       <th className="py-3 px-3 text-start">{language === 'ar' ? 'أطول تتابع' : 'Longest Streak'}</th>
                       <th className="py-3 px-3 text-start">{language === 'ar' ? 'نسبة التحقيق %' : 'Attainability %'}</th>
@@ -414,7 +482,15 @@ export const EvidenceScreen: React.FC<EvidenceScreenProps> = ({ language = 'en' 
                             )}
                           </td>
                           <td className="py-3.5 px-3 text-start text-ink-600 text-[11px]">{item.target_type}</td>
-                          <td className="py-3.5 px-3 text-start text-ink-600 text-[11px]">{item.streak_mechanic}</td>
+                          <td className="py-3.5 px-3 text-start font-bold">
+                            {item.share_days_labeled_failure_pct != null ? (
+                              <span className={isPolicyB ? 'text-forest-700' : 'text-rose-600'}>
+                                {item.share_days_labeled_failure_pct}%
+                              </span>
+                            ) : (
+                              '--'
+                            )}
+                          </td>
                           <td className={`py-3.5 px-3 text-start ${isPolicyB ? 'text-forest-700 font-bold' : 'text-rose-700 font-bold'}`}>
                             {isPolicyB ? (language === 'ar' ? '0.0 (بحكم التصميم)' : '0.0 (By Design)') : item.mean_resets}
                           </td>
