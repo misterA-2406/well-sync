@@ -652,38 +652,50 @@ def main():
         set_font(r, size_pt=8.5, color=INK)
 
     # =========================================================================
-    # SLIDE 16: Thank You Slide (Positioned on the LEFT to not block "Thank you")
+    # SLIDE 16: Thank You Slide (Theme-Harmonized Safe Positioning)
     # =========================================================================
     slide16 = prs.slides[15]
-    # Place card cleanly on the LEFT side of the slide
-    ty_card = add_card(slide16, Inches(0.8), Inches(2.10), Inches(4.6), Inches(2.6), bg_color=WHITE, border_color=FOREST)
+    # Match the warm ivory/sand slide background (#E3DDD1 = RGB 227, 221, 209)
+    # Soft warm ivory card that blends seamlessly with the background texture
+    SLIDE_BG_HARMONY = RGBColor(235, 230, 221)
+    SLIDE_BORDER_SUBTLE = RGBColor(212, 204, 194)
+    TAUPE_TEXT = RGBColor(110, 95, 88)
+
+    ty_card = add_card(slide16, Inches(0.8), Inches(1.85), Inches(4.5), Inches(2.35), bg_color=SLIDE_BG_HARMONY, border_color=SLIDE_BORDER_SUBTLE)
     tf_ty = ty_card.text_frame
     tf_ty.word_wrap = True
     tf_ty.margin_left = tf_ty.margin_right = Inches(0.2)
-    tf_ty.margin_top = tf_ty.margin_bottom = Inches(0.18)
+    tf_ty.margin_top = tf_ty.margin_bottom = Inches(0.14)
 
     p_ty0 = tf_ty.paragraphs[0]
-    p_ty0.space_after = Pt(4)
+    p_ty0.space_after = Pt(2)
     r = p_ty0.add_run()
     r.text = "WellSync"
-    set_font(r, size_pt=18, bold=True, color=FOREST)
+    set_font(r, size_pt=20, bold=True, color=FOREST)
 
     p_ty1 = tf_ty.add_paragraph()
-    p_ty1.space_after = Pt(8)
+    p_ty1.space_after = Pt(6)
     r = p_ty1.add_run()
     r.text = "Progress is Not Perfection. Recovery is Easier Than Restarting."
     set_font(r, size_pt=10, bold=False, color=TERRACOTTA, italic=True)
 
     p_ty2 = tf_ty.add_paragraph()
+    p_ty2.space_after = Pt(4)
     r = p_ty2.add_run()
     r.text = (
-        "• Challenge 09: Sustaining Healthy Behaviors\n"
-        "• Team: 1. Ayesha Sultana & 2. B. Alence\n"
+        "• Challenge 09: Sustaining Healthy Behaviors (Wellbeing Track)\n"
+        "• Team: 1. Ayesha Sultana & 2. B. Alence (Student Software Engineers)\n"
         "• GitHub: github.com/misterA-2406/well-sync\n"
-        "• Demo Video: docs/videos/wellsync_demo_final.mp4\n"
-        "• Interactive Prototype: http://localhost:5173/"
+        "• Interactive Prototype: Live Web App & localhost:5173\n"
+        "• Demo Video: 1080p Neural Walkthrough (docs/videos/wellsync_demo_final.mp4)"
     )
     set_font(r, size_pt=8.8, color=INK)
+
+    p_ty3 = tf_ty.add_paragraph()
+    p_ty3.space_before = Pt(4)
+    r = p_ty3.add_run()
+    r.text = "*Student prototype, not affiliated with any commercial product named WellSync."
+    set_font(r, size_pt=7.5, color=TAUPE_TEXT, italic=True)
 
     # Save cleanly
     os.makedirs(os.path.dirname(OUTPUT_PATH), exist_ok=True)

@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WellSync — Architecture & Workflow Diagrams</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'neutral',
+      fontFamily: 'Segoe UI, system-ui, sans-serif',
+      flowchart: { curve: 'basis', htmlLabels: true },
+      stateDiagram: { htmlLabels: true }
+    });
+  </script>
+  <style>
+    :root {
+      --bg: #F7F5F0;
+      --card-bg: #FFFFFF;
+      --forest: #183C32;
+      --terracotta: #C97A48;
+      --ink: #1A2421;
+      --muted: #64746E;
+      --border: #DCE5E0;
+    }
+    body {
+      margin: 0;
+      padding: 2.5rem 1.5rem;
+      background-color: var(--bg);
+      color: var(--ink);
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      line-height: 1.6;
+    }
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    header {
+      margin-bottom: 2.5rem;
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 1.5rem;
+    }
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      background-color: #E8F0EC;
+      color: var(--forest);
+      border-radius: 9999px;
+      margin-bottom: 0.75rem;
+    }
+    h1 {
+      font-size: 2.25rem;
+      color: var(--forest);
+      margin: 0 0 0.5rem 0;
+      font-weight: 800;
+    }
+    .subtitle {
+      font-size: 1.1rem;
+      color: var(--terracotta);
+      font-style: italic;
+      margin: 0 0 1rem 0;
+    }
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+    }
+    h2 {
+      color: var(--forest);
+      font-size: 1.4rem;
+      margin-top: 0;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    p {
+      color: #374151;
+      margin-top: 0;
+      margin-bottom: 1.25rem;
+      font-size: 0.95rem;
+    }
+    .mermaid {
+      display: flex;
+      justify-content: center;
+      background: #FAFAFA;
+      padding: 1.5rem;
+      border-radius: 8px;
+      border: 1px solid #ECECEC;
+      overflow-x: auto;
+    }
+    .ladder-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .ladder-card {
+      padding: 1.25rem;
+      border-radius: 8px;
+      border-left: 4px solid;
+    }
+    .ladder-stretch {
+      background: #EFF6FF;
+      border-color: #3B82F6;
+    }
+    .ladder-base {
+      background: #ECFDF5;
+      border-color: #10B981;
+    }
+    .ladder-min {
+      background: #FEF3C7;
+      border-color: #F59E0B;
+    }
+    .ladder-title {
+      font-weight: 700;
+      font-size: 1rem;
+      margin-bottom: 0.25rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <span class="badge">Future Health Digital Innovation Challenge 2026 • Challenge 09</span>
+      <h1>WellSync System Architecture & Recovery Workflows</h1>
+      <p class="subtitle">"Progress is Not Perfection. Recovery is Easier Than Restarting."</p>
+      <div class="meta">
+        <div><strong>Team:</strong> 1. Ayesha Sultana &amp; 2. B. Alence (Student Engineers)</div>
+        <div><strong>Track:</strong> Sustaining Healthy Behaviors (Wellbeing)</div>
+        <div><strong>Status:</strong> Live Working Prototype (React 19 + TypeScript)</div>
+      </div>
+    </header>
+
+    <!-- SECTION 1 -->
+    <div class="card">
+      <h2>1. End-to-End System Architecture (Multi-Tier)</h2>
+      <p>100% Client-Side, Local-First, Zero-PII cloud telemetry architecture engineered for Abu Dhabi lifestyle and climate factors.</p>
+      <div class="mermaid">
+flowchart TD
+    classDef hardware fill:#EBF3EF,stroke:#183C32,stroke-width:2px,color:#183C32;
+    classDef context fill:#FEF3C7,stroke:#D97706,stroke-width:2px,color:#92400E;
+    classDef stateEngine fill:#FDF4ED,stroke:#C97A48,stroke-width:2px,color:#8C3D10;
+    classDef storage fill:#EFF6FF,stroke:#2563EB,stroke-width:2px,color:#1E40AF;
+    classDef presentation fill:#F3F4F6,stroke:#374151,stroke-width:2px,color:#111827;
+
+    subgraph TIER1["1. SENSORS & TELEMETRY INGESTION"]
+        S1["Apple HealthKit / Google Health Connect"]:::hardware
+        S2["Commercial Wearables (Fitbit, Garmin, Whoop)"]:::hardware
+        S3["Nature LifeSnaps Open Dataset Replay"]:::hardware
+    end
+
+    subgraph TIER2["2. UAE CONTEXT & CLIMATE ENGINE"]
+        C1["🌙 Ramadan Fasting Mode (Offline Hijri)"]:::context
+        C2["☀️ Extreme Summer Heat Mode (>38°C)"]:::context
+        C3["🏥 SEHA 12-Hour Shift-Work Mode"]:::context
+        C4["⏸️ Planned Pause (Illness / Travel)"]:::context
+    end
+
+    subgraph TIER3["3. DETERMINISTIC BEHAVIORAL CORE"]
+        SM1["Deterministic 4-State Machine<br/>(ON_TRACK ➔ SLIPPING ➔ RECOVERING ➔ REESTABLISHED)"]:::stateEngine
+        SM2["Resilient Minimum Target Ladder<br/>(Stretch 110% • Base 100% • Minimum 50%)"]:::stateEngine
+        SM3["Non-Punitive Recovery Metrics<br/>(Cumulative Active Days & Return Count)"]:::stateEngine
+    end
+
+    subgraph TIER4["4. LOCAL ENCRYPTED PRIVACY STORE"]
+        DB1[("IndexedDB Local Logs")]:::storage
+        DB2[("localStorage Preferences")]:::storage
+    end
+
+    subgraph TIER5["5. PRESENTATION TIER (React 19 + TypeScript)"]
+        UI1["Today View & Adaptive Ladder UI"]:::presentation
+        UI2["Telemetry Replay & LifeSnaps Benchmark"]:::presentation
+        UI3["Arabic RTL ⇄ English LTR Localization"]:::presentation
+        UI4["⚡ 90-Second Judge Demo Mode"]:::presentation
+    end
+
+    S1 & S2 & S3 --> TIER2
+    TIER2 --> TIER3
+    TIER3 <--> TIER4
+    TIER3 --> TIER5
+      </div>
+    </div>
+
+    <!-- SECTION 2 -->
+    <div class="card">
+      <h2>2. The 4-State Behavioral Recovery State Machine</h2>
+      <p>Replaces punitive Duolingo-style streak resets with an adaptive recovery loop that eliminates the Marlatt &amp; Gordon "What-the-Hell Effect".</p>
+      <div class="mermaid">
+stateDiagram-v2
+    [*] --> ON_TRACK: User starts baseline routine
+
+    state ON_TRACK {
+        description: Achieving 100%+ baseline target
+        metric: Cumulative Active Days accrues daily
+    }
+
+    state SLIPPING {
+        description: 1-2 consecutive missed days
+        intervention: Adaptive Ladder offers 50% Minimum Resilient Target (BCT 8.7)
+        cognitive_frame: "Normal fluctuation, not failure."
+    }
+
+    state RECOVERING {
+        description: Completes 50% target or resumes activity
+        metric: Return Count increments (+1)
+        celebration: "Rebound achieved! Habit preserved."
+    }
+
+    state REESTABLISHED {
+        description: 3 consecutive days meeting baseline
+        metric: Habit durability fully solidified
+    }
+
+    ON_TRACK --> SLIPPING: Missed Day (Shift work, heat, illness)
+    SLIPPING --> ON_TRACK: Complete baseline next day
+    SLIPPING --> RECOVERING: Complete 50% Minimum Resilient Target (BCT 8.7)
+    SLIPPING --> RECOVERING: Return after multiple missed days (No Zero Reset!)
+    RECOVERING --> REESTABLISHED: 3 consecutive days at baseline
+    RECOVERING --> SLIPPING: Missed day during recovery
+    REESTABLISHED --> ON_TRACK: Seamless routine
+      </div>
+    </div>
+
+    <!-- SECTION 3 -->
+    <div class="card">
+      <h2>3. Daily Context Adaptation Sequence Diagram</h2>
+      <p>Demonstrates how the UAE Context Engine interacts with biometrics during a SEHA emergency hospital shift and summer heat.</p>
+      <div class="mermaid">
+sequenceDiagram
+    autonumber
+    actor User as 👤 Healthcare Worker (Abu Dhabi)
+    participant UI as 📱 WellSync Frontend (React 19)
+    participant Engine as ⚙️ UAE Context Engine
+    participant FSM as 🧠 Behavioral FSM (4-State)
+    participant DB as 💾 Local Encrypted Store
+
+    Note over User, DB: Morning Circadian Check-in
+    User->>UI: Opens WellSync Dashboard
+    UI->>DB: Query User Profile & Historical State
+    DB-->>UI: Return State: SLIPPING (Missed yesterday due to 12h emergency shift)
+    UI->>Engine: Evaluate Environment (Abu Dhabi Weather + Hospital Roster)
+    Engine-->>UI: Context: Extreme Heat (44°C) + Night Shift Scheduled
+    
+    Note over UI, FSM: Proactive Ladder Adaptation
+    UI->>FSM: Request Target Recommendation
+    FSM-->>UI: Serve 50% Resilient Target (3,750 steps) + Indoor Option
+    UI-->>User: "Yesterday was tough. Let's aim for a gentle 50% indoor ladder today. Recovery is what counts!"
+
+    Note over User, UI: Evening Activity Sync
+    User->>UI: Completes 4,000 steps (Indoor corridor walking)
+    UI->>FSM: Log Activity (4,000 steps >= 3,750 minimum)
+    FSM->>FSM: Transition State: SLIPPING ➔ RECOVERING
+    FSM->>DB: Increment Cumulative Days (+1) & Increment Return Count (+1)
+    DB-->>FSM: Confirm Saved (Zero Resets Triggered)
+    FSM-->>UI: Rebound Event: Return Count = 4
+    UI-->>User: "🎉 Welcome back! You rebounded smoothly. Cumulative: 42 Active Days."
+      </div>
+    </div>
+
+    <!-- SECTION 4 -->
+    <div class="card">
+      <h2>4. Resilient Minimum Ladder Architecture (BCT 8.7)</h2>
+      <p>Formal graded task architecture preventing relapse during disruption events:</p>
+      <div class="ladder-grid">
+        <div class="ladder-card ladder-stretch">
+          <div class="ladder-title" style="color: #1E40AF;">▲ Stretch Rung (110% = 8,250 Steps)</div>
+          <div>Peak capacity days, high energy, surplus motivation. Encourages upward expansion without penalty.</div>
+        </div>
+        <div class="ladder-card ladder-base">
+          <div class="ladder-title" style="color: #065F46;">◼ Baseline Rung (100% = 7,500 Steps)</div>
+          <div>Standard daily operational target calibrated to personal baseline. Maintains habitual rhythm.</div>
+        </div>
+        <div class="ladder-card ladder-min">
+          <div class="ladder-title" style="color: #92400E;">▼ Minimum Resilient Rung (50% = 3,750 Steps)</div>
+          <div><strong>BCT 8.7 Graded Tasks:</strong> Activated during shift work, illness, or extreme heat. Counts as a full success day.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 5 -->
+    <div class="card">
+      <h2>5. Continuous Deployment & Pipeline Architecture</h2>
+      <p>Automated zero-asset-failure deployment pipeline across GitHub Pages and Vercel Edge networks:</p>
+      <div class="mermaid">
+flowchart LR
+    Dev["💻 Local Development<br/>React 19 + TypeScript + Vite"] -->|git commit & push| Repo["🐙 GitHub Repository<br/>(misterA-2406/well-sync)"]
+    
+    subgraph GHA["GitHub Actions Automation (deploy.yml)"]
+        Lint["1. Node 22 CI Setup"] --> Test["2. Vitest Suite (145 Unit & FSM Tests)"]
+        Test --> Build["3. Vite Static Compilation (tsc && vite build)"]
+        Build --> Bundle["4. Zero-Asset Failure Bundling (base: './')"]
+    end
+    
+    Repo -->|Trigger master branch| GHA
+    Bundle -->|Upload Artifact| Pages["🌐 GitHub Pages Production<br/>(https://misterA-2406.github.io/well-sync/)"]
+    Repo -->|Instant Webhook| Vercel["⚡ Vercel Edge Network<br/>(Production & PR Preview URLs)"]
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>
