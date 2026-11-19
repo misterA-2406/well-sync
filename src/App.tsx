@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Navbar, ScreenTab } from './components/Navbar';
+import { Footer } from './components/Footer';
 import { TodayScreen } from './screens/TodayScreen';
 import { RecoveryScreen } from './screens/RecoveryScreen';
 import { HistoryScreen } from './screens/HistoryScreen';
@@ -182,29 +183,31 @@ export function App() {
   };
 
   return (
-    <div className={`min-h-screen bg-slate-50 text-slate-900 ${getTextSizeClass()}`}>
-      <Navbar
-        currentTab={currentTab}
-        onSelectTab={setCurrentTab}
-        currentState={latestResult?.state ?? 'ON_TRACK'}
-        textSize={appState.textSize}
-        onChangeTextSize={handleChangeTextSize}
-        language={appState.language}
-        onToggleLanguage={handleToggleLanguage}
-      />
+    <div className={`min-h-screen bg-[#F5F5EF] text-[#25332D] flex flex-col justify-between ${getTextSizeClass()}`}>
+      <div>
+        <Navbar
+          currentTab={currentTab}
+          onSelectTab={setCurrentTab}
+          currentState={latestResult?.state ?? 'ON_TRACK'}
+          textSize={appState.textSize}
+          onChangeTextSize={handleChangeTextSize}
+          language={appState.language}
+          onToggleLanguage={handleToggleLanguage}
+        />
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-        {currentTab === 'today' && (
-          <TodayScreen
-            profile={appState.profile}
-            latestResult={latestResult}
-            metric={activeMetric}
-            language={appState.language}
-            onChangeMetric={setActiveMetric}
-            onSaveRecord={handleSaveRecord}
-            onNavigateToRecovery={() => setCurrentTab('recovery')}
-          />
-        )}
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 pb-24 lg:pb-8">
+          {currentTab === 'today' && (
+            <TodayScreen
+              profile={appState.profile}
+              latestResult={latestResult}
+              historyResults={evaluatedResults}
+              metric={activeMetric}
+              language={appState.language}
+              onChangeMetric={setActiveMetric}
+              onSaveRecord={handleSaveRecord}
+              onNavigateToRecovery={() => setCurrentTab('recovery')}
+            />
+          )}
 
         {currentTab === 'recovery' && (
           <RecoveryScreen
@@ -253,6 +256,9 @@ export function App() {
 
         {currentTab === 'about' && <AboutScreen language={appState.language} />}
       </main>
+      </div>
+
+      <Footer language={appState.language} onSelectTab={setCurrentTab} />
 
       {/* First-time Onboarding Modal */}
       {!appState.hasCompletedOnboarding && (

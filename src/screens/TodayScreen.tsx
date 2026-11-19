@@ -2,23 +2,28 @@ import React, { useState } from 'react';
 import {
   Footprints,
   Moon,
+  Calendar,
   TrendingUp,
   RotateCcw,
-  Calendar,
-  AlertCircle,
   CheckCircle,
-  ArrowRight,
-  Info,
-  Sparkles,
+  Coffee,
+  Check,
 } from 'lucide-react';
 import { BehaviorMetric, DailyRecord, EngineDayResult, UserEngineProfile } from '../engine/types';
 import { Language, t } from '../i18n/translations';
+import { StatusBadge } from '../components/StatusBadge';
+import { MetricCard } from '../components/MetricCard';
+import { ActivityChart } from '../components/ActivityChart';
+import { TargetLadderCard } from '../components/TargetLadderCard';
+import { RecoveryProgressCard } from '../components/RecoveryProgressCard';
+import { ContextualGuidanceCard } from '../components/ContextualGuidanceCard';
 
 interface TodayScreenProps {
   profile: UserEngineProfile;
   latestResult: EngineDayResult | null;
   metric: BehaviorMetric;
   language: Language;
+  historyResults?: EngineDayResult[];
   onChangeMetric: (metric: BehaviorMetric) => void;
   onSaveRecord: (record: DailyRecord) => void;
   onNavigateToRecovery: () => void;
@@ -29,11 +34,11 @@ export const TodayScreen: React.FC<TodayScreenProps> = ({
   latestResult,
   metric,
   language,
+  historyResults = [],
   onChangeMetric,
   onSaveRecord,
   onNavigateToRecovery,
 }) => {
-  // Today's entry form state
   const todayStr = new Date().toISOString().slice(0, 10);
   const [date, setDate] = useState<string>(todayStr);
   const [stepsInput, setStepsInput] = useState<string>('');
@@ -42,6 +47,16 @@ export const TodayScreen: React.FC<TodayScreenProps> = ({
   const [isRestDeclared, setIsRestDeclared] = useState<boolean>(false);
   const [contextNote, setContextNote] = useState<string>('');
   const [savedSuccessMessage, setSavedSuccessMessage] = useState<boolean>(false);
+
+  const baseline =
+    latestResult?.baseline ??
+    (metric === 'steps' ? profile.userGoalSteps : profile.userGoalSleepMinutes);
+  const currentTargetVal = latestResult?.currentLadderTarget ?? baseline;
+  const currentRung = latestResult?.ladderLevel ?? 'TARGET';
+
+  // Find if today's entry was already logged in recent records
+  const existingTodayRecord = historyResults.find((r) => r.date === date);
+  const loggedActualVal = existingTodayRecord?.evaluation.actualValue ?? null;
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
@@ -62,248 +77,358 @@ export const TodayScreen: React.FC<TodayScreenProps> = ({
     setTimeout(() => setSavedSuccessMessage(false), 3000);
   };
 
-  // State presentation helper
-  const renderStateBadge = () => {
-    if (!latestResult || latestResult.isLearningBaseline) {
-      return (
-        <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200">
-          <Sparkles className="w-3.5 h-3.5 text-blue-600" />
-          {t('status.learning', language)} ({latestResult?.activeDays ? latestResult.activeDays + 1 : 1} / 7)
-        </span>
-      );
-    }
+  const handleAddPresetSteps = (increment: number) => {
+    const current = Number(stepsInput) || 0;
+    setStepsInput(String(current + increment));
+    setIsRestDeclared(false);
+  };
 
+  const formatUnit = (val: number) => {
+    if (metric === 'steps') return `${val.toLocaleString()} ${t('today.steps_unit', language)}`;
+    const hrs = Math.floor(val / 60);
+    const mins = val % 60;
+    return `${hrs}h ${mins}m`;
+  };
+
+  // State-specific headline and tone
+  const getStateBannerContent = () => {
+    if (!latestResult || latestResult.isLearningBaseline) {
+      return {
+        title: language === 'ar' ? 'مرحلة التعرف على وتيرتك اليومية' : 'Learning Your Personal Rhythm',
+        desc:
+          language === 'ar'
+            ? 'سجل نشاطك لـ 7 أيام لمعايرة خط الأساس التكيفي الخاص بك. خط الأساس يحميك من الأهداف التعسفية.'
+            : 'Log your activity for 7 days to establish your personalized rolling baseline, protecting you from arbitrary targets.',
+      };
+    }
     switch (latestResult.state) {
       case 'ON_TRACK':
-        return (
-          <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
-            <CheckCircle className="w-3.5 h-3.5 text-emerald-600" />
-            {t('status.on_track', language)}
-          </span>
-        );
+        return {
+          title: language === 'ar' ? 'أنت تبني استمرارية بوتيرة تناسب حياتك' : 'Building Consistency at a Sustainable Pace',
+          desc:
+            language === 'ar'
+              ? 'أداؤك متوازن وثابت. تذكر أن هدفنا الاستمرارية دون إجهاد.'
+              : "You're building consistency at a pace that works. Sustainable habits outlast rigid perfection.",
+        };
       case 'SLIPPING':
-        return (
-          <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200">
-            <AlertCircle className="w-3.5 h-3.5 text-amber-600" />
-            {t('status.slipping', language)}
-          </span>
-        );
+        return {
+          title: language === 'ar' ? 'انخفاض طفيف في الوتيرة — تدرج بلطف' : 'Gentle Pace Adjustment Recommended',
+          desc:
+            language === 'ar'
+              ? 'لاحظ المحرك انخفاضاً طفيفاً مؤخراً. يمكنك استكشاف خطوة مصغرة لتيسير يومك.'
+              : 'Your recent activity has been lower. It may help to make today’s goal a little easier with a micro-action.',
+        };
       case 'LAPSED':
-        return (
-          <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-rose-50 text-rose-700 border border-rose-200">
-            <AlertCircle className="w-3.5 h-3.5 text-rose-600" />
-            {t('status.lapsed', language)}
-          </span>
-        );
+        return {
+          title: language === 'ar' ? 'تراجع مؤقت — تدرج للأسفل ولا تستسلم' : "Life Happens. Step Down, Don't Quit",
+          desc:
+            language === 'ar'
+              ? 'تم خفض هدفك تلقائياً إلى 50% كدرجة أمان. لن تخسر أي يوم من إنجازاتك المتراكمة.'
+              : 'Your target has stepped down to 50% to maintain continuity without pressure. Zero progress is lost.',
+        };
       case 'RECOVERING':
-        return (
-          <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-cyan-50 text-cyan-700 border border-cyan-200">
-            <RotateCcw className="w-3.5 h-3.5 text-cyan-600" />
-            {t('status.recovering', language)} ({latestResult.consecutiveSuccessDays} / 3)
-          </span>
-        );
+        return {
+          title: language === 'ar' ? 'أنت تستعيد وتيرتك بثبات' : 'Finding Your Rhythm Again',
+          desc:
+            language === 'ar'
+              ? 'إنجاز 3 أيام متتالية على الهدف الأدنى يعيدك تلقائياً للهدف الأساسي ويضيف عودة جديدة.'
+              : 'Completing 3 consecutive days on your Minimum rung restores your Target and increments your Return Count.',
+        };
     }
   };
 
-  const currentRung = latestResult?.ladderLevel ?? 'TARGET';
-  const baseline = latestResult?.baseline ?? (metric === 'steps' ? profile.userGoalSteps : profile.userGoalSleepMinutes);
-  const currentTargetVal = latestResult?.currentLadderTarget ?? baseline;
-
-  const getRungLabel = () => {
-    switch (currentRung) {
-      case 'MINIMUM':
-        return t('ladder.minimum', language);
-      case 'STRETCH':
-        return t('ladder.stretch', language);
-      default:
-        return t('ladder.target', language);
-    }
-  };
+  const stateBanner = getStateBannerContent();
 
   return (
-    <div className="space-y-6">
-      {/* Metric Selector & Today's Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
-        <div>
-          <div className="flex items-center gap-2 mb-1.5">
-            {renderStateBadge()}
-            <span className="text-xs font-medium text-slate-500">
-              {getRungLabel()}
-            </span>
+    <div className="space-y-6 max-w-7xl mx-auto pb-12">
+      {/* SECTION 1: HERO & TODAY'S OVERVIEW */}
+      <section className="bg-white rounded-3xl p-6 sm:p-8 border border-ink-200 shadow-card">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+          <div className="space-y-2 max-w-2xl">
+            <div className="flex flex-wrap items-center gap-2">
+              <StatusBadge
+                state={latestResult?.state ?? 'LEARNING'}
+                isLearningBaseline={latestResult?.isLearningBaseline}
+                learningDayIndex={(latestResult?.activeDays ?? 0) + 1}
+                recoveryDayIndex={latestResult?.consecutiveSuccessDays ?? 0}
+                language={language}
+                size="md"
+              />
+              <span className="text-xs font-semibold text-ink-500 bg-ivory-100 border border-ink-200 px-3 py-1 rounded-full">
+                {currentRung === 'MINIMUM'
+                  ? t('ladder.minimum', language)
+                  : currentRung === 'STRETCH'
+                  ? t('ladder.stretch', language)
+                  : t('ladder.target', language)}
+              </span>
+            </div>
+
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-ink-900 tracking-tight leading-tight">
+              {t('nav.today', language)}: {stateBanner.title}
+            </h1>
+
+            <p className="text-xs sm:text-sm text-ink-600 leading-relaxed">
+              {stateBanner.desc}
+            </p>
           </div>
-          <h1 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">{t('nav.today', language)}</h1>
-          <p className="text-xs sm:text-sm text-slate-500">
-            {t('today.current_rung', language)}: <strong className="text-emerald-700">{currentTargetVal.toLocaleString()} {metric === 'steps' ? t('today.steps_unit', language) : t('today.sleep_unit', language)}</strong>
-            {currentRung === 'MINIMUM' && (language === 'ar' ? ' (المستوى الأدنى 50% نشط للحفاظ على الاستمرارية)' : ' (Step-down 50% rung active to preserve routine)')}
-            {currentRung === 'STRETCH' && (language === 'ar' ? ' (المستوى الموسع +10% الاختياري)' : ' (Optional +10% stretch rung)')}
-          </p>
+
+          {/* Metric Selector & Active Target Callout */}
+          <div className="flex flex-col sm:flex-row lg:flex-col items-start lg:items-end gap-3 shrink-0">
+            {/* Behavior Switcher Pills */}
+            <div
+              className="inline-flex bg-ivory-100 p-1 rounded-2xl border border-ink-200"
+              role="tablist"
+              aria-label="Behavior Metric Switcher"
+            >
+              <button
+                type="button"
+                role="tab"
+                aria-selected={metric === 'steps'}
+                onClick={() => onChangeMetric('steps')}
+                className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all duration-150 ${
+                  metric === 'steps'
+                    ? 'bg-white shadow-card text-forest-900 font-extrabold'
+                    : 'text-ink-500 hover:text-ink-900'
+                }`}
+              >
+                <Footprints className="w-4 h-4 text-forest-700" />
+                <span>{t('today.steps', language)}</span>
+              </button>
+
+              <button
+                type="button"
+                role="tab"
+                aria-selected={metric === 'sleep'}
+                onClick={() => onChangeMetric('sleep')}
+                className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all duration-150 ${
+                  metric === 'sleep'
+                    ? 'bg-white shadow-card text-forest-900 font-extrabold'
+                    : 'text-ink-500 hover:text-ink-900'
+                }`}
+              >
+                <Moon className="w-4 h-4 text-forest-700" />
+                <span>{t('today.sleep', language)}</span>
+              </button>
+            </div>
+
+            {/* Active Target Banner */}
+            <div className="bg-forest-50/70 border border-forest-200/90 rounded-2xl p-4 w-full sm:w-auto text-start lg:text-end">
+              <span className="text-[11px] font-semibold text-forest-700 uppercase tracking-wider block">
+                {language === 'ar' ? 'الهدف النشط لليوم' : "Today's Active Target"}
+              </span>
+              <div className="text-2xl sm:text-3xl font-black text-forest-900 tracking-tight mt-0.5">
+                {formatUnit(currentTargetVal)}
+              </div>
+              <span className="text-[11px] text-forest-700 block mt-0.5">
+                {currentRung === 'MINIMUM' && (language === 'ar' ? 'درجة أمان ميسرة (50%)' : 'Low-friction 50% rung')}
+                {currentRung === 'TARGET' && (language === 'ar' ? 'الهدف المتوازن الأساسي' : 'Standard target rung')}
+                {currentRung === 'STRETCH' && (language === 'ar' ? 'المستوى الموسع (+10%)' : 'Optional stretch (+10%)')}
+              </span>
+            </div>
+          </div>
         </div>
 
-        {/* Behavior Switcher */}
-        <div className="flex items-center bg-slate-100 p-1 rounded-xl border border-slate-200 self-start sm:self-auto">
-          <button
-            onClick={() => onChangeMetric('steps')}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-              metric === 'steps' ? 'bg-white shadow-xs text-slate-900' : 'text-slate-500 hover:text-slate-900'
-            }`}
-          >
-            <Footprints className="w-3.5 h-3.5 text-emerald-600" />
-            {t('today.steps', language)}
-          </button>
-          <button
-            onClick={() => onChangeMetric('sleep')}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-              metric === 'sleep' ? 'bg-white shadow-xs text-slate-900' : 'text-slate-500 hover:text-slate-900'
-            }`}
-          >
-            <Moon className="w-3.5 h-3.5 text-indigo-600" />
-            {t('today.sleep', language)}
-          </button>
-        </div>
-      </div>
-
-      {/* Recovery Prompt Banner if Lapsed or Slipping */}
-      {latestResult && (latestResult.state === 'LAPSED' || latestResult.state === 'SLIPPING') && (
-        <div className="bg-amber-50 border border-amber-200 rounded-2xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="flex items-start gap-3">
-            <div className="w-9 h-9 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center shrink-0 mt-0.5">
-              <RotateCcw className="w-5 h-5" />
+        {/* Progress Bar if activity logged for today */}
+        {loggedActualVal !== null && (
+          <div className="mt-6 pt-5 border-t border-ink-100">
+            <div className="flex items-center justify-between text-xs font-semibold text-ink-700 mb-2">
+              <span className="flex items-center gap-1.5">
+                <Check className="w-4 h-4 text-forest-600" />
+                <span>
+                  {language === 'ar' ? 'النشاط المسجل لليوم' : "Today's Logged Activity"}:{' '}
+                  <strong className="text-ink-900 font-bold">{formatUnit(loggedActualVal)}</strong>
+                </span>
+              </span>
+              <span className="text-forest-700 font-bold">
+                {Math.round((loggedActualVal / currentTargetVal) * 100)}%
+              </span>
             </div>
-            <div>
-              <h2 className="text-sm font-bold text-amber-900">
-                {latestResult.state === 'LAPSED'
-                  ? (language === 'ar' ? 'تم رصد تراجع مؤقت — تدرج للأسفل ولا تستسلم' : 'Lapse Detected — Step Down, Don\'t Quit')
-                  : (language === 'ar' ? 'تم رصد مؤشر تراجع مبكر' : 'Early Slipping Trend Detected')}
-              </h2>
-              <p className="text-xs text-amber-700 mt-0.5">
-                {latestResult.state === 'LAPSED'
-                  ? (language === 'ar'
-                      ? 'تم خفض هدفك تلقائياً إلى 50% للحفاظ على استمرارية العادة دون أي ضغوط أو تصفير للتقدم.'
-                      : 'Your target has automatically stepped down to 50% to keep your routine manageable. Zero progress is lost.')
-                  : (language === 'ar'
-                      ? 'انخفض متوسط الـ 7 أيام دون 80%. استكشف فرضيات العوائق أو التزم بخطوة مصغرة.'
-                      : 'Your 7-day average dipped below 80%. Review lifestyle barrier hypotheses or plan a micro-action.')}
-              </p>
+            <div className="w-full h-3 bg-ivory-200 rounded-full overflow-hidden">
+              <div
+                className="h-full bg-forest-600 rounded-full transition-all duration-500 ease-out"
+                style={{
+                  width: `${Math.min(100, Math.round((loggedActualVal / currentTargetVal) * 100))}%`,
+                }}
+              />
             </div>
           </div>
-          <button
-            onClick={onNavigateToRecovery}
-            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-white bg-amber-700 hover:bg-amber-800 transition-colors shrink-0 shadow-xs"
-          >
-            {t('today.recovery_cta', language)}
-            <ArrowRight className="w-3.5 h-3.5" />
-          </button>
-        </div>
+        )}
+      </section>
+
+      {/* SECTION 2: RECOVERY BANNER (When Lapsed or Slipping) */}
+      {latestResult && (latestResult.state === 'LAPSED' || latestResult.state === 'RECOVERING') && (
+        <RecoveryProgressCard
+          consecutiveSuccessDays={latestResult.consecutiveSuccessDays}
+          minimumTarget={latestResult.ladderTargets.minimum}
+          unit={metric === 'steps' ? t('today.steps_unit', language) : t('today.sleep_unit', language)}
+          language={language}
+          onNavigateToRecovery={onNavigateToRecovery}
+        />
       )}
 
-      {/* Streak-Free Progress HUD (No resets to zero!) */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
-        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-xs">
-          <div className="flex items-center justify-between text-slate-500 mb-1">
-            <span className="text-xs font-medium">{t('today.active_days', language)}</span>
-            <Calendar className="w-4 h-4 text-emerald-600" />
-          </div>
-          <div className="text-2xl font-bold text-slate-900 tracking-tight">
-            {latestResult?.activeDays ?? 0}
-          </div>
-          <span className="text-[11px] text-slate-500 block mt-0.5">{language === 'ar' ? 'لا يعاد للصفر مطلقاً' : 'Never resets to zero'}</span>
-        </div>
+      {/* SECTION 3: STREAK-FREE RESILIENCE METRICS HUD */}
+      <section aria-label="Core Resilience Metrics">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+          <MetricCard
+            label={t('today.active_days', language)}
+            value={latestResult?.activeDays ?? 0}
+            subtext={language === 'ar' ? 'إجمالي الأيام المنجزة. لا يعاد للصفر مطلقاً.' : 'Total days met. Never resets to zero upon disruption.'}
+            icon={<Calendar className="w-4 h-4 text-forest-700" />}
+            iconBgColor="bg-forest-100 text-forest-800"
+            valueColorClass="text-forest-900"
+            highlight={true}
+          />
 
-        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-xs">
-          <div className="flex items-center justify-between text-slate-500 mb-1">
-            <span className="text-xs font-medium">{t('today.return_count', language)}</span>
-            <RotateCcw className="w-4 h-4 text-cyan-600" />
-          </div>
-          <div className="text-2xl font-bold text-slate-900 tracking-tight">
-            {latestResult?.returnCount ?? 0}
-          </div>
-          <span className="text-[11px] text-slate-500 block mt-0.5">{language === 'ar' ? 'تعافيات مكتملة بنجاح' : 'Recoveries completed'}</span>
-        </div>
+          <MetricCard
+            label={t('today.return_count', language)}
+            value={latestResult?.returnCount ?? 0}
+            subtext={language === 'ar' ? 'مرات استعادة العادة بعد تعثر. مقياس الصمود الحقيقي.' : 'Habit resumptions completed. Our measure of true resilience.'}
+            icon={<RotateCcw className="w-4 h-4 text-forest-700" />}
+            iconBgColor="bg-[#D9F0F2] text-[#1B5E6B]"
+            valueColorClass="text-[#144751]"
+          />
 
-        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-xs">
-          <div className="flex items-center justify-between text-slate-500 mb-1">
-            <span className="text-xs font-medium">{t('today.current_baseline', language)}</span>
-            <TrendingUp className="w-4 h-4 text-indigo-600" />
-          </div>
-          <div className="text-2xl font-bold text-slate-900 tracking-tight">
-            {baseline.toLocaleString()}
-          </div>
-          <span className="text-[11px] text-slate-500 block mt-0.5">
-            {latestResult?.isColdStart
-              ? (language === 'ar' ? 'هدف المستخدم (بداية جديدة)' : 'User goal (cold start)')
-              : (language === 'ar' ? 'وسيط آخر 28 يوماً' : 'Median of past 28 days')}
-          </span>
-        </div>
+          <MetricCard
+            label={t('today.current_baseline', language)}
+            value={baseline.toLocaleString()}
+            unit={metric === 'steps' ? t('today.steps_unit', language) : t('today.sleep_unit', language)}
+            subtext={
+              latestResult?.isColdStart
+                ? (language === 'ar' ? 'هدف المستخدم المبدئي (مرحلة التعلم)' : 'Declared goal (cold start calibration)')
+                : (language === 'ar' ? 'وسيط آخر 28 يوماً مع حماية من التلوث' : '28-day rolling median (contamination-free)')
+            }
+            icon={<TrendingUp className="w-4 h-4 text-forest-700" />}
+            iconBgColor="bg-sand-100 text-sand-800"
+            valueColorClass="text-ink-900"
+          />
 
-        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-xs">
-          <div className="flex items-center justify-between text-slate-500 mb-1">
-            <span className="text-xs font-medium">{language === 'ar' ? 'أيام الإنجاز المتتالية' : 'Success Streak'}</span>
-            <CheckCircle className="w-4 h-4 text-emerald-600" />
-          </div>
-          <div className="text-2xl font-bold text-slate-900 tracking-tight">
-            {latestResult?.consecutiveSuccessDays ?? 0}
-          </div>
-          <span className="text-[11px] text-slate-500 block mt-0.5">
-            {currentRung === 'MINIMUM'
-              ? (language === 'ar' ? 'في المستوى الأدنى (3 للترقية)' : 'At Minimum (3 steps up)')
-              : (language === 'ar' ? 'في المستوى المستهدف' : 'At Target rung')}
-          </span>
+          <MetricCard
+            label={language === 'ar' ? 'أيام الإنجاز المتتالية' : 'Success Streak'}
+            value={latestResult?.consecutiveSuccessDays ?? 0}
+            subtext={
+              currentRung === 'MINIMUM'
+                ? (language === 'ar' ? 'في المستوى الأدنى (3 أيام للترقية)' : 'On Minimum rung (3 days steps up)')
+                : (language === 'ar' ? 'على الدرجة النشطة' : 'On active target rung')
+            }
+            icon={<CheckCircle className="w-4 h-4 text-forest-700" />}
+            iconBgColor="bg-sage-100 text-forest-800"
+            valueColorClass="text-forest-900"
+          />
         </div>
-      </div>
+      </section>
 
-      {/* Main Grid: Check-in Form & Michie BCTTv1 Technique Card */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Daily Check-in Form */}
-        <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-base font-bold text-slate-900 flex items-center gap-2">
-              <Calendar className="w-4 h-4 text-slate-500" />
-              {t('today.checkin_title', language)}
-            </h2>
-            <span className="text-[11px] text-slate-500 font-medium">{t('nav.guest_sub', language)}</span>
+      {/* SECTION 4: 7-DAY RECENT ACTIVITY RHYTHM CHART */}
+      <section aria-label="Recent Activity Chart">
+        <ActivityChart
+          historyResults={historyResults}
+          metric={metric}
+          currentTarget={currentTargetVal}
+          language={language}
+        />
+      </section>
+
+      {/* SECTION 5: DAILY CHECK-IN & CONTEXTUAL GUIDANCE */}
+      <section className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+        {/* Daily Check-In Form */}
+        <div className="bg-white rounded-3xl p-6 sm:p-7 border border-ink-200 shadow-card">
+          <div className="flex items-center justify-between mb-4 pb-3 border-b border-ink-100">
+            <div>
+              <h2 className="text-base sm:text-lg font-bold text-ink-900 flex items-center gap-2">
+                <Calendar className="w-4 h-4 text-forest-600" />
+                <span>{t('today.checkin_title', language)}</span>
+              </h2>
+              <p className="text-xs text-ink-500 mt-0.5">
+                {language === 'ar'
+                  ? 'سجل نشاطك الحقيقي بسهولة. لن تواجه أي رسائل لوم أو توبيخ.'
+                  : 'Log your real activity effortlessly. No shaming, no judgment.'}
+              </p>
+            </div>
+            <span className="text-[11px] font-semibold text-forest-700 bg-forest-50 border border-forest-200 px-2.5 py-1 rounded-full">
+              {t('nav.guest_sub', language)}
+            </span>
           </div>
 
           <form onSubmit={handleSave} className="space-y-4">
+            {/* Date Input */}
             <div>
-              <label htmlFor="todayDateInput" className="block text-xs font-semibold text-slate-700 mb-1">{t('today.date_label', language)}</label>
+              <label htmlFor="todayDateInput" className="block text-xs font-bold text-ink-700 mb-1">
+                {t('today.date_label', language)}
+              </label>
               <input
                 id="todayDateInput"
                 type="date"
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
-                className="w-full px-3 py-2 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-hidden"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-ink-200 bg-ivory-50/50 text-sm font-medium text-ink-900 focus:bg-white focus:ring-2 focus:ring-forest-600 focus:outline-hidden transition-all"
                 required
               />
             </div>
 
+            {/* Metric Input (Steps vs Sleep) */}
             {metric === 'steps' ? (
               <div>
-                <label htmlFor="todayStepsInput" className="block text-xs font-semibold text-slate-700 mb-1 flex items-center justify-between">
-                  <span>{t('today.step_count_label', language)}</span>
-                  <span className="text-[11px] text-slate-500 font-normal">
-                    {t('today.current_rung', language)}: {currentTargetVal.toLocaleString()}
+                <div className="flex items-center justify-between mb-1">
+                  <label htmlFor="todayStepsInput" className="text-xs font-bold text-ink-700">
+                    {t('today.step_count_label', language)}
+                  </label>
+                  <span className="text-xs font-medium text-ink-500">
+                    {t('today.current_rung', language)}: <strong className="text-forest-700">{currentTargetVal.toLocaleString()}</strong>
                   </span>
-                </label>
+                </div>
+
                 <input
                   id="todayStepsInput"
                   type="number"
                   min="0"
                   max="100000"
-                  placeholder="e.g. 7500"
+                  placeholder="e.g. 7,500"
                   value={stepsInput}
                   onChange={(e) => setStepsInput(e.target.value)}
-                  className="w-full px-3 py-2 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-hidden"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-ink-200 bg-ivory-50/50 text-sm font-medium text-ink-900 focus:bg-white focus:ring-2 focus:ring-forest-600 focus:outline-hidden transition-all disabled:opacity-50"
                   disabled={isRestDeclared}
                 />
+
+                {/* Quick Increment Buttons */}
+                {!isRestDeclared && (
+                  <div className="flex items-center gap-1.5 mt-2">
+                    <span className="text-[10px] text-ink-400 font-medium me-1">
+                      {language === 'ar' ? 'إضافة سريعة:' : 'Quick add:'}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => handleAddPresetSteps(1000)}
+                      className="px-2 py-1 rounded-lg text-xs font-semibold bg-ivory-100 hover:bg-sage-100 text-forest-800 border border-ink-200 transition-colors"
+                    >
+                      +1,000
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleAddPresetSteps(2000)}
+                      className="px-2 py-1 rounded-lg text-xs font-semibold bg-ivory-100 hover:bg-sage-100 text-forest-800 border border-ink-200 transition-colors"
+                    >
+                      +2,000
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleAddPresetSteps(5000)}
+                      className="px-2 py-1 rounded-lg text-xs font-semibold bg-ivory-100 hover:bg-sage-100 text-forest-800 border border-ink-200 transition-colors"
+                    >
+                      +5,000
+                    </button>
+                  </div>
+                )}
               </div>
             ) : (
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1 flex items-center justify-between">
-                  <span>{t('today.sleep', language)}</span>
-                  <span className="text-[11px] text-slate-500 font-normal">
-                    {t('today.current_rung', language)}: {Math.floor(currentTargetVal / 60)}h {currentTargetVal % 60}m
+                <div className="flex items-center justify-between mb-1">
+                  <label className="text-xs font-bold text-ink-700">
+                    {t('today.sleep', language)}
+                  </label>
+                  <span className="text-xs font-medium text-ink-500">
+                    {t('today.current_rung', language)}: <strong className="text-forest-700">{Math.floor(currentTargetVal / 60)}h {currentTargetVal % 60}m</strong>
                   </span>
-                </label>
+                </div>
+
                 <div className="grid grid-cols-2 gap-3">
                   <div className="flex items-center gap-2">
                     <input
@@ -314,11 +439,14 @@ export const TodayScreen: React.FC<TodayScreenProps> = ({
                       max="24"
                       value={sleepHoursInput}
                       onChange={(e) => setSleepHoursInput(e.target.value)}
-                      className="w-full px-3 py-2 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-hidden"
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-ink-200 bg-ivory-50/50 text-sm font-medium text-ink-900 focus:bg-white focus:ring-2 focus:ring-forest-600 focus:outline-hidden transition-all disabled:opacity-50"
                       disabled={isRestDeclared}
                     />
-                    <label htmlFor="todaySleepHoursInput" className="text-xs text-slate-600 font-medium">{t('today.sleep_hours_label', language)}</label>
+                    <label htmlFor="todaySleepHoursInput" className="text-xs font-semibold text-ink-600">
+                      {t('today.sleep_hours_label', language)}
+                    </label>
                   </div>
+
                   <div className="flex items-center gap-2">
                     <input
                       id="todaySleepMinsInput"
@@ -329,30 +457,35 @@ export const TodayScreen: React.FC<TodayScreenProps> = ({
                       step="5"
                       value={sleepMinsInput}
                       onChange={(e) => setSleepMinsInput(e.target.value)}
-                      className="w-full px-3 py-2 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-hidden"
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-ink-200 bg-ivory-50/50 text-sm font-medium text-ink-900 focus:bg-white focus:ring-2 focus:ring-forest-600 focus:outline-hidden transition-all disabled:opacity-50"
                       disabled={isRestDeclared}
                     />
-                    <label htmlFor="todaySleepMinsInput" className="text-xs text-slate-600 font-medium">{t('today.sleep_mins_label', language)}</label>
+                    <label htmlFor="todaySleepMinsInput" className="text-xs font-semibold text-ink-600">
+                      {t('today.sleep_mins_label', language)}
+                    </label>
                   </div>
                 </div>
               </div>
             )}
 
-            <div className="flex items-center gap-2 pt-1">
+            {/* Planned Rest Checkbox */}
+            <div className="p-3 bg-ivory-50 rounded-xl border border-ink-200/70 flex items-center gap-2.5">
               <input
                 type="checkbox"
                 id="restDeclared"
                 checked={isRestDeclared}
                 onChange={(e) => setIsRestDeclared(e.target.checked)}
-                className="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500 border-slate-300"
+                className="w-4 h-4 rounded text-forest-700 focus:ring-forest-500 border-ink-300"
               />
-              <label htmlFor="restDeclared" className="text-xs font-medium text-slate-700 select-none">
-                {t('today.rest_day_label', language)}
+              <label htmlFor="restDeclared" className="text-xs font-semibold text-ink-700 select-none cursor-pointer flex items-center gap-1.5">
+                <Coffee className="w-3.5 h-3.5 text-forest-700" />
+                <span>{t('today.rest_day_label', language)}</span>
               </label>
             </div>
 
+            {/* Context Note Input */}
             <div>
-              <label htmlFor="todayContextNoteInput" className="block text-xs font-semibold text-slate-700 mb-1">
+              <label htmlFor="todayContextNoteInput" className="block text-xs font-bold text-ink-700 mb-1">
                 {t('today.context_note_label', language)}
               </label>
               <input
@@ -362,71 +495,45 @@ export const TodayScreen: React.FC<TodayScreenProps> = ({
                 placeholder={t('today.context_note_placeholder', language)}
                 value={contextNote}
                 onChange={(e) => setContextNote(e.target.value)}
-                className="w-full px-3 py-2 rounded-lg border border-slate-300 text-xs sm:text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-hidden"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-ink-200 bg-ivory-50/50 text-xs sm:text-sm font-medium text-ink-900 focus:bg-white focus:ring-2 focus:ring-forest-600 focus:outline-hidden transition-all"
               />
             </div>
 
+            {/* Submit Button */}
             <button
               type="submit"
-              className="w-full py-2.5 px-4 rounded-xl font-semibold text-xs sm:text-sm text-white bg-slate-900 hover:bg-slate-800 transition-colors shadow-xs"
+              className="w-full py-3 px-4 rounded-xl font-bold text-xs sm:text-sm text-white bg-forest-700 hover:bg-forest-800 active:scale-[0.99] transition-all shadow-card focus:outline-hidden focus-visible:ring-2 focus-visible:ring-forest-600"
             >
               {t('today.checkin_cta', language)}
             </button>
 
+            {/* Animated Feedback */}
             {savedSuccessMessage && (
-              <p className="text-xs text-emerald-700 font-semibold text-center animate-fade-in">
-                ✓ {t('today.saved_success', language)}
-              </p>
+              <div className="p-2.5 bg-sage-100/80 border border-forest-200 rounded-xl flex items-center justify-center gap-1.5 text-xs font-bold text-forest-800 animate-fade-in">
+                <Check className="w-4 h-4 text-forest-600 stroke-[3]" />
+                <span>{t('today.saved_success', language)}</span>
+              </div>
             )}
           </form>
         </div>
 
-        {/* Michie BCTTv1 Transparent Technique Card */}
-        <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs flex flex-col justify-between">
-          <div>
-            <div className="flex items-center justify-between mb-3">
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-xs font-bold bg-indigo-50 text-indigo-700 border border-indigo-200">
-                <Info className="w-3.5 h-3.5" />
-                {latestResult?.techniqueCard.bctId ?? 'BCT 1.1'}: {latestResult?.techniqueCard.bctName ?? 'Goal Setting'}
-              </span>
-              <span className="text-[10px] text-slate-400 font-mono">Michie et al. (2013)</span>
-            </div>
+        {/* Contextual Guidance Component (BCT Card Redesigned) */}
+        <ContextualGuidanceCard
+          latestResult={latestResult}
+          language={language}
+          onNavigateToRecovery={onNavigateToRecovery}
+        />
+      </section>
 
-            <h3 className="text-base font-bold text-slate-900 mb-2">{t('today.bct_title', language)}</h3>
-            <p className="text-xs sm:text-sm text-slate-700 font-medium mb-4 leading-relaxed">
-              "{latestResult?.techniqueCard.suggestion ?? 'Maintain your steady daily target. Regular self-monitoring builds automatic habit strength.'}"
-            </p>
-
-            <div className="space-y-3 bg-slate-50 border border-slate-200 rounded-xl p-3.5 text-xs">
-              <div>
-                <strong className="text-slate-800 block mb-0.5">{t('today.bct_reason', language)}:</strong>
-                <p className="text-slate-600 leading-normal">
-                  {latestResult?.techniqueCard.reason ??
-                    'Consistent daily self-monitoring reinforces habit identity and establishes a stable personal baseline.'}
-                </p>
-              </div>
-
-              <div>
-                <strong className="text-slate-800 block mb-0.5">{t('today.bct_limits', language)}:</strong>
-                <p className="text-slate-600 leading-normal">
-                  {latestResult?.techniqueCard.limits ??
-                    'The engine is rule-based and cannot assess subjective fatigue, work stress, weather, or illness.'}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
-            <span>Grounding: BCTTv1 Taxonomy</span>
-            <button
-              onClick={onNavigateToRecovery}
-              className="text-emerald-700 hover:text-emerald-800 font-semibold inline-flex items-center gap-1"
-            >
-              {language === 'ar' ? 'استكشاف تقنيات التعافي ←' : 'Explore recovery techniques →'}
-            </button>
-          </div>
-        </div>
-      </div>
+      {/* SECTION 6: ADAPTIVE TARGET LADDER */}
+      <section aria-label="Adaptive Target Ladder">
+        <TargetLadderCard
+          latestResult={latestResult}
+          defaultGoal={profile.userGoalSteps}
+          metric={metric}
+          language={language}
+        />
+      </section>
     </div>
   );
 };
