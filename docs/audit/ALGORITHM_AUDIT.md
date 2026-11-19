@@ -100,5 +100,5 @@ All 35 edge cases mandated by the Master Audit were verified in `src/engine/__te
 ## 6. Algorithmic Recommendations Implemented
 
 1. **Persistent Hypothesis Vetoes:** User rejections of barrier hypotheses are now stored permanently in `localStorage` (`rejectedHypotheses`), preventing repeated exposure to rejected suggestions.
-2. **Adaptive Habit Memory:** Implemented tracking of past successful recovery strategies (`successfulStrategies`). When a user completes recovery, their strategy is saved and highlighted in subsequent recovery events.
+2. **Recovery Strategy Memory & Conflation Guard:** Implemented decoupled tracking of recovery micro-actions. Selecting an action records `activeRecoveryCommitment`; only when a user successfully completes the 3-day recovery ladder (`previousState === 'RECOVERING' && nextState === 'ON_TRACK'`) is the strategy archived into `completedRecoveryStrategies` (with legacy backward compatibility alias). This eliminates conflation between selecting a strategy and achieving recovery.
 3. **Input Sanitization:** Clamped all user inputs to physiological limits in both UI and engine processing.

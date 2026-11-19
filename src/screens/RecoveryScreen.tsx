@@ -15,6 +15,8 @@ interface RecoveryScreenProps {
   metric: BehaviorMetric;
   language: Language;
   rejectedHypotheses?: Record<string, boolean>;
+  completedRecoveryStrategies?: string[];
+  activeRecoveryCommitment?: { text: string; selectedDate: string } | string | null;
   successfulStrategies?: string[];
   onToggleRejectHypothesis?: (id: string) => void;
   onCommitMicroAction: (commitmentText: string) => void;
@@ -27,6 +29,8 @@ export const RecoveryScreen: React.FC<RecoveryScreenProps> = ({
   metric,
   language,
   rejectedHypotheses = {},
+  completedRecoveryStrategies = [],
+  activeRecoveryCommitment = null,
   successfulStrategies = [],
   onToggleRejectHypothesis,
   onCommitMicroAction,
@@ -39,6 +43,15 @@ export const RecoveryScreen: React.FC<RecoveryScreenProps> = ({
 
   // Merge parent persistent rejections with local
   const effectiveRejections = { ...rejectedHypotheses, ...localRejected };
+
+  // Use completedRecoveryStrategies if available, falling back to legacy successfulStrategies
+  const pastStrategies = completedRecoveryStrategies.length > 0 
+    ? completedRecoveryStrategies 
+    : successfulStrategies;
+
+  const activeCommitmentText = typeof activeRecoveryCommitment === 'string'
+    ? activeRecoveryCommitment
+    : activeRecoveryCommitment?.text ?? null;
 
   const baseline = latestResult?.baseline ?? (metric === 'steps' ? profile.userGoalSteps : profile.userGoalSleepMinutes);
   const minimumTarget = latestResult?.ladderTargets.minimum ?? Math.round(baseline * 0.5);
@@ -238,14 +251,31 @@ export const RecoveryScreen: React.FC<RecoveryScreenProps> = ({
           </p>
         </div>
 
-        {successfulStrategies && successfulStrategies.length > 0 && (
+        {activeCommitmentText && (
+          <div className="p-3 bg-cyan-50/70 border border-cyan-200 rounded-xl">
+            <span className="text-[11px] font-bold text-cyan-900 uppercase tracking-wider flex items-center gap-1.5 mb-1">
+              <span>●</span>
+              {language === 'ar' ? 'الالتزام الحالي قيد التنفيذ:' : 'Active Micro-Action Commitment:'}
+            </span>
+            <p className="text-xs text-cyan-950 font-medium">"{activeCommitmentText}"</p>
+            <p className="text-[10px] text-cyan-700 mt-0.5">
+              {language === 'ar'
+                ? 'سيتم تسجيل هذا الالتزام تلقائياً في سجل الاستراتيجيات الناجحة عند إتمام دورة التعافي (3 أيام متتالية).'
+                : 'This action will be archived as a completed recovery strategy once the 3-day recovery ladder is successfully completed.'}
+            </p>
+          </div>
+        )}
+
+        {pastStrategies && pastStrategies.length > 0 && (
           <div className="p-3.5 bg-emerald-50/70 border border-emerald-200 rounded-xl space-y-2">
             <span className="text-[11px] font-bold text-emerald-900 uppercase tracking-wider flex items-center gap-1.5">
               <span>★</span>
-              {language === 'ar' ? 'استراتيجيات أثبتت نجاحها معك سابقاً:' : 'Your Proven Recovery Strategies (Past Successes):'}
+              {language === 'ar'
+                ? 'استراتيجيات ارتبطت بعودتك للنشاط سابقاً (ملاحظة غير سريرية):'
+                : 'Strategies Used During Completed Past Recoveries (Observational History):'}
             </span>
             <div className="flex flex-wrap gap-1.5">
-              {successfulStrategies.map((strat, sIdx) => (
+              {pastStrategies.map((strat, sIdx) => (
                 <button
                   key={sIdx}
                   type="button"

@@ -18,7 +18,9 @@ export interface AppStorageState {
   textSize: 'standard' | 'large' | 'xl';
   language: 'en' | 'ar';
   rejectedHypotheses: Record<string, boolean>;
-  successfulStrategies: string[];
+  activeRecoveryCommitment?: { text: string; selectedDate: string };
+  completedRecoveryStrategies: string[];
+  successfulStrategies?: string[]; // Backward compatibility alias
 }
 
 export const STORAGE_KEY = 'wellsync_app_data_v1';
@@ -34,6 +36,7 @@ export const DEFAULT_APP_STATE: AppStorageState = {
   textSize: 'standard',
   language: 'en',
   rejectedHypotheses: {},
+  completedRecoveryStrategies: [],
   successfulStrategies: [],
 };
 
@@ -68,6 +71,11 @@ export function loadAppState(): AppStorageState {
       return { ...DEFAULT_APP_STATE };
     }
     const parsed = JSON.parse(raw);
+    const legacyStrategies = Array.isArray(parsed.successfulStrategies) ? parsed.successfulStrategies : [];
+    const completedRecoveryStrategies = (Array.isArray(parsed.completedRecoveryStrategies) && parsed.completedRecoveryStrategies.length > 0)
+      ? parsed.completedRecoveryStrategies
+      : legacyStrategies;
+
     return {
       ...DEFAULT_APP_STATE,
       ...parsed,
@@ -75,7 +83,9 @@ export function loadAppState(): AppStorageState {
       quietHours: { ...DEFAULT_APP_STATE.quietHours, ...(parsed.quietHours || {}) },
       history: Array.isArray(parsed.history) ? parsed.history : [],
       rejectedHypotheses: parsed.rejectedHypotheses && typeof parsed.rejectedHypotheses === 'object' ? parsed.rejectedHypotheses : {},
-      successfulStrategies: Array.isArray(parsed.successfulStrategies) ? parsed.successfulStrategies : [],
+      activeRecoveryCommitment: parsed.activeRecoveryCommitment,
+      completedRecoveryStrategies,
+      successfulStrategies: completedRecoveryStrategies,
     };
   } catch (error) {
     console.warn('[WellSync Storage] Failed to read from localStorage, using defaults:', error);
@@ -115,7 +125,13 @@ export function exportUserDataAsJSON(state: AppStorageState): string {
       profile: state.profile,
       history: state.history,
       rejectedHypotheses: state.rejectedHypotheses || {},
-      successfulStrategies: state.successfulStrategies || [],
+      activeRecoveryCommitment: state.activeRecoveryCommitment,
+      completedRecoveryStrategies: (state.completedRecoveryStrategies && state.completedRecoveryStrategies.length > 0)
+        ? state.completedRecoveryStrategies
+        : (state.successfulStrategies || []),
+      successfulStrategies: (state.completedRecoveryStrategies && state.completedRecoveryStrategies.length > 0)
+        ? state.completedRecoveryStrategies
+        : (state.successfulStrategies || []),
       preferences: {
         quietHours: state.quietHours,
         textSize: state.textSize,
@@ -180,6 +196,11 @@ export function importUserDataFromJSON(jsonStr: string): {
     const textSize = ['standard', 'large', 'xl'].includes(preferences.textSize) ? preferences.textSize : 'standard';
     const language = ['en', 'ar'].includes(preferences.language) ? preferences.language : 'en';
 
+    const legacyImportStrategies = Array.isArray(data.successfulStrategies) ? data.successfulStrategies : [];
+    const completedRecoveryStrategies = (Array.isArray(data.completedRecoveryStrategies) && data.completedRecoveryStrategies.length > 0)
+      ? data.completedRecoveryStrategies
+      : legacyImportStrategies;
+
     const newState: AppStorageState = {
       profile: validatedProfile,
       history: validatedHistory,
@@ -192,7 +213,9 @@ export function importUserDataFromJSON(jsonStr: string): {
       textSize,
       language,
       rejectedHypotheses: data.rejectedHypotheses && typeof data.rejectedHypotheses === 'object' ? data.rejectedHypotheses : {},
-      successfulStrategies: Array.isArray(data.successfulStrategies) ? data.successfulStrategies : [],
+      activeRecoveryCommitment: data.activeRecoveryCommitment,
+      completedRecoveryStrategies,
+      successfulStrategies: completedRecoveryStrategies,
     };
 
     saveAppState(newState);

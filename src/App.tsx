@@ -52,6 +52,25 @@ export function App() {
 
   const latestResult = evaluatedResults.length > 0 ? evaluatedResults[evaluatedResults.length - 1] : null;
 
+  // Automatically archive active commitment when recovery successfully completes
+  useEffect(() => {
+    if (
+      latestResult &&
+      latestResult.state === 'ON_TRACK' &&
+      latestResult.previousState === 'RECOVERING' &&
+      appState.activeRecoveryCommitment
+    ) {
+      const commitmentText = appState.activeRecoveryCommitment.text;
+      setAppState((prev) => ({
+        ...prev,
+        activeRecoveryCommitment: undefined,
+        completedRecoveryStrategies: prev.completedRecoveryStrategies.includes(commitmentText)
+          ? prev.completedRecoveryStrategies
+          : [commitmentText, ...prev.completedRecoveryStrategies].slice(0, 5),
+      }));
+    }
+  }, [latestResult, appState.activeRecoveryCommitment]);
+
   // Handlers
   const handleCompleteOnboarding = (profile: UserEngineProfile) => {
     setAppState((prev) => ({
@@ -85,11 +104,10 @@ export function App() {
       date: todayStr,
       contextNote: `Recovery Commitment: ${commitmentText}`,
     });
+    // Record as selected active commitment during this recovery cycle
     setAppState((prev) => ({
       ...prev,
-      successfulStrategies: prev.successfulStrategies.includes(commitmentText)
-        ? prev.successfulStrategies
-        : [commitmentText, ...prev.successfulStrategies].slice(0, 5),
+      activeRecoveryCommitment: { text: commitmentText, selectedDate: todayStr },
     }));
   };
 
@@ -195,7 +213,8 @@ export function App() {
             metric={activeMetric}
             language={appState.language}
             rejectedHypotheses={appState.rejectedHypotheses}
-            successfulStrategies={appState.successfulStrategies}
+            completedRecoveryStrategies={appState.completedRecoveryStrategies}
+            activeRecoveryCommitment={appState.activeRecoveryCommitment}
             onToggleRejectHypothesis={handleToggleRejectHypothesis}
             onCommitMicroAction={handleCommitMicroAction}
             onNavigateToToday={() => setCurrentTab('today')}

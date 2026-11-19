@@ -3,7 +3,12 @@
 **Track:** Challenge 09 — Sustaining Healthy Behaviors  
 **Target Showcase:** GITEX Global 2026 (Abu Dhabi Health Authority / MBZUAI / Inception42 / Microsoft)  
 **Audit Date:** November 19, 2026  
-**Final Status:** **COMPETITION READY (Score: 94 / 100)**  
+**Final Status:** **COMPETITION READY (Internal Qualitative Benchmark Assessment: 94 / 100 — Subjective Self-Audit)**  
+
+---
+
+> [!NOTE]
+> **Scoring Disclaimer**: The composite scorecard below is an **internal subjective evaluation** conducted by the engineering and audit team against published hackathon criteria. It does not represent an official score awarded by Challenge 09 judges, clinical evaluation committees, or health authorities. Real-world health impact remains an empirical hypothesis requiring formal clinical partner validation.  
 
 ---
 

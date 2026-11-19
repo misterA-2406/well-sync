@@ -36,14 +36,14 @@ During the comprehensive audit, 7 high-priority improvements were implemented, v
 
 ---
 
-### Improvement 3 (P1): Adaptive Habit Memory (Past Successful Recovery Strategies)
-- **Problem Identified:** The application did not adapt based on which micro-commitments actually helped the user succeed in past recovery events.
-- **Rationale:** Challenge 09 emphasizes adaptation that learns from user setbacks and past progress. Recommending strategies that previously restored the user's habit reinforces self-efficacy.
+### Improvement 3 (P1): Recovery Strategy Memory & Conflation Guard
+- **Problem Identified:** Initially, selecting a micro-action was conflated with strategy "success", falsely labeling unattempted actions as "proven". Furthermore, no persistent memory connected past completed recovery cycles with user action choices.
+- **Rationale:** Challenge 09 emphasizes honest behavioral adaptation. A strategy cannot be claimed as "proven" or "successful" merely because a user selected it. Instead, the system must only record an active commitment and only catalog it into completed recovery history once the user actually restores their habit through the 3-day recovery ladder.
 - **Files Modified:**
-  - `src/storage/storage.ts`: Added `successfulStrategies: string[]` to `AppStorageState`.
-  - `src/App.tsx`: Automatically records committed micro-actions into `successfulStrategies`.
-  - `src/screens/RecoveryScreen.tsx`: Added "Your Proven Recovery Strategies (Past Successes)" section highlighting previously effective actions.
-- **Verification:** Verified in storage unit tests and smoke tests.
+  - `src/storage/storage.ts`: Added `activeRecoveryCommitment` and `completedRecoveryStrategies` to `AppStorageState` with backwards-compatible alias `successfulStrategies`.
+  - `src/App.tsx`: Records `activeRecoveryCommitment` when selected; archives it into `completedRecoveryStrategies` *only* upon completed recovery transition (`previousState === 'RECOVERING' && nextState === 'ON_TRACK'`).
+  - `src/screens/RecoveryScreen.tsx`: Updated UI to display active commitment and changed section to "Strategies Used During Completed Past Recoveries (Observational History)", strictly removing unscientific "proven" terminology.
+- **Verification:** Verified in storage unit tests, regression tests, and `src/engine/__tests__/edge_cases_audit.test.ts`.
 
 ---
 

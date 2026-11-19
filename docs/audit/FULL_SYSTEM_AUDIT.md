@@ -18,13 +18,13 @@ WellSync substitutes streaks with an **adaptive 3-rung behavioral ladder** (Mini
 - **Implementation Status:** Functional, highly disciplined client-side architecture in React 19, TypeScript 5.7, and Vite 6.
 - **AI Claim Status:** **VERIFIED 100% DETERMINISTIC.** Zero runtime AI, zero LLM calls, zero black-box weights.
 - **Privacy & Network Status:** **VERIFIED ZERO NETWORK CALLS.** Production JavaScript bundle (`dist/`) confirmed to contain exactly 0 `fetch`, `XMLHttpRequest`, or `sendBeacon` calls. Data sovereignty in `localStorage` is maintained.
-- **Test Integrity:** **100/100 automated unit, smoke, and accessibility tests passing** with 98.46% statement coverage in core state logic and 100% in baseline and ladder logic.
+- **Test Integrity:** **103/103 automated unit, smoke, adversarial edge case, and accessibility tests passing** with 98.46% statement coverage in core state logic and 100% in baseline and ladder logic.
 - **Accessibility:** Automated `axe-core` scan confirmed 0 critical WCAG violations across all 7 screens. High-contrast UI and font-scaling are functional.
 - **Identified Deficiencies & Corrective Action:**
   1. *Hypothesis Veto Persistence (Fixed):* Previously stored in component local state; now permanently persisted in browser `localStorage`.
   2. *Data Import (Fixed):* User export was supported, but no re-import mechanism existed. Added an accessible JSON import parser with schema validation and UI upload.
   3. *Input Sanitization (Fixed):* Added boundary clamping for step count (0 to 100,000) and sleep minutes (0 to 1,440) to prevent negative and overflow values.
-  4. *Adaptive Habit Memory (Fixed):* Added persistent tracking of successful recovery strategies to prioritize proven past micro-commitments.
+  4. *Recovery Strategy Memory & Conflation Guard (Fixed):* Decoupled selection of micro-actions from completed recoveries; only micro-actions associated with completed 3-day recovery cycles are archived into `completedRecoveryStrategies` (avoiding false claims of "proven" efficacy).
 
 ---
 

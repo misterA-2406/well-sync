@@ -293,7 +293,8 @@ describe('WellSync Storage Layer', () => {
       expect(importResult.state?.profile.userGoalSteps).toBe(9500);
       expect(importResult.state?.history.length).toBe(1);
       expect(importResult.state?.rejectedHypotheses.weekend_dip).toBe(true);
-      expect(importResult.state?.successfulStrategies[0]).toBe('Take a 10-minute walk after meal');
+      expect(importResult.state?.successfulStrategies?.[0]).toBe('Take a 10-minute walk after meal');
+      expect(importResult.state?.completedRecoveryStrategies?.[0]).toBe('Take a 10-minute walk after meal');
     });
 
     it('rejects invalid or corrupted JSON on import without throwing', () => {
