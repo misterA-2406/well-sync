@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  wellsync-pilot-api:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: wellsync-pilot-backend
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+      - HOST=0.0.0.0
+      - DB_PATH=/app/data/pilot_telemetry.db
+    volumes:
+      - pilot-data:/app/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3001/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  pilot-data:

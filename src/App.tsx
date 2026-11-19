@@ -20,6 +20,7 @@ import {
 import { BehaviorMetric, DailyRecord, UserEngineProfile } from './engine/types';
 import { evaluateHistory } from './engine/state';
 import { SyntheticPersona } from './data/syntheticPersonas';
+import { queueCheckinForPilotSync } from './services/pilotSync';
 
 export function App() {
   const [appState, setAppState] = useState<AppStorageState>(() => loadAppState());
@@ -91,6 +92,13 @@ export function App() {
         newHistory[existingIdx] = { ...newHistory[existingIdx], ...record };
       } else {
         newHistory = [...prev.history, record];
+      }
+      if (record.steps != null) {
+        queueCheckinForPilotSync({
+          date: record.date,
+          steps: record.steps,
+          minutesAsleep: record.sleepMinutes != null ? record.sleepMinutes : undefined,
+        });
       }
       return {
         ...prev,

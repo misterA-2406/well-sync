@@ -11,10 +11,19 @@ import {
   AlertTriangle,
   Check,
   UserCheck,
+  Cloud,
+  CloudOff,
+  RefreshCw,
 } from 'lucide-react';
 import { SYNTHETIC_PERSONAS, SyntheticPersona } from '../data/syntheticPersonas';
 import { UserEngineProfile } from '../engine/types';
 import { Language, t } from '../i18n/translations';
+import {
+  loadPilotSyncState,
+  savePilotSyncState,
+  flushPilotSyncQueue,
+  PilotSyncState,
+} from '../services/pilotSync';
 
 interface SettingsScreenProps {
   profile: UserEngineProfile;
@@ -61,6 +70,41 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
   const [importMessage, setImportMessage] = useState<{ text: string; isError?: boolean } | null>(
     null
   );
+
+  // Pilot Study Sync State
+  const [syncState, setSyncState] = useState<PilotSyncState>(() => loadPilotSyncState());
+  const [syncFeedback, setSyncFeedback] = useState<string>('');
+  const [isSyncing, setIsSyncing] = useState<boolean>(false);
+
+  const handleToggleSync = (enabled: boolean) => {
+    const next = { ...syncState, enabled };
+    setSyncState(next);
+    savePilotSyncState(next);
+    if (enabled) {
+      handleManualSync(next);
+    }
+  };
+
+  const handleManualSync = async (currentState = syncState) => {
+    setIsSyncing(true);
+    setSyncFeedback(language === 'ar' ? 'جارٍ الاتصال بالخادم...' : 'Connecting to pilot server...');
+    const result = await flushPilotSyncQueue(currentState);
+    setIsSyncing(false);
+    if (result.success) {
+      setSyncFeedback(
+        language === 'ar'
+          ? `✓ تمت المزامنة بنجاح (${result.synced} سجل).`
+          : `✓ Synchronized successfully (${result.synced} records).`
+      );
+    } else {
+      setSyncFeedback(
+        language === 'ar'
+          ? `الخادم غير متاح حالياً (${result.remaining} سجل بانتظار المزامنة دون انقطاع التطبيق).`
+          : `Pilot server currently unreachable (${result.remaining} records queued offline safely).`
+      );
+    }
+    setTimeout(() => setSyncFeedback(''), 4500);
+  };
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -450,6 +494,94 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
             }`}
           >
             {importMessage.text}
+          </div>
+        )}
+      </section>
+
+      {/* 5. OPTIONAL PILOT STUDY SYNC (LOCAL-FIRST DEFAULT) */}
+      <section className="bg-white rounded-3xl p-6 sm:p-8 border border-ink-200 shadow-card space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-ink-100">
+          <div>
+            <h2 className="text-base sm:text-lg font-bold text-ink-900 flex items-center gap-2">
+              {syncState.enabled ? (
+                <Cloud className="w-5 h-5 text-forest-700" />
+              ) : (
+                <CloudOff className="w-5 h-5 text-ink-400" />
+              )}
+              <span>{language === 'ar' ? 'مزامنة دراسة البايلوت (اختيارية)' : 'Sync to Pilot Study (Optional)'}</span>
+            </h2>
+            <p className="text-xs text-ink-500 mt-0.5">
+              {language === 'ar'
+                ? 'الخصوصية أولاً ومحلياً افتراضياً. التطبيق يعمل بكامل مزاياه دون اتصال.'
+                : 'Privacy-by-default & local-first. App functions with 100% parity completely offline.'}
+            </p>
+          </div>
+
+          <label className="inline-flex items-center gap-3 cursor-pointer select-none">
+            <span className="text-xs font-bold text-ink-700">
+              {syncState.enabled
+                ? language === 'ar'
+                  ? 'المزامنة مفعلة'
+                  : 'Sync Enabled'
+                : language === 'ar'
+                ? 'معطلة (محلي فقط)'
+                : 'Disabled (Local-only)'}
+            </span>
+            <input
+              type="checkbox"
+              checked={syncState.enabled}
+              onChange={(e) => handleToggleSync(e.target.checked)}
+              className="sr-only"
+            />
+            <div
+              className={`w-11 h-6 rounded-full transition-colors relative ${
+                syncState.enabled ? 'bg-forest-600' : 'bg-ink-300'
+              }`}
+            >
+              <div
+                className={`w-5 h-5 rounded-full bg-white transition-transform absolute top-0.5 left-0.5 ${
+                  syncState.enabled ? 'translate-x-5' : 'translate-x-0'
+                }`}
+              />
+            </div>
+          </label>
+        </div>
+
+        <div className="p-4 bg-ivory-50 rounded-2xl border border-ink-200 text-xs text-ink-700 leading-relaxed space-y-2">
+          <p>
+            <strong>{language === 'ar' ? 'حماية الهوية بصفر بيانات شخصية:' : 'Zero-PII Identity Guarantee:'}</strong>{' '}
+            {language === 'ar'
+              ? 'تتم المزامنة باستخدام معرف رمزي عشوائي. لا يتم جمع أو إرسال أي أسماء أو بريد إلكتروني أو أرقام هواتف.'
+              : 'Sync uses a client-generated pseudonymous identifier. Zero names, emails, or phone numbers are ever ingested or transmitted.'}
+          </p>
+          <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-ink-200/60 font-mono text-[11px] text-ink-600">
+            <span>
+              {language === 'ar' ? 'المعرف الرمزي للبايلوت:' : 'Pseudonymous ID:'}{' '}
+              <strong className="text-forest-900">{syncState.pseudonymousId}</strong>
+            </span>
+            <span>
+              {language === 'ar' ? 'السجلات المعلقة محلياً:' : 'Queued offline records:'}{' '}
+              <strong className="text-sand-800">{syncState.queue.length}</strong>
+            </span>
+          </div>
+        </div>
+
+        {syncState.enabled && (
+          <div className="flex items-center gap-3 pt-1">
+            <button
+              type="button"
+              onClick={() => handleManualSync()}
+              disabled={isSyncing}
+              className="inline-flex items-center gap-2 py-2.5 px-4 rounded-xl text-xs font-bold text-forest-900 bg-forest-50 hover:bg-forest-100 border border-forest-200 transition-colors disabled:opacity-50"
+            >
+              <RefreshCw className={`w-3.5 h-3.5 ${isSyncing ? 'animate-spin' : ''}`} />
+              <span>{language === 'ar' ? 'مزامنة يدوية الآن' : 'Sync Now'}</span>
+            </button>
+            {syncFeedback && (
+              <span className="text-xs font-medium text-ink-600 animate-fade-in">
+                {syncFeedback}
+              </span>
+            )}
           </div>
         )}
       </section>

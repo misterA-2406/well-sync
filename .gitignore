@@ -24,6 +24,10 @@ coverage
 *.sln
 *.sw?
 
+# Database
+*.db
+*.sqlite
+
 # Analysis data
 analysis/data/*
 !analysis/data/.gitkeep
