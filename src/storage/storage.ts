@@ -9,6 +9,7 @@
  */
 
 import { DailyRecord, UserEngineProfile } from '../engine/types';
+import { DEFAULT_CONTEXT_CONFIG, UserContextConfig } from '../engine/contextModes';
 
 export interface AppStorageState {
   profile: UserEngineProfile;
@@ -21,6 +22,7 @@ export interface AppStorageState {
   activeRecoveryCommitment?: { text: string; selectedDate: string };
   completedRecoveryStrategies: string[];
   successfulStrategies?: string[]; // Backward compatibility alias
+  contextConfig: UserContextConfig;
 }
 
 export const STORAGE_KEY = 'wellsync_app_data_v1';
@@ -38,6 +40,7 @@ export const DEFAULT_APP_STATE: AppStorageState = {
   rejectedHypotheses: {},
   completedRecoveryStrategies: [],
   successfulStrategies: [],
+  contextConfig: DEFAULT_CONTEXT_CONFIG,
 };
 
 /**
@@ -86,6 +89,14 @@ export function loadAppState(): AppStorageState {
       activeRecoveryCommitment: parsed.activeRecoveryCommitment,
       completedRecoveryStrategies,
       successfulStrategies: completedRecoveryStrategies,
+      contextConfig: parsed.contextConfig && typeof parsed.contextConfig === 'object'
+        ? {
+            ...DEFAULT_CONTEXT_CONFIG,
+            ...parsed.contextConfig,
+            shiftPattern: { ...DEFAULT_CONTEXT_CONFIG.shiftPattern, ...(parsed.contextConfig.shiftPattern || {}) },
+            plannedPause: { ...DEFAULT_CONTEXT_CONFIG.plannedPause, ...(parsed.contextConfig.plannedPause || {}) },
+          }
+        : DEFAULT_CONTEXT_CONFIG,
     };
   } catch (error) {
     console.warn('[WellSync Storage] Failed to read from localStorage, using defaults:', error);
@@ -216,6 +227,9 @@ export function importUserDataFromJSON(jsonStr: string): {
       activeRecoveryCommitment: data.activeRecoveryCommitment,
       completedRecoveryStrategies,
       successfulStrategies: completedRecoveryStrategies,
+      contextConfig: data.contextConfig && typeof data.contextConfig === 'object'
+        ? { ...DEFAULT_CONTEXT_CONFIG, ...data.contextConfig }
+        : DEFAULT_CONTEXT_CONFIG,
     };
 
     saveAppState(newState);

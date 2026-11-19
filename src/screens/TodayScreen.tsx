@@ -17,6 +17,8 @@ import { ActivityChart } from '../components/ActivityChart';
 import { TargetLadderCard } from '../components/TargetLadderCard';
 import { RecoveryProgressCard } from '../components/RecoveryProgressCard';
 import { ContextualGuidanceCard } from '../components/ContextualGuidanceCard';
+import { ContextModeBanner } from '../components/ContextModeBanner';
+import { DEFAULT_CONTEXT_CONFIG, UserContextConfig } from '../engine/contextModes';
 
 interface TodayScreenProps {
   profile: UserEngineProfile;
@@ -24,9 +26,11 @@ interface TodayScreenProps {
   metric: BehaviorMetric;
   language: Language;
   historyResults?: EngineDayResult[];
+  contextConfig?: UserContextConfig;
   onChangeMetric: (metric: BehaviorMetric) => void;
   onSaveRecord: (record: DailyRecord) => void;
   onNavigateToRecovery: () => void;
+  onUpdateContextConfig?: (config: UserContextConfig) => void;
 }
 
 export const TodayScreen: React.FC<TodayScreenProps> = ({
@@ -35,9 +39,11 @@ export const TodayScreen: React.FC<TodayScreenProps> = ({
   metric,
   language,
   historyResults = [],
+  contextConfig = DEFAULT_CONTEXT_CONFIG,
   onChangeMetric,
   onSaveRecord,
   onNavigateToRecovery,
+  onUpdateContextConfig,
 }) => {
   const todayStr = new Date().toISOString().slice(0, 10);
   const [date, setDate] = useState<string>(todayStr);
@@ -141,6 +147,14 @@ export const TodayScreen: React.FC<TodayScreenProps> = ({
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto pb-12">
+      {/* UAE CONTEXT ENGINE BANNER */}
+      <ContextModeBanner
+        contextAdaptation={latestResult?.contextAdaptation}
+        contextConfig={contextConfig}
+        onUpdateContextConfig={onUpdateContextConfig || (() => {})}
+        lang={language}
+      />
+
       {/* SECTION 1: HERO & TODAY'S OVERVIEW */}
       <section className="bg-white rounded-3xl p-6 sm:p-8 border border-ink-200 shadow-card">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">

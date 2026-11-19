@@ -81,6 +81,7 @@ export interface EngineDayResult {
   returnCount: number;
   barrierHypotheses: BarrierHypothesis[];
   techniqueCard: TechniqueCard;
+  contextAdaptation?: any;
 }
 
 export interface UserEngineProfile {

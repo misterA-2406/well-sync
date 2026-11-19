@@ -9,3 +9,4 @@ export * from './ladder';
 export * from './barriers';
 export * from './recommendations';
 export * from './state';
+export * from './contextModes';

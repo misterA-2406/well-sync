@@ -48,8 +48,8 @@ export function App() {
       activeMetric === 'steps'
         ? appState.profile.userGoalSteps
         : appState.profile.userGoalSleepMinutes;
-    return evaluateHistory(appState.history, goal, activeMetric);
-  }, [appState.history, appState.profile, activeMetric]);
+    return evaluateHistory(appState.history, goal, activeMetric, undefined, appState.contextConfig);
+  }, [appState.history, appState.profile, activeMetric, appState.contextConfig]);
 
   const latestResult = evaluatedResults.length > 0 ? evaluatedResults[evaluatedResults.length - 1] : null;
 
@@ -119,6 +119,13 @@ export function App() {
         ...prev.rejectedHypotheses,
         [id]: !prev.rejectedHypotheses[id],
       },
+    }));
+  };
+
+  const handleUpdateContextConfig = (newContextConfig: any) => {
+    setAppState((prev) => ({
+      ...prev,
+      contextConfig: newContextConfig,
     }));
   };
 
@@ -203,9 +210,11 @@ export function App() {
               historyResults={evaluatedResults}
               metric={activeMetric}
               language={appState.language}
+              contextConfig={appState.contextConfig}
               onChangeMetric={setActiveMetric}
               onSaveRecord={handleSaveRecord}
               onNavigateToRecovery={() => setCurrentTab('recovery')}
+              onUpdateContextConfig={handleUpdateContextConfig}
             />
           )}
 

@@ -8,6 +8,7 @@
 import { calculateBaseline, normalizeDateString } from './baseline';
 import { detectBarrierHypotheses } from './barriers';
 import { DEFAULT_ENGINE_CONFIG, EngineConfig } from './config';
+import { DEFAULT_CONTEXT_CONFIG, evaluateContextAdaptation, UserContextConfig } from './contextModes';
 import { calculateLadderTargets, getTargetForLevel, stepDownOnLapse, stepUpLadder } from './ladder';
 import { getTechniqueCard } from './recommendations';
 import { BehaviorMetric, DailyRecord, DayEvaluation, EngineDayResult, LadderLevel, UserState } from './types';
@@ -19,6 +20,7 @@ export interface ProcessDayContext {
   metric: BehaviorMetric;
   userGoal: number;
   config?: EngineConfig;
+  contextConfig?: UserContextConfig;
 }
 
 /**
@@ -40,7 +42,7 @@ export function calculate7DayMean(
   for (const r of allRecords) {
     const rTime = new Date(normalizeDateString(r.date) + 'T00:00:00Z').getTime();
     if (rTime >= windowStart && rTime <= currentTimestamp) {
-      if (!r.isMissing) {
+      if (!r.isMissing && !r.isRestDeclared) {
         const val = metric === 'steps' ? r.steps : r.sleepMinutes;
         if (typeof val === 'number' && !isNaN(val)) {
           dayValues.push(val);
@@ -65,8 +67,16 @@ export function processDay({
   metric,
   userGoal,
   config = DEFAULT_ENGINE_CONFIG,
+  contextConfig = DEFAULT_CONTEXT_CONFIG,
 }: ProcessDayContext): EngineDayResult {
   const dateStr = normalizeDateString(currentRecord.date);
+
+  // 0. Context Mode Evaluation (Ramadan, Summer Heat, Shift Work, Planned Pause)
+  const contextAdaptation = evaluateContextAdaptation(dateStr, contextConfig);
+  let effectiveRecord = currentRecord;
+  if (contextAdaptation.isRestExempt) {
+    effectiveRecord = { ...currentRecord, isRestDeclared: true };
+  }
 
   // 1. Calculate Baseline for current day with anti-erosion safeguards
   const { baseline, isColdStart, isFrozen } = calculateBaseline(
@@ -82,9 +92,9 @@ export function processDay({
 
   // 2. Cold-start suppression check:
   // Suppress SLIPPING and LAPSED until at least 7 valid days exist in total
-  const rawVal = metric === 'steps' ? currentRecord.steps : currentRecord.sleepMinutes;
+  const rawVal = metric === 'steps' ? effectiveRecord.steps : effectiveRecord.sleepMinutes;
   const isMissing = Boolean(
-    currentRecord.isMissing || rawVal === null || rawVal === undefined || isNaN(rawVal)
+    effectiveRecord.isMissing || rawVal === null || rawVal === undefined || isNaN(rawVal)
   );
   const maxSafeValue = metric === 'steps' ? 100000 : 1440;
   const actualValue = isMissing ? 0 : Math.max(0, Math.min(maxSafeValue, Number(rawVal)));
@@ -95,8 +105,15 @@ export function processDay({
   const isLearningBaseline = totalRecordedValidDays < config.minDaysForLapseDetection;
   const learningMessage = isLearningBaseline ? 'learning your baseline' : undefined;
 
-  // 3. Ladder Targets
-  const ladderTargets = calculateLadderTargets(baseline, userGoal, config);
+  // 3. Ladder Targets (scaled by active context mode)
+  let ladderTargets = calculateLadderTargets(baseline, userGoal, config);
+  if (contextAdaptation.targetMultiplier !== 1.0) {
+    ladderTargets = {
+      minimum: Math.max(1, Math.round(ladderTargets.minimum * contextAdaptation.targetMultiplier)),
+      target: Math.max(1, Math.round(ladderTargets.target * contextAdaptation.targetMultiplier)),
+      stretch: Math.max(1, Math.round(ladderTargets.stretch * contextAdaptation.targetMultiplier)),
+    };
+  }
 
   // 4. Active Ladder Level & Current Target
   const prevState: UserState = previousResult?.state ?? 'ON_TRACK';
@@ -116,12 +133,16 @@ export function processDay({
 
   // On Minimum rung: below-par only if failing to meet the Minimum target.
   // On Target/Stretch: below-par if failing to reach 60% of baseline.
-  // Missing data protection: When config.missingDataCanCauseLapse is false (default), missing data does NOT count as below-par.
-  const isBelowPar = (config.missingDataCanCauseLapse && isMissing) || (
-    !isMissing && (
-      prevLadderLevel === 'MINIMUM'
-        ? actualValue < ladderTargets.minimum
-        : actualValue < thresholdValue
+  // Missing data and declared rest protection:
+  // - Declared rest / context-exempt days NEVER count as below-par.
+  // - When config.missingDataCanCauseLapse is false (default), missing data does NOT count as below-par.
+  const isBelowPar = !effectiveRecord.isRestDeclared && (
+    (config.missingDataCanCauseLapse && isMissing) || (
+      !isMissing && (
+        prevLadderLevel === 'MINIMUM'
+          ? actualValue < ladderTargets.minimum
+          : actualValue < thresholdValue
+      )
     )
   );
 
@@ -150,8 +171,8 @@ export function processDay({
   // consecutiveBelowPar tracks below-par failure streaks for lapse detection
   if (isBelowPar) {
     consecutiveBelowPar += 1;
-  } else if (!isMissing || config.missingDataCanCauseLapse) {
-    // A recorded valid day at or above par resets consecutiveBelowPar to zero
+  } else if (!isMissing && !effectiveRecord.isRestDeclared) {
+    // A recorded valid active day at or above par resets consecutiveBelowPar to zero
     consecutiveBelowPar = 0;
   }
   // Note: if isMissing && !config.missingDataCanCauseLapse, consecutiveBelowPar pauses without incrementing or causing false lapses
@@ -202,7 +223,9 @@ export function processDay({
     const sevenDayMean = calculate7DayMean(history, currentRecord, metric);
     const isSlippingMean = sevenDayMean >= 0 && baseline > 0 && sevenDayMean < baseline * config.slippingMeanRatio;
 
-    if (isSlippingMean) {
+    if (contextAdaptation.isRestExempt) {
+      nextState = prevState === 'LAPSED' ? 'LAPSED' : 'ON_TRACK';
+    } else if (isSlippingMean) {
       nextState = 'SLIPPING';
     } else {
       nextState = 'ON_TRACK';
@@ -244,6 +267,7 @@ export function processDay({
     returnCount,
     barrierHypotheses,
     techniqueCard,
+    contextAdaptation,
   };
 }
 
@@ -254,7 +278,8 @@ export function evaluateHistory(
   records: DailyRecord[],
   userGoal: number,
   metric: BehaviorMetric,
-  config: EngineConfig = DEFAULT_ENGINE_CONFIG
+  config: EngineConfig = DEFAULT_ENGINE_CONFIG,
+  contextConfig: UserContextConfig = DEFAULT_CONTEXT_CONFIG
 ): EngineDayResult[] {
   // Sort records chronologically
   const sorted = [...records].sort(
@@ -275,13 +300,15 @@ export function evaluateHistory(
       metric,
       userGoal,
       config,
+      contextConfig,
     });
 
     results.push(dayResult);
 
-    // Save record with assignedState for baseline contamination checks
+    // Save record with assignedState and rest status for baseline contamination checks
     processedHistory.push({
       ...currentRecord,
+      isRestDeclared: Boolean(currentRecord.isRestDeclared || dayResult.contextAdaptation?.isRestExempt),
       assignedState: dayResult.state,
     });
   }
