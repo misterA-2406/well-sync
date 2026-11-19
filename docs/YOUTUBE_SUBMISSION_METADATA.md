@@ -42,7 +42,7 @@ Challenge 09: Sustaining Healthy Behaviors | Track: Wellbeing
 Technology Collaborators: Microsoft, Inception 42 | Scientific Collaborator: MBZUAI
 
 🌿 WHAT IS WELLSYNC?
-In Abu Dhabi, healthy habits collapse not from a lack of will, but when real life hits: extreme summer heat (>45°C), 12-hour rotating hospital night shifts (SEHA/M42), and Ramadan circadian shifts. When routines are disrupted, conventional fitness apps punish users with streak resets to zero.
+In Abu Dhabi, healthy habits collapse not from a lack of will, but when real life hits: extreme summer heat (above 45°C), 12-hour rotating hospital night shifts (SEHA/M42), and Ramadan circadian shifts. When routines are disrupted, conventional fitness apps punish users with streak resets to zero.
 
 Psychologists call this the "What-the-Hell Effect" (Marlatt & Gordon): one missed day feels like total failure, and users quit. WellSync was built on a fundamentally different principle: habit durability is not measured by uninterrupted perfection. It is defined by the speed and ease of recovery after disruption.
 
@@ -70,7 +70,7 @@ We benchmarked our deterministic engine against 71 real participants and 7,443 p
 
 🇦🇪 BUILT NATIVELY FOR THE UAE:
 • Ramadan Fasting Mode: Offline Hijri calendar calculations, 70% daytime scaling, and activity prompt windows post-Iftar (8:30 PM–11:00 PM) and pre-Suhoor.
-• Extreme Summer Heat Mode: Triggers at >38°C to swap outdoor routes with air-conditioned mall-walking loops (Abu Dhabi Mall, Yas Mall).
+• Extreme Summer Heat Mode: Triggers at temperatures above 38°C to swap outdoor routes with air-conditioned mall-walking loops (Abu Dhabi Mall, Yas Mall).
 • SEHA Shift-Work Mode: Calibrated for 2-Day, 2-Night, 4-Off rosters with 60% night shift scaling and non-penalized recovery sleep.
 • Full Arabic RTL Localization: 1-click bidirectional language toggle with mirrored layouts and typography.
 
