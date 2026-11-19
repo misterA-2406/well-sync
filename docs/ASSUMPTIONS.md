@@ -102,7 +102,7 @@ In `analysis/replay.py` and the application's Evidence screen, four behavioral p
 2. **Policy A' (Personal Baseline with Streak Reset)**:
    - Target is dynamically personalized to each participant's rolling 28-day baseline ($\text{Target}_{i,t} = \text{Baseline}_{i,t}$).
    - Employs the conventional reset-to-zero streak mechanic upon any below-target or missing day.
-   - *Empirical Finding*: Even with 100% personalized baseline targets, real participants experienced a mean of **15.3 streak collapses to zero** (median 15.0), demonstrating that streak fragility is an architectural defect of the reset mechanic itself, not just an artifact of arbitrary 10,000-step targets.
+   - *Empirical Finding*: Even with 100% personalized baseline targets, real participants experienced a mean of **17.9 streak collapses to zero** (median 15.0), demonstrating that streak fragility is an architectural defect of the reset mechanic itself, not just an artifact of arbitrary 10,000-step targets.
 3. **Policy B (WellSync Adaptive Personal Ladder)**:
    - 3-rung personalized ladder with 50% Minimum step-down on lapse.
    - Progress measured permanently via **Active Days** and **Return Count**.
@@ -111,9 +111,9 @@ In `analysis/replay.py` and the application's Evidence screen, four behavioral p
 ### 7.2 Attainability & Missing Days Definitions
 - **Baseline-Identical Attainability**:
   $$\text{Attainability}_{\text{baseline}} = \frac{\text{Days with } \text{actualSteps} \ge \text{Baseline}}{\text{Total Days recorded}} \times 100\%$$
-  Under this mathematically identical definition, Policy A' and Policy B exhibit identical attainability: **31.9%**.
+  Under this mathematically identical baseline definition, Policy A' and Policy B exhibit identical baseline attainability: **28.0%**.
 - **Active Rung Attainability (Policy B Feasibility)**:
   $$\text{Attainability}_{\text{rung}} = \frac{\text{Days meeting Active Ladder Target}}{\text{Total Days recorded}} \times 100\%$$
-  During behavioral lapses, Policy B steps down to the 50% Minimum rung, allowing participants to achieve success days ($30.0\%$ attainability on stepped-down days) and complete recovery rather than facing an insurmountable 100% target during sickness or life disruption.
+  During behavioral lapses, Policy B steps down to the 50% Minimum rung, allowing participants to achieve success days (**31.9%** overall attainability on assigned rungs) and complete recovery rather than facing an insurmountable 100% target during sickness or life disruption.
 - **Missing Days Treatment**:
-  In all policies, unrecorded or unsynced calendar days are assigned $\text{actualValue} = 0$, counted in the total days denominator (non-attained), break streaks in Policy A and A', and count as below-par days towards the 3-day lapse trigger in Policy B.
+  In all policies, unrecorded or unsynced calendar days are assigned $\text{actualValue} = 0$, counted in the total days denominator (non-attained), and break streaks in Policy A and A'. Under WellSync v2.0 safe missing-data handling (`missingDataCanCauseLapse = false`), missing sensor dropouts do not trigger false lapses.

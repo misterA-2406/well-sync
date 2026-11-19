@@ -93,4 +93,55 @@ describe('Missing Data Treatment & Comparative Analysis', () => {
     expect(results[1].evaluation.actualValue).toBe(0);
     expect(results[2].evaluation.isMissing).toBe(true);
   });
+
+  it('resets consecutive below-par counters when an unrecorded multi-day hiatus occurs', () => {
+    // 7 days baseline
+    const records: DailyRecord[] = [];
+    for (let i = 1; i <= 7; i++) {
+      records.push({ date: `2026-10-0${i}`, steps: 8000 });
+    }
+    // 2 consecutive below-par days on Oct 8 and Oct 9
+    records.push({ date: '2026-10-08', steps: 2000 });
+    records.push({ date: '2026-10-09', steps: 2000 });
+
+    // 14-day unrecorded calendar hiatus: next record is Oct 24 (dayGap = 15 days)
+    records.push({ date: '2026-10-24', steps: 2000 });
+
+    const results = evaluateHistory(records, userGoal, 'steps');
+    const dayOct9 = results[8];
+    const dayOct24 = results[9];
+
+    expect(dayOct9.consecutiveBelowPar).toBe(2);
+    // On Oct 24, because of the 15-day hiatus, consecutive below-par reset to 0 before evaluating Oct 24
+    // So Oct 24 has consecutiveBelowPar = 1, NOT 3, and remains in non-lapsed state!
+    expect(dayOct24.consecutiveBelowPar).toBe(1);
+    expect(dayOct24.state).not.toBe('LAPSED');
+  });
+
+  it('demonstrates the 4-way data categorization under 35.5% unsynced rate scenario', () => {
+    const records: DailyRecord[] = [
+      { date: '2026-10-01', steps: 8500 }, // Category 1: Valid active data (>= 60% baseline)
+      { date: '2026-10-02', steps: 2500 }, // Category 2: Recorded low activity (1 - 59% baseline)
+      { date: '2026-10-03', steps: 0, isMissing: false }, // Category 3: Recorded zero activity (explicit 0)
+      { date: '2026-10-04', isMissing: true }, // Category 4: Missing/unsynced wearable data
+    ];
+
+    const results = evaluateHistory(records, 8000, 'steps');
+
+    // Cat 1: Valid active -> at-par, success, active day
+    expect(results[0].evaluation.isBelowPar).toBe(false);
+    expect(results[0].activeDays).toBe(1);
+
+    // Cat 2: Recorded low -> below-par
+    expect(results[1].evaluation.isBelowPar).toBe(true);
+
+    // Cat 3: Recorded 0 -> below-par
+    expect(results[2].evaluation.isBelowPar).toBe(true);
+    expect(results[2].evaluation.actualValue).toBe(0);
+
+    // Cat 4: Missing -> NOT below-par under default safe mode, does not advance failure streak
+    expect(results[3].evaluation.isBelowPar).toBe(false);
+    expect(results[3].evaluation.isMissing).toBe(true);
+    expect(results[3].state).toBe('ON_TRACK');
+  });
 });

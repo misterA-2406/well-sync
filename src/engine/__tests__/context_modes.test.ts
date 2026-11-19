@@ -231,4 +231,35 @@ describe('UAE Context Engine - Planned Pause Mode', () => {
     expect(returnDay.state).toBe('ON_TRACK');
     expect(returnDay.activeDays).toBe(14); // 7 base + 6 travel days meeting minimum rung + 1 return day = 14 active days
   });
+
+  it('handles edge cases: open-ended planned pause, summer heat boundary dates, and invalid dates', () => {
+    // Open-ended pause (no endDate)
+    const openPauseConfig: UserContextConfig = {
+      ...DEFAULT_CONTEXT_CONFIG,
+      plannedPause: {
+        enabled: true,
+        reason: 'family_care',
+        startDate: '2026-05-01',
+      },
+    };
+    const openPauseResult = evaluateContextAdaptation('2026-05-20', openPauseConfig);
+    expect(openPauseResult.mode).toBe('planned_pause');
+    expect(openPauseResult.isRestExempt).toBe(true);
+
+    // Date before open-ended pause start
+    const prePauseResult = evaluateContextAdaptation('2026-04-30', openPauseConfig);
+    expect(prePauseResult.mode).toBe('standard');
+
+    // Summer heat seasonal boundary checks
+    expect(isAbuDhabiSummerSeason('2026-05-31')).toBe(false);
+    expect(isAbuDhabiSummerSeason('2026-06-01')).toBe(true);
+    expect(isAbuDhabiSummerSeason('2026-09-30')).toBe(true);
+    expect(isAbuDhabiSummerSeason('2026-10-01')).toBe(false);
+
+    // Invalid date fallback safety
+    const invalidAdaptation = evaluateContextAdaptation('invalid-date', DEFAULT_CONTEXT_CONFIG);
+    expect(invalidAdaptation.mode).toBe('standard');
+    expect(invalidAdaptation.targetMultiplier).toBe(1.0);
+  });
 });
+

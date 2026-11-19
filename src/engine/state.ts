@@ -162,6 +162,19 @@ export function processDay({
   let activeDays = previousResult?.activeDays ?? 0;
   let returnCount = previousResult?.returnCount ?? 0;
 
+  // Calendar gap detection:
+  // If calendar days elapsed between previous record and current day > 1,
+  // consecutive streaks are interrupted by unrecorded hiatus.
+  if (previousResult?.date) {
+    const prevTimestamp = new Date(normalizeDateString(previousResult.date) + 'T00:00:00Z').getTime();
+    const currTimestamp = new Date(dateStr + 'T00:00:00Z').getTime();
+    const dayGap = Math.round((currTimestamp - prevTimestamp) / (24 * 60 * 60 * 1000));
+    if (dayGap > 1) {
+      consecutiveBelowPar = 0;
+      consecutiveSuccessDays = 0;
+    }
+  }
+
   // 6. Update Active Days (activity recorded meeting or exceeding minimum rung, never resets)
   if (!isMissing && actualValue >= ladderTargets.minimum) {
     activeDays += 1;
@@ -174,8 +187,11 @@ export function processDay({
   } else if (!isMissing && !effectiveRecord.isRestDeclared) {
     // A recorded valid active day at or above par resets consecutiveBelowPar to zero
     consecutiveBelowPar = 0;
+  } else if (isMissing && !config.missingDataCanCauseLapse) {
+    // An unrecorded/missing day resets consecutive failure count to ensure lapses require
+    // genuine unbroken consecutive calendar days of sub-par performance
+    consecutiveBelowPar = 0;
   }
-  // Note: if isMissing && !config.missingDataCanCauseLapse, consecutiveBelowPar pauses without incrementing or causing false lapses
 
   // consecutiveSuccessDays tracks meeting current ladder target for step-up and recovery
   if (isSuccessDay) {

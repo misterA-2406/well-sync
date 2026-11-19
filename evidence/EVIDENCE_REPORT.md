@@ -4,7 +4,7 @@
 **Citation**: Zenodo 7229547 (DOI: [10.5281/zenodo.7229547](https://doi.org/10.5281/zenodo.7229547)), CC BY 4.0, PMC9622868  
 **Cohort Size**: N = 71 participants (7,443 total participant-days)  
 **Replay Engine Version**: v2.0.0 (Deterministic, Zero Runtime AI)  
-**Generated At (UTC)**: 2026-11-19T13:25:58.202Z
+**Generated At (UTC)**: 2026-11-19T14:55:44.892Z
 
 ---
 

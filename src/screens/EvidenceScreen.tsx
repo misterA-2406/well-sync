@@ -134,7 +134,7 @@ export const EvidenceScreen: React.FC<EvidenceScreenProps> = ({ language = 'en' 
                 <span>{t('evidence.empirical', language)}</span>
               </span>
               <span className="text-xs text-ink-500 font-medium">
-                LifeSnaps Replay Simulation (71 Participants • 7,410 Rows)
+                LifeSnaps Replay Simulation (71 Participants • 7,443 Days)
               </span>
             </div>
 
@@ -146,8 +146,8 @@ export const EvidenceScreen: React.FC<EvidenceScreenProps> = ({ language = 'en' 
 
             <p className="text-xs sm:text-sm text-ink-600 leading-relaxed max-w-3xl">
               {language === 'ar'
-                ? 'محاكاة لسلوك 71 مشاركاً في دراسة LifeSnaps تكشف أن سلاسل التتابع التقليدية تنهار بمعدل 15.3 مرة للشخص الواحد حتى مع أهداف مخصصة لخط الأساس الشخصي (السياسة أ\')، مما يفسر أسباب الإحباط والانسحاب من تطبيقات الصحة.'
-                : 'Empirical replay across 71 real participants demonstrates that conventional reset-to-zero streaks collapse an average of 15.3 times per participant even when targets match their personalized baseline (Policy A\'), illustrating why streak gamification induces habit abandonment.'}
+                ? 'محاكاة لسلوك 71 مشاركاً في دراسة LifeSnaps تكشف أن سلاسل التتابع التقليدية تنهار بمعدل 17.9 مرة للشخص الواحد حتى مع أهداف مخصصة لخط الأساس الشخصي (السياسة أ\')، مما يفسر أسباب الإحباط والانسحاب من تطبيقات الصحة.'
+                : "Empirical replay across 71 real participants demonstrates that conventional reset-to-zero streaks collapse an average of 17.9 times per participant even when targets match their personalized baseline (Policy A'), illustrating why streak gamification induces habit abandonment."}
             </p>
           </div>
         </div>
@@ -516,8 +516,8 @@ export const EvidenceScreen: React.FC<EvidenceScreenProps> = ({ language = 'en' 
                 <p>
                   <strong>{language === 'ar' ? 'الخلاصة العلمية الحاسمة:' : 'Critical Scientific Finding:'}</strong>{' '}
                   {language === 'ar'
-                    ? 'في السياسة أ\'، عندما خصصنا الهدف ليعادل خط الأساس الشخصي لكل مشارك بدقة، ظل المشاركون يواجهون متوسط 15.3 انهياراً لسلاسل التتابع لأن أي يوم إجازة أو مرض أو عدم مزامنة يصفر التقدم كلياً. هذا يثبت أن المشكلة الجوهرية ليست فقط في تحديد أهداف غير واقعية، بل في آلية "التصفير للصفر" العقابية ذاتها.'
-                    : "In Policy A', even when targets perfectly matched each participant's own personal baseline, participants still suffered an average of 15.3 streak resets to zero because any single illness, travel day, or sensor gap destroyed their accumulated record. This proves that the core driver of habit abandonment is the reset-to-zero streak mechanic itself, not just goal difficulty."}
+                    ? 'في السياسة أ\'، عندما خصصنا الهدف ليعادل خط الأساس الشخصي لكل مشارك بدقة، ظل المشاركون يواجهون متوسط 17.9 انهياراً لسلاسل التتابع لأن أي يوم إجازة أو مرض أو عدم مزامنة يصفر التقدم كلياً. هذا يثبت أن المشكلة الجوهرية ليست فقط في تحديد أهداف غير واقعية، بل في آلية "التصفير للصفر" العقابية ذاتها.'
+                    : "In Policy A', even when targets perfectly matched each participant's own personal baseline, participants still suffered an average of 17.9 streak resets to zero because any single illness, travel day, or sensor gap destroyed their accumulated record. This proves that the core driver of habit abandonment is the reset-to-zero streak mechanic itself, not just goal difficulty."}
                 </p>
                 <p className="text-[11px] text-ink-500">
                   <em>{language === 'ar' ? 'توضيح الشفافية:' : 'Transparency Note:'}</em>{' '}
