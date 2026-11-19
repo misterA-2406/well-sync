@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import {
   Settings,
   Download,
+  Upload,
   Trash2,
   Sparkles,
   Shield,
@@ -23,6 +24,7 @@ interface SettingsScreenProps {
   onChangeTextSize: (size: 'standard' | 'large' | 'xl') => void;
   onLoadSyntheticPersona: (persona: SyntheticPersona) => void;
   onExportData: () => void;
+  onImportData?: (jsonStr: string) => { success: boolean; error?: string };
   onDeleteAllData: () => void;
 }
 
@@ -36,6 +38,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
   onChangeTextSize,
   onLoadSyntheticPersona,
   onExportData,
+  onImportData,
   onDeleteAllData,
 }) => {
   const [stepGoal, setStepGoal] = useState<number>(profile.userGoalSteps);
@@ -49,6 +52,30 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
   const [selectedPersonaId, setSelectedPersonaId] = useState<string>(SYNTHETIC_PERSONAS[0].id);
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
   const [saveMessage, setSaveMessage] = useState<string>('');
+  const [importMessage, setImportMessage] = useState<{ text: string; isError?: boolean } | null>(null);
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !onImportData) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const content = event.target?.result as string;
+      const res = onImportData(content);
+      if (res.success) {
+        setImportMessage({
+          text: language === 'ar' ? '✓ تم استيراد البيانات واستعادتها بنجاح!' : '✓ Data imported and restored successfully!',
+        });
+      } else {
+        setImportMessage({
+          text: language === 'ar' ? `خطأ في الاستيراد: ${res.error}` : `Import error: ${res.error}`,
+          isError: true,
+        });
+      }
+      setTimeout(() => setImportMessage(null), 4000);
+    };
+    reader.readAsText(file);
+  };
 
   const handleSaveGoals = (e: React.FormEvent) => {
     e.preventDefault();
@@ -332,6 +359,19 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
             {t('settings.export_btn', language)}
           </button>
 
+          {onImportData && (
+            <label className="inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs font-semibold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 transition-colors border border-indigo-200 cursor-pointer">
+              <Upload className="w-4 h-4" />
+              <span>{language === 'ar' ? 'استيراد نسخة احتياطية (JSON)' : 'Import JSON Backup'}</span>
+              <input
+                type="file"
+                accept=".json"
+                onChange={handleFileUpload}
+                className="hidden"
+              />
+            </label>
+          )}
+
           <button
             onClick={() => setShowDeleteModal(true)}
             className="inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs font-semibold text-rose-700 bg-rose-50 hover:bg-rose-100 transition-colors border border-rose-200"
@@ -340,6 +380,12 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
             {t('settings.wipe_btn', language)}
           </button>
         </div>
+
+        {importMessage && (
+          <div className={`p-3 rounded-xl text-xs font-bold ${importMessage.isError ? 'bg-rose-50 text-rose-800 border border-rose-200' : 'bg-emerald-50 text-emerald-800 border border-emerald-200'}`}>
+            {importMessage.text}
+          </div>
+        )}
       </div>
 
       {/* Confirmation Modal for Data Deletion */}

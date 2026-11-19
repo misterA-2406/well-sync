@@ -17,6 +17,7 @@ import {
   DEFAULT_APP_STATE,
   downloadDataExport,
   exportUserDataAsJSON,
+  importUserDataFromJSON,
   loadAppState,
   saveAppState,
   STORAGE_KEY,
@@ -275,6 +276,33 @@ describe('WellSync Storage Layer', () => {
         configurable: true,
         writable: true,
       });
+    });
+
+    it('successfully imports valid exported JSON data and restores state', () => {
+      const stateToExport = {
+        ...DEFAULT_APP_STATE,
+        profile: { userGoalSteps: 9500, userGoalSleepMinutes: 500 },
+        history: [{ date: '2026-11-05', steps: 9800 }],
+        rejectedHypotheses: { weekend_dip: true },
+        successfulStrategies: ['Take a 10-minute walk after meal'],
+      };
+      const jsonStr = exportUserDataAsJSON(stateToExport);
+      const importResult = importUserDataFromJSON(jsonStr);
+
+      expect(importResult.success).toBe(true);
+      expect(importResult.state?.profile.userGoalSteps).toBe(9500);
+      expect(importResult.state?.history.length).toBe(1);
+      expect(importResult.state?.rejectedHypotheses.weekend_dip).toBe(true);
+      expect(importResult.state?.successfulStrategies[0]).toBe('Take a 10-minute walk after meal');
+    });
+
+    it('rejects invalid or corrupted JSON on import without throwing', () => {
+      const invalidRes1 = importUserDataFromJSON('not valid json');
+      expect(invalidRes1.success).toBe(false);
+      expect(invalidRes1.error).toBeDefined();
+
+      const invalidRes2 = importUserDataFromJSON('');
+      expect(invalidRes2.success).toBe(false);
     });
   });
 });

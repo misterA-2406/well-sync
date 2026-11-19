@@ -17,6 +17,8 @@ export interface AppStorageState {
   quietHours: { enabled: boolean; start: string; end: string };
   textSize: 'standard' | 'large' | 'xl';
   language: 'en' | 'ar';
+  rejectedHypotheses: Record<string, boolean>;
+  successfulStrategies: string[];
 }
 
 export const STORAGE_KEY = 'wellsync_app_data_v1';
@@ -31,6 +33,8 @@ export const DEFAULT_APP_STATE: AppStorageState = {
   quietHours: { enabled: true, start: '22:00', end: '07:00' },
   textSize: 'standard',
   language: 'en',
+  rejectedHypotheses: {},
+  successfulStrategies: [],
 };
 
 /**
@@ -70,6 +74,8 @@ export function loadAppState(): AppStorageState {
       profile: { ...DEFAULT_APP_STATE.profile, ...(parsed.profile || {}) },
       quietHours: { ...DEFAULT_APP_STATE.quietHours, ...(parsed.quietHours || {}) },
       history: Array.isArray(parsed.history) ? parsed.history : [],
+      rejectedHypotheses: parsed.rejectedHypotheses && typeof parsed.rejectedHypotheses === 'object' ? parsed.rejectedHypotheses : {},
+      successfulStrategies: Array.isArray(parsed.successfulStrategies) ? parsed.successfulStrategies : [],
     };
   } catch (error) {
     console.warn('[WellSync Storage] Failed to read from localStorage, using defaults:', error);
@@ -108,6 +114,8 @@ export function exportUserDataAsJSON(state: AppStorageState): string {
       },
       profile: state.profile,
       history: state.history,
+      rejectedHypotheses: state.rejectedHypotheses || {},
+      successfulStrategies: state.successfulStrategies || [],
       preferences: {
         quietHours: state.quietHours,
         textSize: state.textSize,
@@ -118,6 +126,80 @@ export function exportUserDataAsJSON(state: AppStorageState): string {
   } catch (error) {
     console.error('[WellSync Storage] Failed to export JSON data:', error);
     return '{}';
+  }
+}
+
+/**
+ * Validates and imports user data from an exported JSON string.
+ * Returns true and the parsed state upon successful validation, or error details.
+ */
+export function importUserDataFromJSON(jsonStr: string): {
+  success: boolean;
+  state?: AppStorageState;
+  error?: string;
+} {
+  try {
+    if (!jsonStr || typeof jsonStr !== 'string') {
+      return { success: false, error: 'Empty or invalid file content' };
+    }
+    const data = JSON.parse(jsonStr);
+
+    // Validate that either exportMetadata exists or profile exists
+    const profile = data.profile || DEFAULT_APP_STATE.profile;
+    if (typeof profile !== 'object' || profile === null) {
+      return { success: false, error: 'Missing or malformed profile object' };
+    }
+
+    const goalSteps = Number(profile.userGoalSteps);
+    const goalSleep = Number(profile.userGoalSleepMinutes);
+
+    const validatedProfile: UserEngineProfile = {
+      userGoalSteps: !isNaN(goalSteps) && goalSteps >= 1000 ? goalSteps : 8000,
+      userGoalSleepMinutes: !isNaN(goalSleep) && goalSleep >= 120 ? goalSleep : 480,
+    };
+
+    // Validate history
+    const historyList = Array.isArray(data.history) ? data.history : [];
+    const validatedHistory: DailyRecord[] = [];
+
+    for (const r of historyList) {
+      if (r && typeof r === 'object' && typeof r.date === 'string') {
+        validatedHistory.push({
+          date: r.date.slice(0, 10),
+          steps: typeof r.steps === 'number' && !isNaN(r.steps) ? Math.max(0, Math.min(100000, r.steps)) : null,
+          sleepMinutes: typeof r.sleepMinutes === 'number' && !isNaN(r.sleepMinutes) ? Math.max(0, Math.min(1440, r.sleepMinutes)) : null,
+          isMissing: Boolean(r.isMissing),
+          isRestDeclared: Boolean(r.isRestDeclared),
+          contextNote: typeof r.contextNote === 'string' ? r.contextNote.slice(0, 300) : undefined,
+        });
+      }
+    }
+
+    const preferences = data.preferences || {};
+    const quietHours = preferences.quietHours || DEFAULT_APP_STATE.quietHours;
+    const textSize = ['standard', 'large', 'xl'].includes(preferences.textSize) ? preferences.textSize : 'standard';
+    const language = ['en', 'ar'].includes(preferences.language) ? preferences.language : 'en';
+
+    const newState: AppStorageState = {
+      profile: validatedProfile,
+      history: validatedHistory,
+      hasCompletedOnboarding: true,
+      quietHours: {
+        enabled: Boolean(quietHours.enabled),
+        start: typeof quietHours.start === 'string' ? quietHours.start : '22:00',
+        end: typeof quietHours.end === 'string' ? quietHours.end : '07:00',
+      },
+      textSize,
+      language,
+      rejectedHypotheses: data.rejectedHypotheses && typeof data.rejectedHypotheses === 'object' ? data.rejectedHypotheses : {},
+      successfulStrategies: Array.isArray(data.successfulStrategies) ? data.successfulStrategies : [],
+    };
+
+    saveAppState(newState);
+    return { success: true, state: newState };
+  } catch (error) {
+    console.error('[WellSync Storage] Import failed:', error);
+    return { success: false, error: 'Invalid JSON format or corrupted file' };
   }
 }
 

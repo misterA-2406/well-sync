@@ -11,6 +11,7 @@ import {
   AppStorageState,
   clearAllUserData,
   downloadDataExport,
+  importUserDataFromJSON,
   loadAppState,
   saveAppState,
   DEFAULT_APP_STATE,
@@ -84,6 +85,31 @@ export function App() {
       date: todayStr,
       contextNote: `Recovery Commitment: ${commitmentText}`,
     });
+    setAppState((prev) => ({
+      ...prev,
+      successfulStrategies: prev.successfulStrategies.includes(commitmentText)
+        ? prev.successfulStrategies
+        : [commitmentText, ...prev.successfulStrategies].slice(0, 5),
+    }));
+  };
+
+  const handleToggleRejectHypothesis = (id: string) => {
+    setAppState((prev) => ({
+      ...prev,
+      rejectedHypotheses: {
+        ...prev.rejectedHypotheses,
+        [id]: !prev.rejectedHypotheses[id],
+      },
+    }));
+  };
+
+  const handleImportData = (jsonStr: string): { success: boolean; error?: string } => {
+    const res = importUserDataFromJSON(jsonStr);
+    if (res.success && res.state) {
+      setAppState(res.state);
+      return { success: true };
+    }
+    return { success: false, error: res.error || 'Import failed' };
   };
 
   const handleUpdateProfile = (profile: UserEngineProfile) => {
@@ -168,6 +194,9 @@ export function App() {
             latestResult={latestResult}
             metric={activeMetric}
             language={appState.language}
+            rejectedHypotheses={appState.rejectedHypotheses}
+            successfulStrategies={appState.successfulStrategies}
+            onToggleRejectHypothesis={handleToggleRejectHypothesis}
             onCommitMicroAction={handleCommitMicroAction}
             onNavigateToToday={() => setCurrentTab('today')}
           />
@@ -198,6 +227,7 @@ export function App() {
             onChangeTextSize={handleChangeTextSize}
             onLoadSyntheticPersona={handleLoadSyntheticPersona}
             onExportData={handleExportData}
+            onImportData={handleImportData}
             onDeleteAllData={handleDeleteAllData}
           />
         )}

@@ -14,6 +14,9 @@ interface RecoveryScreenProps {
   latestResult: EngineDayResult | null;
   metric: BehaviorMetric;
   language: Language;
+  rejectedHypotheses?: Record<string, boolean>;
+  successfulStrategies?: string[];
+  onToggleRejectHypothesis?: (id: string) => void;
   onCommitMicroAction: (commitmentText: string) => void;
   onNavigateToToday: () => void;
 }
@@ -23,13 +26,19 @@ export const RecoveryScreen: React.FC<RecoveryScreenProps> = ({
   latestResult,
   metric,
   language,
+  rejectedHypotheses = {},
+  successfulStrategies = [],
+  onToggleRejectHypothesis,
   onCommitMicroAction,
   onNavigateToToday,
 }) => {
   const [selectedCommitment, setSelectedCommitment] = useState<string>('');
   const [customCommitment, setCustomCommitment] = useState<string>('');
-  const [rejectedHypotheses, setRejectedHypotheses] = useState<Record<string, boolean>>({});
+  const [localRejected, setLocalRejected] = useState<Record<string, boolean>>({});
   const [committedSuccess, setCommittedSuccess] = useState<boolean>(false);
+
+  // Merge parent persistent rejections with local
+  const effectiveRejections = { ...rejectedHypotheses, ...localRejected };
 
   const baseline = latestResult?.baseline ?? (metric === 'steps' ? profile.userGoalSteps : profile.userGoalSleepMinutes);
   const minimumTarget = latestResult?.ladderTargets.minimum ?? Math.round(baseline * 0.5);
@@ -61,10 +70,14 @@ export const RecoveryScreen: React.FC<RecoveryScreenProps> = ({
   const commitmentChoices = metric === 'steps' ? defaultStepActions : defaultSleepActions;
 
   const handleRejectHypothesis = (id: string) => {
-    setRejectedHypotheses((prev) => ({
-      ...prev,
-      [id]: !prev[id],
-    }));
+    if (onToggleRejectHypothesis) {
+      onToggleRejectHypothesis(id);
+    } else {
+      setLocalRejected((prev) => ({
+        ...prev,
+        [id]: !prev[id],
+      }));
+    }
   };
 
   const handleCommit = (e: React.FormEvent) => {
@@ -162,7 +175,7 @@ export const RecoveryScreen: React.FC<RecoveryScreenProps> = ({
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
           {latestResult?.barrierHypotheses.map((hypothesis) => {
-            const isRejected = Boolean(rejectedHypotheses[hypothesis.id]);
+            const isRejected = Boolean(effectiveRejections[hypothesis.id]);
 
             return (
               <div
@@ -224,6 +237,34 @@ export const RecoveryScreen: React.FC<RecoveryScreenProps> = ({
               : 'Select one tiny, specific action to accomplish your Minimum target today. Action planning prevents procrastination.'}
           </p>
         </div>
+
+        {successfulStrategies && successfulStrategies.length > 0 && (
+          <div className="p-3.5 bg-emerald-50/70 border border-emerald-200 rounded-xl space-y-2">
+            <span className="text-[11px] font-bold text-emerald-900 uppercase tracking-wider flex items-center gap-1.5">
+              <span>★</span>
+              {language === 'ar' ? 'استراتيجيات أثبتت نجاحها معك سابقاً:' : 'Your Proven Recovery Strategies (Past Successes):'}
+            </span>
+            <div className="flex flex-wrap gap-1.5">
+              {successfulStrategies.map((strat, sIdx) => (
+                <button
+                  key={sIdx}
+                  type="button"
+                  onClick={() => {
+                    setSelectedCommitment(strat);
+                    setCustomCommitment('');
+                  }}
+                  className={`text-xs px-2.5 py-1 rounded-lg border font-medium transition-all ${
+                    selectedCommitment === strat && !customCommitment
+                      ? 'bg-emerald-700 text-white border-emerald-700 shadow-xs'
+                      : 'bg-white text-emerald-800 border-emerald-300 hover:bg-emerald-100'
+                  }`}
+                >
+                  {strat}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
 
         <form onSubmit={handleCommit} className="space-y-4">
           <div className="space-y-2">

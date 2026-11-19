@@ -87,7 +87,8 @@ export function processDay({
   const isMissing = Boolean(
     currentRecord.isMissing || rawVal === null || rawVal === undefined || isNaN(rawVal)
   );
-  const actualValue = isMissing ? 0 : (rawVal as number);
+  const maxSafeValue = metric === 'steps' ? 100000 : 1440;
+  const actualValue = isMissing ? 0 : Math.max(0, Math.min(maxSafeValue, Number(rawVal)));
 
   const totalRecordedValidDays = validDaysCount + (!isMissing && actualValue >= 0 ? 1 : 0);
   const isLearningBaseline = totalRecordedValidDays < config.minDaysForLapseDetection;
