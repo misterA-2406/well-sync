@@ -41,6 +41,12 @@ export const AboutScreen: React.FC<AboutScreenProps> = ({ language }) => {
                 ? 'WellSync هو نموذج أولي للمنافسة تم تصميمه للحفاظ على النشاط البدني وروتين النوم من خلال معايرة أهداف تكيفية وغير عقابية.'
                 : 'WellSync is a competition prototype engineered to sustain physical movement and sleep habits through adaptive, non-punitive goal calibration.'}
             </p>
+
+            <div className="pt-1 text-[11px] font-semibold text-sand-800 bg-sand-50 border border-sand-200 px-3 py-1.5 rounded-xl inline-block">
+              {language === 'ar'
+                ? 'نموذج أولي للطلاب، وليس تابعاً لأي منتج تجاري يحمل اسم WellSync.'
+                : 'Student prototype, not affiliated with any commercial product named WellSync.'}
+            </div>
           </div>
         </div>
       </section>
@@ -59,8 +65,13 @@ export const AboutScreen: React.FC<AboutScreenProps> = ({ language }) => {
 
         <div className="bg-ivory-50 border border-ink-200/80 rounded-2xl p-5 text-xs text-ink-700 space-y-3 leading-relaxed">
           <p>
-            <strong className="text-forest-950 font-bold">{language === 'ar' ? 'الفريق:' : 'Team:'}</strong>{' '}
-            {t('about.student_disclaimer', language)}
+            <strong className="text-forest-950 font-bold">{language === 'ar' ? 'المؤلفون / الفريق:' : 'Authors / Team:'}</strong>{' '}
+            <span className="font-semibold text-ink-900">1. Ayesha Sutana &nbsp;•&nbsp; 2. B. Alence</span>
+            <span className="block text-ink-600 text-[11px] mt-0.5">
+              {language === 'ar'
+                ? 'طالبان جامعيان طورا هذا المشروع المستقل للمنافسة. نموذج أولي للطلاب، وليس تابعاً لأي منتج تجاري يحمل اسم WellSync.'
+                : 'Undergraduate student engineering team. Student prototype, not affiliated with any commercial product named WellSync.'}
+            </span>
           </p>
           <p>
             <strong className="text-forest-950 font-bold">{language === 'ar' ? 'الوضع السريري:' : 'Clinical Status:'}</strong>{' '}
@@ -127,22 +138,23 @@ export const AboutScreen: React.FC<AboutScreenProps> = ({ language }) => {
 
           <div className="p-5 rounded-2xl border border-ink-200 bg-ivory-50/70 space-y-2">
             <h3 className="font-bold text-ink-900 text-sm">{t('about.lifesnaps_title', language)}</h3>
-            <p className="text-ink-600 leading-relaxed">
+            <p className="text-ink-600 leading-relaxed text-[11px]">
               {language === 'ar'
-                ? 'يستخدم تقييم إعادة المحاكاة بيانات LifeSnaps المفتوحة للباحثين (Zenodo 7229547).'
-                : 'Our offline replay evaluation uses the open-access LifeSnaps dataset (Sofia Yfantidou et al., Nature Scientific Data, 2022).'}
+                ? 'يستخدم تقييم إعادة المحاكاة بيانات دراسة LifeSnaps المنشورة في مجلة Nature Scientific Data (2022):'
+                : 'Our offline replay evaluation uses the peer-reviewed open-access LifeSnaps dataset published in Nature Scientific Data (2022):'}
             </p>
-            <ul className="list-disc list-inside text-ink-600 space-y-1 text-[11px]">
-              <li>
-                <strong>Zenodo Record:</strong> 7229547 (DOI: 10.5281/zenodo.7229547)
-              </li>
-              <li>
-                <strong>License:</strong> Creative Commons Attribution 4.0 International (CC BY 4.0)
-              </li>
-              <li>
-                <strong>Demographic Notice:</strong> {t('evidence.disclaimer_2', language)}
-              </li>
-            </ul>
+            <div className="p-3 bg-white rounded-xl border border-ink-200 text-[11px] text-ink-700 space-y-1 font-mono">
+              <p><strong>Title:</strong> LifeSnaps, a 4-month multi-modal dataset capturing unobtrusive snapshots of our lives in the wild</p>
+              <p><strong>Authors:</strong> Sofia Yfantidou, Christina Karagianni, Stefanos Efstathiou, Athena Vakali, João Palotti, Dimitrios Panteleimon Giakatos, Thomas Marchioro, Andrei Kazlouski, Elena Ferrari, and Šarūnas Girdzijauskas</p>
+              <p><strong>Journal:</strong> <em>Scientific Data</em> 9, Article 669 (2022)</p>
+              <p><strong>DOI:</strong> <a href="https://doi.org/10.1038/s41597-022-01764-x" target="_blank" rel="noreferrer" className="text-forest-700 underline">10.1038/s41597-022-01764-x</a></p>
+              <p><strong>PMCID:</strong> <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9622868/" target="_blank" rel="noreferrer" className="text-forest-700 underline">PMC9622868</a></p>
+              <p><strong>Repository:</strong> Zenodo Record <a href="https://doi.org/10.5281/zenodo.7229547" target="_blank" rel="noreferrer" className="text-forest-700 underline">7229547</a></p>
+              <p><strong>License:</strong> Creative Commons Attribution 4.0 International (CC BY 4.0)</p>
+            </div>
+            <p className="text-[10px] text-ink-500 pt-1">
+              <strong>{language === 'ar' ? 'تنبيه ديموغرافي:' : 'Demographic Notice:'}</strong> {t('evidence.disclaimer_2', language)}
+            </p>
           </div>
         </div>
       </section>

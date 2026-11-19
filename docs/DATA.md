@@ -1,9 +1,9 @@
 # WellSync Dataset Documentation & Verified Schema
 
 ## 1. Dataset Origin & Licensing Confirmation
-- **Source**: LifeSnaps: A multi-modal dataset of lifestyle and well-being data from wearable and mobile sensors.
+- **Source**: LifeSnaps: A 4-month multi-modal dataset capturing unobtrusive snapshots of our lives in the wild.
 - **Repository**: Zenodo ([Record 7229547](https://zenodo.org/records/7229547), DOI: `10.5281/zenodo.7229547`, concept DOI: `10.5281/zenodo.6826682`).
-- **Academic Citation**: Palmius et al., *LifeSnaps: a public multi-modal dataset of lifestyle and well-being data*, Scientific Data / Nature, 2022 ([PMC9622868](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9622868/)).
+- **Academic Citation**: Sofia Yfantidou, Christina Karagianni, Stefanos Efstathiou, Athena Vakali, João Palotti, Dimitrios Panteleimon Giakatos, Thomas Marchioro, Andrei Kazlouski, Elena Ferrari, and Šarūnas Girdzijauskas. *LifeSnaps, a 4-month multi-modal dataset capturing unobtrusive snapshots of our lives in the wild*. **Scientific Data** 9, 669 (2022). DOI: [10.1038/s41597-022-01764-x](https://doi.org/10.1038/s41597-022-01764-x). PMCID: [PMC9622868](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9622868/).
 - **Licensing Compliance (On the Record)**: The LifeSnaps dataset is distributed under the **Creative Commons Attribution 4.0 International (CC BY 4.0)** license. We formally confirm on the record that our usage complies fully with CC BY 4.0 terms: academic non-commercial research, appropriate attribution given, license indicated, and modifications transparently described.
 
 ### 1.1 How to Verify the CC BY 4.0 License on Zenodo Directly
@@ -15,7 +15,7 @@ Anyone can independently verify the license of the LifeSnaps dataset through any
    - Query Zenodo's JSON API endpoint: `https://zenodo.org/api/records/7229547`.
    - Inspect the `metadata.license.id` JSON property: `"cc-by-4.0"`.
 3. **Peer-Reviewed Publication Verification**:
-   - Consult the open-access Nature Scientific Data paper: Palmius et al. (2022), DOI: `10.1038/s41597-022-01815-3`.
+   - Consult the open-access Nature Scientific Data paper: Yfantidou et al. (2022), DOI: `10.1038/s41597-022-01764-x` (PMC9622868).
    - Under the **"Data Records"** and article footer sections, the authors explicitly state that the dataset hosted on Zenodo is made available under the Creative Commons Attribution 4.0 International license.
 
 ---

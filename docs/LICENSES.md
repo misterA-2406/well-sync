@@ -37,7 +37,7 @@ This document provides a comprehensive inventory of all third-party open-source 
 
 | Resource | Citation / Author | License | Description / Purpose |
 | :--- | :--- | :--- | :--- |
-| **LifeSnaps Dataset** | Palmius et al., Nature Scientific Data (2022) | **Creative Commons Attribution 4.0 International (CC BY 4.0)** | De-identified multi-modal wearable and survey dataset utilized for retrospective replay evaluation ([Zenodo 7229547](https://zenodo.org/records/7229547)). |
+| **LifeSnaps Dataset** | Sofia Yfantidou et al., *Scientific Data* (2022), DOI: [10.1038/s41597-022-01764-x](https://doi.org/10.1038/s41597-022-01764-x) | **Creative Commons Attribution 4.0 International (CC BY 4.0)** | De-identified multi-modal wearable and survey dataset utilized for retrospective replay evaluation ([Zenodo 7229547](https://zenodo.org/records/7229547), [PMC9622868](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9622868/)). |
 | **BCTTv1 Taxonomy** | Michie et al., Annals of Behavioral Medicine (2013) | Academic Citation / Public Research | 93-item hierarchical classification of behavior change techniques (BCT 8.7, BCT 1.5, BCT 1.4, BCT 1.1, BCT 2.2). |
 
 ---

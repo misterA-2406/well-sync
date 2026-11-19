@@ -327,7 +327,9 @@ describe('Screens Smoke Tests', () => {
       const html = renderToStaticMarkup(<AboutScreen language="en" />);
       expect(html).toContain('About WellSync');
       expect(html).toContain('Challenge 09: Sustaining Healthy Behaviors');
-      expect(html).toContain('Student Prototype Declaration');
+      expect(html).toContain('Ayesha Sutana');
+      expect(html).toContain('B. Alence');
+      expect(html).toContain('not affiliated with any commercial product named WellSync');
     });
 
     it('renders about screen in Arabic', () => {

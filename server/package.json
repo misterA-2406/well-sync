@@ -9,8 +9,8 @@
     "test": "vitest run"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Ayesha Sutana, B. Alence",
+  "license": "MIT",
   "description": "",
   "dependencies": {
     "@fastify/cors": "^11.4.3",

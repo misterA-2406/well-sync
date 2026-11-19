@@ -144,8 +144,8 @@ export const translations: Record<string, { en: string; ar: string }> = {
   'about.challenge_badge': { en: 'Future Health Digital Innovation Challenge 2026', ar: 'تحدي الابتكار الصحي الرقمي 2026' },
   'about.challenge_title': { en: 'Challenge 09: Sustaining Healthy Behaviors (Abu Dhabi)', ar: 'التحدي 09: استدامة السلوكيات الصحية (أبوظبي)' },
   'about.student_disclaimer': {
-    en: 'Student Prototype Declaration: Developed by two undergraduate students with no clinical partner, zero clinical testing, and zero commercial backing. Not a medical device.',
-    ar: 'إقرار النموذج الأولي للطلاب: تم تطوير هذا النموذج من قبل طالبين جامعيين دون شريك سريري، وبدون اختبارات سريرية، ودون أي دعم تجاري. النظام ليس جهازاً طبياً.'
+    en: 'Student prototype by Ayesha Sutana and B. Alence. Not affiliated with any commercial product named WellSync. Developed with no clinical partner, zero clinical testing, and zero commercial backing. Not a medical device.',
+    ar: 'نموذج أولي للطلاب طوره الطالبان عائشة سوتانا (Ayesha Sutana) و ب. ألينس (B. Alence). ليس تابعاً لأي منتج تجاري يحمل اسم WellSync. تم التطوير دون شريك سريري، ودون اختبارات سريرية، ودون أي دعم تجاري. النظام ليس جهازاً طبياً.'
   },
   'about.rules_title': { en: 'Rule-Based Engine Architecture', ar: 'بنية المحرك القائم على القواعد' },
   'about.rules_desc': {

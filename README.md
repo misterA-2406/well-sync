@@ -2,7 +2,9 @@
 
 > **Future Health Digital Innovation Challenge 2026 (Abu Dhabi)**  
 > **Challenge 09**: Sustaining Healthy Behaviors | **Track**: Wellbeing  
-> **Architecture**: Privacy-first, deterministic behavioral adaptation engine (Zero Runtime AI).
+> **Architecture**: Privacy-first, deterministic behavioral adaptation engine (Zero Runtime AI).  
+> **Notice**: Student prototype, not affiliated with any commercial product named WellSync.  
+> **Authors**: 1. Ayesha Sutana &nbsp;•&nbsp; 2. B. Alence
 
 ---
 
@@ -97,7 +99,7 @@ npm start
 The entire evidence report and policy comparison can be recomputed deterministically from scratch:
 
 ```bash
-# Runs the reproducible simulation against LifeSnaps parameters (Zenodo 7229547)
+# Runs the reproducible simulation against LifeSnaps parameters (Sofia Yfantidou et al., Scientific Data 2022, PMC9622868, Zenodo 7229547)
 npm run evidence
 ```
 Outputs:
@@ -109,7 +111,7 @@ Outputs:
 ## 6. Run Automated Test Suites
 
 ```bash
-# 1. Frontend Test Suite (134 unit, property, and e2e journey tests)
+# 1. Frontend Test Suite (145 unit, property, accessibility, and e2e journey tests)
 npm test
 
 # 2. Production Build Check (TypeScript + Vite)

@@ -2,7 +2,7 @@
 
 ## 1. Project & Team Status
 - **Competition Context**: Prototype engineered for the **Future Health Digital Innovation Challenge 2026 (Abu Dhabi)**, Challenge 09: *Sustaining Healthy Behaviors*.
-- **Student Status**: Developed entirely by **two undergraduate university students** with no institutional clinical partner, no healthcare provider backing, and zero commercial affiliations.
+- **Student Status & Authors**: Developed entirely by undergraduate university students **Ayesha Sutana** and **B. Alence**. Student prototype, not affiliated with any commercial product named WellSync. Developed with no institutional clinical partner, no healthcare provider backing, and zero commercial affiliations.
 - **Zero Human Clinical Testing**: The application has undergone **zero clinical trials, zero formal user testing, and zero randomized controlled evaluations**. All performance data presented is derived exclusively from retrospective algorithmic replays on an open-access dataset.
 
 ---

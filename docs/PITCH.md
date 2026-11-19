@@ -106,8 +106,9 @@ Replayed across **71 real participants** (${data.provenance.total_source_rows ??
 
 ## 9. Team & Status: Built, Tested & Working Today
 
-WellSync is fully functional today:
+- **Authors & Team**: Undergraduate student engineering team: **Ayesha Sutana** & **B. Alence**.
+- **Commercial Disambiguation**: Student prototype, not affiliated with any commercial product named WellSync.
 - **100% Deterministic Engine**: Pure TypeScript engine shared between frontend and backend with anti-erosion decay caps and frozen baseline safeguards.
-- **Test Coverage**: 134 automated unit/property/e2e tests in frontend and 24 integration tests in backend passing with zero failures.
+- **Test Coverage**: 145 automated unit/property/e2e/accessibility tests in frontend and 24 integration tests in backend passing with zero failures.
 - **Accessibility**: 100% pass on automated axe-core audits with full Arabic RTL bidirectional support.
 - **Zero Hallucinations**: Zero runtime LLM dependencies. Local-first, private by default, and ready for immediate deployment.

@@ -195,16 +195,16 @@ export const EvidenceScreen: React.FC<EvidenceScreenProps> = ({ language = 'en' 
             </strong>
             <ul className="list-disc list-inside space-y-1 text-ink-600 leading-relaxed text-[11px]">
               <li>
-                <strong>{language === 'ar' ? 'إمكانية تحقيق خط الأساس (تعريف متطابق لـ A\' و B):' : "Baseline Attainability (Identical for A' & B):"}</strong>{' '}
+                <strong>{language === 'ar' ? 'إمكانية تحقيق خط الأساس (مقارنة متكافئة عادلة لـ A\' و B):' : "Baseline Attainability (Apples-to-Apples for A' & B):"}</strong>{' '}
                 {language === 'ar'
-                  ? 'نسبة الأيام التي حقق فيها المشارك خطوات ≥ خط الأساس الشخصي (31.9% لكلا السياستين).'
-                  : "Share of days where steps ≥ personal baseline. Under this identical definition, Policy A' and Policy B are identical (31.9%)."}
+                  ? 'نسبة الأيام التي حقق فيها المشارك خطوات ≥ خط الأساس الشخصي (100%). بموجب هذا المقياس المتكافئ، فإن السياستين A\' و B متطابقتان تماماً عند (28.0%).'
+                  : "Share of days where steps ≥ 100% personal baseline. Under this mathematically identical threshold and denominator, Policy A' and Policy B are identical at 28.0%."}
               </li>
               <li>
-                <strong>{language === 'ar' ? 'إمكانية تحقيق الدرجة النشطة (Policy B Rung):' : 'Active Rung Attainability (Policy B Adaption):'}</strong>{' '}
+                <strong>{language === 'ar' ? 'إمكانية تحقيق الدرجة المعينة (Policy B Active Rung):' : 'Assigned Ladder Attainability (Policy B Feasibility):'}</strong>{' '}
                 {language === 'ar'
-                  ? 'نسبة الأيام التي حقق فيها المشارك الدرجة المحددة النشطة (تصبح 50% عند التراجع للحفاظ على الاستمرارية).'
-                  : 'Share of days meeting the active prescribed rung. When lapsed, the rung steps down to 50% to maintain behavioral feasibility.'}
+                  ? 'نسبة الأيام التي حقق فيها المشارك الدرجة النشطة المكلفة (31.9%). ترتفع هذه النسبة عن 28.0% لأن سلم WellSync يخفض الهدف مؤقتاً إلى 50% عند التراجع، مما يتيح أيام نجاح ممكنة ومواصلة التعافي بدلاً من الاستسلام.'
+                  : "Share of days meeting the active prescribed rung (31.9%). This is higher than 28.0% because WellSync's ladder steps down to 50% during disruptions, providing feasible momentum rather than an insurmountable 100% hurdle. It is NOT comparable to fixed-goal policies without noting the adaptive rung."}
               </li>
             </ul>
           </div>
@@ -496,14 +496,18 @@ export const EvidenceScreen: React.FC<EvidenceScreenProps> = ({ language = 'en' 
                           </td>
                           <td className="py-3.5 px-3 text-start">{item.longest_streak_mean} {language === 'ar' ? 'أيام' : 'days'}</td>
                           <td className="py-3.5 px-3 text-start">
-                            <strong>{item.attainability_pct}%</strong>
-                            {isPolicyB && (
-                              <span className="block text-[10px] text-ink-500 font-normal">
-                                {language === 'ar'
-                                  ? `(أساس متطابق: ${item.baseline_attainability_pct}%)`
-                                  : `(Baseline identical: ${item.baseline_attainability_pct}%)`}
-                              </span>
-                            )}
+                            <span className="font-bold text-ink-900">{item.attainability_pct}%</span>
+                            <span className="block text-[10px] text-ink-500 font-normal">
+                              {item.policy_id === 'A_10000'
+                                ? (language === 'ar' ? 'هدف ثابت 10 آلاف' : 'Fixed 10k target')
+                                : item.policy_id === 'A_PRIME'
+                                ? (language === 'ar' ? 'خط الأساس الشخصي' : 'Personal baseline')
+                                : item.policy_id === 'A_ADAPTIVE_AVG'
+                                ? (language === 'ar' ? 'المتوسط المتحرك' : 'Moving average')
+                                : (language === 'ar'
+                                    ? `الدرجة النشطة (أساس متطابق: ${item.baseline_attainability_pct}%)`
+                                    : `Active rung (Baseline identical: ${item.baseline_attainability_pct}%)`)}
+                            </span>
                           </td>
                         </tr>
                       );
