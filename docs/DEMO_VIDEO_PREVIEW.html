@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WellSync — Competition Demo Video Preview & Player</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@700&display=swap');
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #12100E;
+      color: #EDE8E1;
+    }
+    .serif-title {
+      font-family: 'Playfair Display', Georgia, serif;
+    }
+  </style>
+</head>
+<body class="min-h-screen p-6 sm:p-12 flex flex-col justify-between">
+  
+  <div class="max-w-6xl mx-auto w-full">
+    <!-- Header -->
+    <header class="flex flex-col sm:flex-row sm:items-center justify-between pb-8 mb-8 border-b border-stone-800 gap-4">
+      <div>
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#183C32] text-emerald-300 text-xs font-semibold mb-2 border border-emerald-700/40">
+          <span>Future Health Challenge 2026 — Abu Dhabi</span> • <span>Challenge 09</span>
+        </div>
+        <h1 class="serif-title text-3xl sm:text-4xl font-bold text-white tracking-tight">
+          WellSync Demo Video Preview
+        </h1>
+        <p class="text-sm text-stone-400 mt-1">
+          High-Definition 1080p Screen Recording with Synchronized Voiceover Script
+        </p>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <a href="https://github.com/misterA-2406/well-sync" target="_blank" class="px-4 py-2 rounded-xl text-xs font-bold bg-stone-800 hover:bg-stone-700 text-white transition-colors border border-stone-700">
+          GitHub Repository
+        </a>
+        <a href="./PITCH_DECK_SLIDES.html" target="_blank" class="px-4 py-2 rounded-xl text-xs font-bold bg-[#C97A48] hover:bg-[#B3693A] text-white transition-colors shadow-lg">
+          Open Pitch Deck
+        </a>
+      </div>
+    </header>
+
+    <!-- Main Player Layout -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+      <!-- Video Player (2 Cols) -->
+      <div class="lg:col-span-2 space-y-4">
+        <div class="relative rounded-2xl overflow-hidden bg-black border border-stone-800 shadow-2xl aspect-video flex items-center justify-center">
+          <video id="demoVideo" controls autoplay muted class="w-full h-full object-contain">
+            <source src="./videos/wellsync_competition_demo.webm" type="video/webm">
+            Your browser does not support the video tag.
+          </video>
+        </div>
+        
+        <div class="flex items-center justify-between p-4 rounded-xl bg-stone-900 border border-stone-800 text-xs text-stone-400">
+          <div>
+            <span class="font-bold text-white">File:</span> <code>wellsync_competition_demo.webm</code> (24.89 MB)
+          </div>
+          <div>
+            <span class="font-bold text-white">Resolution:</span> 1920x1080 (Full HD)
+          </div>
+          <div>
+            <span class="font-bold text-white">Target Length:</span> 03:00 min
+          </div>
+        </div>
+      </div>
+
+      <!-- Synchronized Voiceover Script (1 Col) -->
+      <div class="bg-stone-900/90 rounded-2xl border border-stone-800 p-6 flex flex-col h-[560px] overflow-hidden">
+        <h3 class="text-base font-bold text-white mb-4 pb-3 border-b border-stone-800 flex items-center justify-between">
+          <span>🎙️ Voiceover Storyboard</span>
+          <span class="text-xs font-mono text-emerald-400 font-normal">Auto-Scroll</span>
+        </h3>
+        
+        <div class="space-y-4 overflow-y-auto pr-2 text-xs leading-relaxed flex-1" id="scriptList">
+          <!-- Act 1 -->
+          <div class="p-3.5 rounded-xl bg-stone-800/60 border border-stone-700/50 hover:border-emerald-500/50 transition-all cursor-pointer" onclick="seekTo(0)">
+            <span class="text-[10px] font-mono text-emerald-400 font-bold block mb-1">0:00 – 0:25 • Act I: The Abu Dhabi Reality</span>
+            <p class="text-stone-300 italic">"In Abu Dhabi, people do not abandon healthy behaviors because they lack motivation. Habits collapse when real life hits: extreme summer heat, 12-hour hospital night shifts, and Ramadan schedules. Traditional apps punish users with streak resets to zero..."</p>
+          </div>
+
+          <!-- Act 2 -->
+          <div class="p-3.5 rounded-xl bg-stone-800/60 border border-stone-700/50 hover:border-emerald-500/50 transition-all cursor-pointer" onclick="seekTo(25)">
+            <span class="text-[10px] font-mono text-emerald-400 font-bold block mb-1">0:25 – 0:50 • Act II: Tariq's Baseline</span>
+            <p class="text-stone-300 italic">"Let's look at Tariq, an Abu Dhabi hospital nurse. In week one and two, Tariq builds a healthy baseline of 8,500 steps. WellSync’s deterministic engine calculates his rolling 28-day median, learning his genuine baseline rhythm."</p>
+          </div>
+
+          <!-- Act 3 -->
+          <div class="p-3.5 rounded-xl bg-stone-800/60 border border-stone-700/50 hover:border-emerald-500/50 transition-all cursor-pointer" onclick="seekTo(50)">
+            <span class="text-[10px] font-mono text-emerald-400 font-bold block mb-1">0:50 – 1:20 • Act III: The 50% Minimum Ladder</span>
+            <p class="text-stone-300 italic">"Then comes a grueling 3-day night shift rotation. Telemetry drops to 3,200 steps. WellSync does not shame him. Instead, our deterministic ladder immediately steps down to the Minimum rung—50% of baseline—grounded in Michie's BCT 8.7."</p>
+          </div>
+
+          <!-- Act 4 -->
+          <div class="p-3.5 rounded-xl bg-stone-800/60 border border-stone-700/50 hover:border-emerald-500/50 transition-all cursor-pointer" onclick="seekTo(80)">
+            <span class="text-[10px] font-mono text-emerald-400 font-bold block mb-1">1:20 – 1:55 • Act IV: Recovery & Return Count</span>
+            <p class="text-stone-300 italic">"Tariq selects a low-friction recovery commitment. Over the next three days, he hits his 4,250 minimum. On day three, recovery is complete: Target is restored, all 17 active days remain intact, and his Return Count increments!"</p>
+          </div>
+
+          <!-- Act 5 -->
+          <div class="p-3.5 rounded-xl bg-stone-800/60 border border-stone-700/50 hover:border-emerald-500/50 transition-all cursor-pointer" onclick="seekTo(115)">
+            <span class="text-[10px] font-mono text-emerald-400 font-bold block mb-1">1:55 – 2:25 • Act V: Open-Science LifeSnaps Proof</span>
+            <p class="text-stone-300 italic">"Our claims are backed by open science. Across 71 participants from the Nature LifeSnaps wearable dataset, conventional streak resets collapsed 17.9 times per user. WellSync achieves 0.0 resets by design and a 3.1-day average rebound."</p>
+          </div>
+
+          <!-- Act 6 -->
+          <div class="p-3.5 rounded-xl bg-stone-800/60 border border-stone-700/50 hover:border-emerald-500/50 transition-all cursor-pointer" onclick="seekTo(145)">
+            <span class="text-[10px] font-mono text-emerald-400 font-bold block mb-1">2:25 – 3:00 • Act VI: Arabic RTL & Zero PII</span>
+            <p class="text-stone-300 italic">"WellSync is built natively for Abu Dhabi: bidirectional Arabic RTL, offline Ramadan and heat modes, and 0 unauthorized network requests in DevTools. WellSync: Progress is not perfection. Recovery is easier than restarting."</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="text-center text-xs text-stone-500 border-t border-stone-800/60 pt-6">
+    WellSync &copy; 2026 Ayesha Sultana & B. Alence • Future Health Digital Innovation Challenge 2026 (Abu Dhabi)
+  </footer>
+
+  <script>
+    function seekTo(seconds) {
+      const vid = document.getElementById('demoVideo');
+      vid.currentTime = seconds;
+      vid.play();
+    }
+  </script>
+</body>
+</html>

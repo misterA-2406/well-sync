@@ -31,3 +31,6 @@ coverage
 # Analysis data
 analysis/data/*
 !analysis/data/.gitkeep
+
+docs/videos/*.webm
+
