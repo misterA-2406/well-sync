@@ -214,33 +214,31 @@ def main():
     set_font(r, size_pt=8.5, bold=True, color=TERRACOTTA)
 
     # =========================================================================
-    # SLIDE 4: Architecture or workflow diagram* (top=1.80", height=3.30")
+    # SLIDE 4: Architecture or workflow diagram* (Rendered Visual Architecture)
     # =========================================================================
     slide4 = prs.slides[3]
-    steps = [
-        ("1. SENSORS & TELEMETRY", "• Steps & Sleep duration\n• Zero cloud dependency\n• Manual & Health Connect\n• 100% on-device capture", Inches(0.5)),
-        ("2. UAE CONTEXT ENGINE", "• Ramadan Fasting Mode\n• Summer Heat Mode (>38°C)\n• Shift-Work (SEHA 2D/2N/4Off)\n• Planned Pause (zero penalty)", Inches(2.8)),
-        ("3. 4-STATE MACHINE", "• ON_TRACK (Median goal)\n• SLIPPING (1-2 days down)\n• LAPSED (3+ days down)\n• RECOVERING (50% ladder)\n• Zero LLM hallucinations", Inches(5.1)),
-        ("4. RESILIENT LADDER", "• Stretch Rung (110%)\n• Target Rung (100%)\n• Minimum Rung (50%)\n• Active Days Preserved\n• Return Count Increments", Inches(7.4)),
-    ]
-    for title, desc, left in steps:
-        c = add_card(slide4, left, Inches(1.80), Inches(2.15), Inches(3.30))
-        tf = c.text_frame
-        tf.word_wrap = True
-        tf.margin_left = tf.margin_right = Inches(0.12)
-        tf.margin_top = Inches(0.12)
-        tf.margin_bottom = Inches(0.08)
+    # Add sleek container card
+    card4 = add_card(slide4, Inches(0.50), Inches(1.78), Inches(9.00), Inches(3.35), bg_color=CARD_BG, border_color=BORDER)
 
-        p1 = tf.paragraphs[0]
-        p1.space_after = Pt(6)
-        r = p1.add_run()
-        r.text = title + "\n"
-        set_font(r, size_pt=9.5, bold=True, color=FOREST)
+    # Embed rendered high-res architecture diagram
+    diag_img_path = os.path.join(os.path.dirname(OUTPUT_PATH), "architecture_diagram.png")
+    if os.path.exists(diag_img_path):
+        slide4.shapes.add_picture(diag_img_path, Inches(0.60), Inches(1.86), Inches(8.80), Inches(2.85))
 
-        p2 = tf.add_paragraph()
-        r = p2.add_run()
-        r.text = desc
-        set_font(r, size_pt=9, color=INK)
+    # Add bottom architectural summary bar
+    summary_box = slide4.shapes.add_textbox(Inches(0.60), Inches(4.76), Inches(8.80), Inches(0.32))
+    tf4 = summary_box.text_frame
+    tf4.word_wrap = True
+    tf4.margin_left = tf4.margin_right = Inches(0.05)
+    tf4.margin_top = tf4.margin_bottom = Inches(0.02)
+    p_arch = tf4.paragraphs[0]
+    p_arch.alignment = PP_ALIGN.CENTER
+    r = p_arch.add_run()
+    r.text = "Architecture: "
+    set_font(r, size_pt=8.5, bold=True, color=TERRACOTTA)
+    r = p_arch.add_run()
+    r.text = "100% Client-Side Local Execution   |   Zero Cloud PII Telemetry   |   Deterministic 4-State Recovery FSM   |   Michie BCT 8.7 Validated"
+    set_font(r, size_pt=8.2, bold=False, color=INK)
 
     # =========================================================================
     # SLIDE 5: Target users and intended outcome* (top=1.80", height=3.30")
@@ -700,10 +698,13 @@ def main():
     # Save cleanly
     os.makedirs(os.path.dirname(OUTPUT_PATH), exist_ok=True)
     prs.save(OUTPUT_PATH)
-    prs.save(COPY_PATH)
-    print("🎉 Pixel-perfect presentation saved successfully!")
-    print(f"   1. {OUTPUT_PATH}")
-    print(f"   2. {COPY_PATH}")
+    print(f"🎉 Primary presentation saved: {OUTPUT_PATH}")
+
+    try:
+        prs.save(COPY_PATH)
+        print(f"🎉 Root working copy updated: {COPY_PATH}")
+    except PermissionError:
+        print(f"ℹ️ Note: Root copy ({COPY_PATH}) is currently open in PowerPoint. Docs copy is fully updated!")
 
 if __name__ == "__main__":
     main()
