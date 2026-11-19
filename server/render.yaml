@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: wellsync-pilot-backend
+    env: node
+    plan: starter
+    buildCommand: npm ci && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3001
+      - key: HOST
+        value: 0.0.0.0
+      - key: DB_PATH
+        value: /var/data/pilot_telemetry.db
+    disk:
+      name: pilot-data
+      mountPath: /var/data
+      sizeGB: 1
+    healthCheckPath: /health

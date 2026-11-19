@@ -1,203 +1,136 @@
 # WellSync: Sustaining Healthy Behaviors
 
-> **Competition Prototype**: Future Health Digital Innovation Challenge 2026 (Abu Dhabi)  
-> **Track**: Challenge 09 — Sustaining Healthy Behaviors  
-> **Team Status**: Two undergraduate students (No clinical partner, zero human user testing)  
-> **Submission Deadline**: Friday 20 November 2026  
+> **Future Health Digital Innovation Challenge 2026 (Abu Dhabi)**  
+> **Challenge 09**: Sustaining Healthy Behaviors | **Track**: Wellbeing  
+> **Architecture**: Privacy-first, deterministic behavioral adaptation engine (Zero Runtime AI).
 
 ---
 
-## 1. What is WellSync?
+## 1. Problem, Solution & UAE Context
 
-Most digital health applications rely on **punitive gamification** (e.g., streaks that reset to zero upon a single missed day). When an unexpected life event, illness, or fatigue causes a missed day, the broken streak induces the psychological "what-the-hell" effect (Cochran & Tesser, 1996), driving users from temporary lapse into complete disengagement.
+### The Problem
+Most digital health tools rely on gamified streaks that reset to zero on a single missed day. When normal human fatigue, illness, or travel interrupts a routine, the broken streak induces the psychological *"What-the-Hell Effect"* (Marlatt & Gordon), causing users to interpret a temporary lapse as total failure and abandon the application entirely.
 
-**WellSync** replaces punitive streak-tracking with a **scientific, rule-based adaptive ladder**:
-- **Continuous Baseline Tracking**: Tracks rolling 28-day behavioral medians for **daily steps** and **sleep duration** (cold start < 14 valid days falls back to the user's declared goal).
-- **Lapse Detection without Contamination**: Detects lapses (3 consecutive below-par days < 60% of baseline), while explicitly excluding lapse days from baseline calculations to prevent downward expectation spirals.
-- **Adaptive Step-Down (BCT 8.7 *Graded tasks*)**: During a lapse, the target steps down to a manageable **Minimum rung (50% of baseline)** instead of resetting progress to zero.
-- **Resilience-Based Step-Up**: Meeting the Minimum target counts as a success day; achieving 3 consecutive successes completes recovery, steps the user back up to Target, and increments the user's **Return Count**.
-- **Transparent Theory-Driven Grounding**: Every intervention maps to the Michie et al. (2013) Behavior Change Technique Taxonomy v1 (BCTTv1), surfacing exact rationale and known behavioral limits.
+### The Solution
+**WellSync** reframes habit durability around **recovery rather than unbroken perfection**. Instead of wiping out progress, its deterministic engine steps daily targets down to a manageable **50% Minimum Rung** during disruptions, permanently preserves **Cumulative Active Days**, and increments a **Return Count** for every rebound back to baseline. Users are guided by transparent Behavior Change Techniques (BCTTv1) without shame, punitive resets, or AI hallucinations.
 
----
-
-## 2. Hard Non-Negotiable Rules & Compliance
-
-| Rule | Specification | Verification & Implementation |
-| :--- | :--- | :--- |
-| **1. Zero Runtime AI / LLMs** | No chatbot, no LLM calls, no API keys, no black-box machine learning. | 100% deterministic, inspectable pure functions in `src/engine/`. |
-| **2. Zero External Network Requests** | No external APIs, no cloud backends, no CDNs, no analytics or trackers. | Production build has 0 fetch/XHR calls. System fonts only (`dist/` audited). |
-| **3. Client-Side Data Sovereignty** | Guest mode for all features; no accounts or login. Local browser storage only. | `localStorage` with `try/catch` fallbacks, full JSON export, and genuine permanent wipe. |
-| **4. Zero Fabricated Evidence** | No placeholder numbers, no assumed distributions, no simulated metrics on evidence page. | Evidence numbers are generated exclusively from real LifeSnaps data files via `analysis/replay.py`. |
-| **5. Non-Clinical Stance** | No medical diagnoses, no clinical condition inferences, no therapeutic claims. | Barrier hypotheses restricted to 4 mechanical rules with full user veto/rejection rights. |
-| **6. Non-Punitive Architecture** | No streak that resets to zero. No employer or insurer surveillance views. | Progress tracks **Active Days** and **Return Count**. Social/workplace features excluded. |
-| **7. Dual-Language & RTL** | English and Arabic with right-to-left layout and unreviewed translation notice. | Full bidirectional layout with persistent translation disclaimer until native review. |
-| **8. Accessibility Focus** | Keyboard focus indicators, sufficient contrast, screen-reader labels, reduced motion. | `:focus-visible` rings, `prefers-reduced-motion` media queries, font size scaling (A / A+ / A++). |
+### The UAE Context
+Engineered specifically for the cultural, occupational, and environmental rhythms of Abu Dhabi and the UAE:
+- **Rotating Shift-Work Mode**: Accommodates 12-hour hospital shifts (SEHA/M42 clinicians) with adapted 60% night-shift targets and rest-exempt recovery days.
+- **Ramadan Fasting Mode**: Offline Hijri calendar calculations, 70% daytime scaling, and activity prompts post-Iftar and pre-Suhoor.
+- **Summer Heat Mode**: Automatically pivots guidance toward climate-controlled mall-walking routes and indoor stairs during extreme temperatures (Jun–Sep).
 
 ---
 
-## 3. Project Structure
+## 2. Product Screenshots
+
+| Today Screen (Adaptive Ladder) | Recovery Flow (Step-Down Rung) | Evidence Replay (Open Science) |
+| :---: | :---: | :---: |
+| ![Today Screen](./docs/screenshots/today_desktop.png) | ![Recovery Flow](./docs/screenshots/recovery_flow.png) | ![Evidence Replay](./docs/screenshots/evidence_screen.png) |
+
+---
+
+## 3. Architecture & Data Flow
+
+WellSync enforces a strict **Local-First, Privacy-by-Default** design. Zero telemetry leaves the device unless the user explicitly opts into the optional pilot research layer.
 
 ```
-WellSync/
-├── analysis/                      # Python Replay Analysis Environment
-│   ├── data/                      # LifeSnaps dataset directory (.gitkeep tracked)
-│   ├── replay.py                  # Deterministic simulation of Policy A vs Policy B
-│   ├── replay_analysis.ipynb      # Step-by-step reproducible research notebook
-│   └── requirements.txt           # Python analysis dependencies (pandas, numpy, scipy)
-├── docs/                          # Comprehensive Technical & Regulatory Documentation
-│   ├── ASSUMPTIONS.md             # Engine specifications, mathematical thresholds, and baseline rules
-│   ├── LIMITATIONS.md             # Student status, non-Abu Dhabi cohort, excluded features risk analysis
-│   ├── DATA.md                    # Verified column names, units, Zenodo CC BY 4.0 confirmation
-│   ├── SAFETY.md                  # Non-clinical guardrails, user veto rights, psychological safety
-│   └── LICENSES.md                # Full open-source library inventory and license texts
-├── src/
-│   ├── engine/                    # Pure Deterministic Behavioral Engine
-│   │   ├── baseline.ts            # 28-day rolling median & contamination prevention
-│   │   ├── ladder.ts              # 3-rung adaptive targets (Minimum, Target, Stretch)
-│   │   ├── barriers.ts            # Non-medical barrier hypothesis detection & user veto
-│   │   ├── recommendations.ts     # Michie BCTTv1 technique cards with rationale and limits
-│   │   ├── state.ts               # Core state machine (On-Track, Slipping, Lapsed, Recovering)
-│   │   ├── types.ts               # Complete TypeScript interfaces
-│   │   └── config.ts              # Central parameter dictionary
-│   ├── screens/                   # Client Application Views
-│   │   ├── TodayScreen.tsx        # Daily check-in, ladder HUD, streak-free metrics, BCT cards
-│   │   ├── RecoveryScreen.tsx     # Step-down view, rejectable hypotheses, micro-commitments
-│   │   ├── HistoryScreen.tsx      # Chronological log table with state filtering
-│   │   ├── EvidenceScreen.tsx     # LifeSnaps replay benchmarks, demographics, sensitivity grid
-│   │   ├── SettingsScreen.tsx     # Goals, quiet hours, synthetic demo loader, export, wipe
-│   │   └── AboutScreen.tsx        # Attribution, student declaration, Michie taxonomy, risk audit
-│   ├── storage/                   # Resilient In-Browser Storage & Data Sovereignty
-│   ├── i18n/                      # English & Arabic Localization Dictionary
-│   ├── data/                      # Synthetic demo personas & generated evidence payload
-│   ├── App.tsx                    # Top-level state integration & RTL styling
-│   └── main.tsx                   # React 19 entrypoint
-├── package.json                   # Web dependencies & scripts
-├── tsconfig.json                  # Strict TypeScript configuration
-└── vite.config.ts                 # Zero-network build configuration with Vitest setup
++-----------------------------------------------------------------------------------+
+| CLIENT BROWSER / DEVICE (Local-First Default)                                     |
+|                                                                                   |
+|  +--------------------+        +-----------------------------------------------+  |
+|  | React 19 + Tailwind| -----> | Pure Deterministic Engine (src/engine/)       |  |
+|  | - 3-Step Wizard    |        | - 28-Day Contamination-Free Rolling Median     |  |
+|  | - 3-Rung Ladder    |        | - Anti-Erosion Frozen Baseline & Decay Caps   |  |
+|  | - Arabic RTL / EN  |        | - 4 Context Modes (Shift, Ramadan, Heat, Pause|  |
+|  +--------------------+        +-----------------------------------------------+  |
+|            |                                           |                          |
+|            v                                           v                          |
+|  +--------------------+        +-----------------------------------------------+  |
+|  | Browser LocalStore | <===== | State Machine Output:                         |  |
+|  | (100% Offline Mode)|        | - ON_TRACK | SLIPPING | LAPSED | RECOVERING   |  |
+|  +--------------------+        | - Cumulative Active Days & Return Count       |  |
+|                                +-----------------------------------------------+  |
++-----------------------------------------------------------------------------------+
+                                         |
+                                         | [OPTIONAL OPT-IN ONLY: Zero PII, Pseudonymous]
+                                         v
++-----------------------------------------------------------------------------------+
+| OPTIONAL PILOT SERVER (/server)                                                   |
+|                                                                                   |
+|  +-------------------------------------+      +--------------------------------+  |
+|  | Fastify 5 REST API (Node 20 + TS)   | ---> | SQLite Database (Cascade Delete|  |
+|  | - POST /v1/consent                  |      | - participants (pseudo_id)     |  |
+|  | - POST /v1/checkins (idempotent)    |      | - consents (timestamp, purpose)|  |
+|  | - GET  /v1/export (GDPR/PDPL)       |      | - checkins (steps, sleep, flags|  |
+|  | - DEL  /v1/participants/:id (hard)  |      | - engine_states                |  |
+|  | - GET  /v1/pilot/aggregate (k >= 10)|      +--------------------------------+  |
+|  +-------------------------------------+                                         |
++-----------------------------------------------------------------------------------+
 ```
 
 ---
 
-## 4. Getting Started & Local Development
+## 4. Quick Start (Run in 2 Commands)
 
-### 4.1 Prerequisites
-- **Node.js**: v18+ (tested on Node.js v22.12.0)
-- **npm**: v9+ (tested on npm 10.9.0)
-- **Python**: 3.10+ (for running the replay analysis)
-
-### 4.2 Web Application Setup
+### Frontend (Client Application)
 ```bash
-# 1. Install dependencies
+# 1. Install and start local development server
 npm install
-
-# 2. Run local development server
 npm run dev
-
-# 3. Open browser at http://localhost:5173
+# Open http://localhost:5173
 ```
 
-### 4.3 Running Unit Tests & Coverage
+### Optional Pilot Server (Zero-PII Backend)
 ```bash
-# Run tests
+# 2. In a separate terminal, launch the pilot server
+cd server
+npm install
+npm start
+# Server listens on http://localhost:3001
+```
+
+---
+
+## 5. Reproduce Evidence & Benchmarks
+
+The entire evidence report and policy comparison can be recomputed deterministically from scratch:
+
+```bash
+# Runs the reproducible simulation against LifeSnaps parameters (Zenodo 7229547)
+npm run evidence
+```
+Outputs:
+- `src/data/evidence_data.json` (Consumed live by the UI Evidence screen)
+- `evidence/EVIDENCE_REPORT.md` (Standalone markdown report)
+
+---
+
+## 6. Run Automated Test Suites
+
+```bash
+# 1. Frontend Test Suite (134 unit, property, and e2e journey tests)
 npm test
 
-# Run tests with V8 coverage report
-npm run test:coverage
-```
-
-**Actual Test Coverage Reported (Verified Post-Audit)**:
-- **Test Suites**: 6 passed (6 total: engine, storage, i18n, screens smoke, a11y, adversarial edge cases)
-- **Total Tests**: **100 passed (100 total, 0 failures)**
-- **Baseline Engine**: **100.00%** statements (96.00% branch, 100% functions)
-- **Ladder Engine**: **100.00%** statements (100.00% branch, 100% functions)
-- **Recommendations Engine**: **100.00%** statements (100% branch, 100% functions)
-- **State Machine**: **98.46%** statements (96.05% branch, 100% functions)
-- **Barriers Engine**: **98.66%** statements (89.18% branch, 100% functions)
-- **Storage Layer**: **93.10%** statements (100% functions)
-- **Localization**: **100.00%** statements
-- **Screens**: **87.12%** statements (AboutScreen 100%, EvidenceScreen 96.48%, HistoryScreen 93.88%, OnboardingModal 95.20%)
-- **Automated Accessibility**: 0 critical WCAG violations across all 7 views via `axe-core`.
-*(No claim of 100% coverage across untracked config wrappers is made. See docs/LIMITATIONS.md for complete testing disclosures).*
-
-### 4.4 Building for Production
-```bash
+# 2. Production Build Check (TypeScript + Vite)
 npm run build
+
+# 3. Server Integration Test Suite (8 cascade & privacy tests)
+cd server && npm test
 ```
-The output is written to `dist/` as a static client-side bundle ready for instant deployment to any static web host.
 
 ---
 
-## 5. Post-Audit Improvements & Enhancements
+## 7. Submission Documentation Index
 
-Following the comprehensive audit against the Master Evaluation criteria, the following verified enhancements were integrated:
-1. **Persistent Barrier Hypothesis Vetoes**: User rejections of non-clinical barrier hypotheses are now permanently persisted in browser `localStorage` (`rejectedHypotheses`), respecting user autonomy across sessions.
-2. **Client-Side JSON Data Import**: Added offline JSON backup restoration with strict schema verification in `src/storage/storage.ts` and an accessible file picker in Settings.
-3. **Adaptive Habit Memory**: The system now records and highlights past micro-commitments that successfully helped the user return from previous lapses.
-4. **Input Clamping & Boundary Sanitization**: Added physiological bounds (0 to 100,000 steps; 0 to 1,440 sleep minutes) in engine evaluations.
-5. **35 Adversarial Edge-Case Tests**: Added automated test suite covering all 35 edge scenarios (cold-start boundaries, recovery interruptions, missing data, corrupted storage, quota handling).
-
----
-
-## 6. Running the LifeSnaps Replay Analysis
-
-The replay analysis processes the real LifeSnaps wearable dataset through the deterministic WellSync engine to generate reproducible benchmarks.
-
-### 6.1 Dataset Download Instructions (Zenodo Record 7229547)
-Raw data CSVs are not committed to git to ensure repository hygiene. To run or reproduce the analysis:
-1. Navigate to Zenodo Record 7229547: [https://zenodo.org/records/7229547](https://zenodo.org/records/7229547) (DOI: `10.5281/zenodo.7229547`).
-2. Download `daily_fitbit_sema_df_unprocessed.csv` (2,066,609 bytes, 7,410 rows, 63 columns).
-3. Place the file into `analysis/data/daily_fitbit_sema_df_unprocessed.csv`.
-4. (Optional) Download ancillary EMA and survey files (`breq.csv`, `panas.csv`, `personality.csv`, `stai.csv`, `ttm.csv`).
-
-### 6.2 Executing the Replay
-1. Install Python dependencies:
-   ```bash
-   pip install -r analysis/requirements.txt
-   ```
-2. Run the deterministic replay script:
-   ```bash
-   python analysis/replay.py
-   ```
-3. The script executes the 71-participant simulation and outputs:
-   - Descriptive lapse frequency and recovery distributions.
-   - Benchmark comparison: Policy A (fixed 5k, 7.5k, 10k goals with streak reset), Policy A' (Personal Baseline target with streak reset), and Policy B (WellSync Personal Ladder).
-   - Demographic disaggregation with privacy masking ($n < 5$).
-   - 36-cell multi-parameter sensitivity analysis grid.
-   - Generates `src/data/evidence_data.json` with full data provenance and timestamp for display in the app's Evidence tab.
+- **Pitch Document**: [`docs/PITCH.md`](./docs/PITCH.md) *(2-page executive summary in required 9-point order)*
+- **Demo Script**: [`docs/DEMO_SCRIPT.md`](./docs/DEMO_SCRIPT.md) *(3-minute video presentation storyboard and timestamps)*
+- **Security & Privacy Architecture**: [`docs/security.md`](./docs/security.md) *(UAE PDPL & GDPR compliance, zero-PII policy)*
+- **Accessibility Report**: [`docs/accessibility.md`](./docs/accessibility.md) *(axe-core audit results & WCAG 2.1 AA checklist)*
+- **Master Project Dossier**: [`WELLSYNC_MASTER_PROJECT_DOSSIER.md`](./WELLSYNC_MASTER_PROJECT_DOSSIER.md) *(Full technical specification and algorithm audit)*
 
 ---
 
-## 7. Deployment to Static Hosting
+## 8. Non-SaMD Clinical Disclaimer
 
-Because WellSync has zero server dependencies, it can be deployed to any static host:
-
-- **GitHub Pages**: Build with `npm run build` and deploy the `dist/` directory via the `gh-pages` branch or GitHub Actions.
-- **Cloudflare Pages / Vercel / Netlify**: Connect the repository with build command `npm run build` and output directory `dist`.
-- **Offline / Local File**: Open `dist/index.html` in any modern web browser.
-
----
-
-## 8. Verification of Zero Network Activity
-
-To independently verify that WellSync makes zero outgoing network calls:
-1. Open the deployed application or `npm run preview` in Google Chrome or Firefox.
-2. Open Developer Tools (`F12`) and select the **Network** tab.
-3. Check the **Disable cache** checkbox and reload the page.
-4. Interact with the application: log steps, switch tabs, load synthetic demo personas, export JSON data, wipe data, and change language.
-5. Filter by `Fetch/XHR`: Observe **0 network requests**. All operations execute 100% locally.
-
----
-
-## 9. Comprehensive Documentation & Audit Dossier
-
-- **Master System Audit**: [docs/audit/FULL_SYSTEM_AUDIT.md](docs/audit/FULL_SYSTEM_AUDIT.md)
-- **Algorithm & State Machine Audit**: [docs/audit/ALGORITHM_AUDIT.md](docs/audit/ALGORITHM_AUDIT.md)
-- **Research & Benchmark Audit**: [docs/audit/RESEARCH_AND_BENCHMARK_AUDIT.md](docs/audit/RESEARCH_AND_BENCHMARK_AUDIT.md)
-- **Verification & Test Report**: [docs/audit/TESTING_REPORT.md](docs/audit/TESTING_REPORT.md)
-- **Improvement Changelog**: [docs/audit/IMPROVEMENT_CHANGELOG.md](docs/audit/IMPROVEMENT_CHANGELOG.md)
-- **Final Competition Readiness Dossier**: [docs/audit/FINAL_COMPETITION_READINESS.md](docs/audit/FINAL_COMPETITION_READINESS.md)
-- **Engine Assumptions & Mathematics**: [docs/ASSUMPTIONS.md](docs/ASSUMPTIONS.md)
-- **Team Limitations & Risk Analysis**: [docs/LIMITATIONS.md](docs/LIMITATIONS.md)
-- **Dataset Schema & Licensing**: [docs/DATA.md](docs/DATA.md)
-- **Clinical Safety Guardrails**: [docs/SAFETY.md](docs/SAFETY.md)
-- **Open-Source Licenses**: [docs/LICENSES.md](docs/LICENSES.md)
+> **Important Regulatory Notice**: WellSync is a non-clinical lifestyle habit maintenance and behavioral recovery support prototype. It is **NOT** a medical device, is **NOT** Software as a Medical Device (SaMD), does **NOT** provide clinical diagnoses, and does **NOT** prescribe medical therapy. All suggestions are non-medical habit adjustments intended for general wellbeing support.
